@@ -1,0 +1,131 @@
+<div id="subscriptions">
+    <div ng-show="showLoader" class="loader-box">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+    </div>
+    <div ng-show="modalError" class="loader-box modal-error" >
+        <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+    </div>
+    <div class="filter-area">
+        <div class="pull-right bottom-padding">
+            <span ng-if="!readOnlyPermission">
+                <span ng-show="selectedCatType">
+                    <button class="btn btn-primary btn-mw" id="edit_sub_btn" ng-show="readOnlyFlag" ng-click="readOnly(false)">EDIT</button>
+                    <button class="btn btn-primary btn-mw" id="save_sub_btn" ng-hide="readOnlyFlag" ng-click="save()">SAVE</button>
+                </span>
+            </span>
+            <button data-dismiss="modal" aria-label="Close" ng-hide="readOnlyFlag" class="btn btn-primary" ng-click="cancel('subscriptions')">CANCEL</button>
+        </div>
+        <div class="col-xs-12 no-padding form-line">
+            <div class="col-sm-6 no-padding-left" ng-mouseleave="showList('hide')">
+                <label>
+                    Device Type
+                </label>
+                <span class="input-select">
+                    <span class="form-control" type="text" ng-model="selectedDeviceType" ng-click="showDevList('deviceType',true)">{{selectedDeviceType}}<span class="droplist-arrow caret"></span></span>
+                    <ul ng-show="visibility.deviceType" class="dropOptions deviceType">
+                        <li ng-click="updateDeviceType(alertStatusObj)" ng-repeat="alertStatusObj in deviceData">{{alertStatusObj.displayName}}</li>
+                    </ul>
+                </span>
+            </div>
+            <div class="col-sm-6 no-padding" ng-mouseleave="showList('hide')">
+                <label>
+                    Alert Category
+                </label>
+                <span class="input-select">
+                    <span class="form-control" type="text" ng-disabled="!selectedDeviceType" ng-model="selectedCatType" ng-click="showDevList('catType',true)">{{selectedCatType}}<span class="droplist-arrow caret" ng-if="selectedDeviceType"></span></span>
+                    <ul ng-show="visibility.catType" class="dropOptions deviceType">
+                        <li ng-click="updateCatType(alertStatusObj)" ng-repeat="alertStatusObj in selectedDevCategory.categories">{{alertStatusObj.displayName}}</li>
+                    </ul>
+                </span>
+            </div>
+        </div>
+        <div ng-show="selectedCatType">
+            <div class="form-cant clearfix col-xs-12">
+                <span class="vacant-cant">Delivery Method: </span>
+                <ul class="nav nav-radio nav-transparent-black">
+                    <li ng-click="changedevEmail()"
+                        ng-class="{ 'active' : subData.deviceMethodEmail}"
+                        class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                        <a><span>&nbsp;</span>Email</a>
+                    </li>
+                </ul>
+                <!-- <span class="radio-flag dactive pull-left"  ng-class="{'active': subData.deviceMethodEmail}"  ng-click="changedevEmail()">
+                    <span></span>
+                </span> -->
+            </div>
+            <table class="table table-condensed table-hover table-modal">
+                <thead>
+                    <tr>
+                        <th>Status From Admin Setting</th>
+                        <th>Alert Event</th>
+                        <th>Device Scope</th>
+                        <th>Subscribed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="sub_setting_{{$index}}" ng-repeat="(colKey,subObj) in subData.records">
+                        <td>{{subObj.status}}</td>
+                        <td>{{subObj.alertEvent}}</td>
+                        <td>
+                            <span class="input-select">
+                                <span id="sub_select_{{$index}}" class="form-control" type="text" data-value="" data-requried="true" data-readonly="true" readonly ng-model="subObj.deviceScope" ng-click="showDevList(colKey)">{{subObj.deviceScope}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                                <ul id="sub_select_ul_{{colKey}}" ng-show="visibility[colKey]" class="dropOptions deviceScope">
+                                    <li id="sub_edit_ul_{{colKey}}" ng-click="updatedeviceScope(deviceScopeObj, subObj)" ng-repeat="deviceScopeObj in subData.metaData.deviceScope">{{deviceScopeObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </td>
+                        <td>
+                            <ul class="nav nav-radio nav-radio-black nav-transparent-black">
+                                <li ng-click="subObj.status!=='Disabled' && changeActive(subObj)"
+                                    ng-class="{ 'active' : subObj.active}">
+                                    <a><span>&nbsp;</span></a>
+                                </li>
+                            </ul>
+                            <!-- <span class="radio-flag pull-left" ng-class="{'active': subObj.active}" ng-click="changeActive(subObj)">
+                                <span></span>
+                            </span> -->
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!--country-->
+            <div class='edit-role'>
+                <label class="modal-lab">Country</label>
+                <div class="modal-form clearfix colp">
+                    <div class="col-sm-12">
+                        <div class="colp-content" ng-repeat="(region, countries) in subData.metaData.country">
+                            <div class="colp-title region-title check-box" data-id="1">
+                                <label class="colp-child wrap-text" title="{{country.displayName}}">
+                                    <input type="checkbox" ng-disabled="readOnlyFlag" ng-click="selectAll(region, regionExcluded[region], false)"  ng-model="regionExcluded[region]"> <span></span>{{region}}
+                                </label>
+                            </div>
+                            <div class="colp-body clearfix country-list scroll-box check-box">
+                                <span class="col-sm-2" ng-repeat="country in countries">
+                                    <label class="colp-child wrap-text" title="{{country.displayName}}">
+                                        <input type="checkbox" ng-disabled="readOnlyFlag" ng-click="excludeCountry(region, country)" ng-model="countryExcluded[region][country.value]"> <span></span>{{country.displayName}}
+                                    </label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-sm-6">
+                        <div class="colp-selected check-box">
+                            <div class="colps-content" ng-repeat="(region, countries) in subData.metaData.country" ng-show="selectedCountries[region]">
+                                <div class="colps-title" data-id="1">{{region}}<a ng-click="selectAll(region, false, true)" ng-if="!readOnlyFlag"><i class="fa fa-trash"></i></a></div>
+                                <div class="colps-body clearfix scroll-box country-list">
+                                    <span class="col-sm-4" ng-repeat="(id, country) in selectedCountries[region] | toArray | filter:{selected:true}">
+                                        <div class="colps-child wrap-text" data-id="{{id}}" title="{{country.displayName}}">
+                                            {{country.displayName}}
+                                            <span ng-if="!readOnlyFlag" ng-click="deleteCountry(region, country.$key)"><i class="fa fa-trash"></i></span>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

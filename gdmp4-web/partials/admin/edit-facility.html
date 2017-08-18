@@ -1,0 +1,89 @@
+<div>
+    <div ng-show="showLoader || LoadError" class="loader-box">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+    </div>
+    <div ng-show="modalError" class="loader-box modal-error">
+        <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+    </div>
+    <div class="modal-dialog modal-lg" id="updModal" tabindex="-1" role="dialog" data-target=".bs-example-modal-lg">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header clearfix">
+                    <span class="modal-title" id="updModalLabel" ng-hide="createRecord">View {{role|titleCase}} Item</span>
+                    <span class="modal-title" id="updModalCreateLabel" ng-show="createRecord">Create  {{role|titleCase}} Item</span>
+                    <div class="pull-right">
+                        <a uib-popover-html="help" popover-is-open="popoverIsOpen" ng-click="popoverIsOpen = !popoverIsOpen" popover-placement="left-top">Help</a>
+                        <button id="edit_config_submit_btn_alias" type="button" class="btn btn-primary btn-mw" ng-show="readOnlyFlag" ng-click="readOnly(false)">EDIT</button>
+                        <button id="save_config_submit_btn_alias" type="button" class="btn btn-primary btn-mw" ng-hide="readOnlyFlag" ng-click="save()" ng-disabled="!selectedValidCountry || facilityForm.$invalid">SAVE</button>
+                        <button class="btn btn-primary btn-mw" data-dismiss="modal" aria-label="Close" ng-click="cancel()">CANCEL</button>
+                    </div>
+                </div>
+                <div ng-show="roleData.warningMessage" class="alert alert-warning alert-modal-fixed">
+                    <span class="alert-warning-flag">
+                        <span class="alert-warning-flbg"></span>
+                        <span class="alert-warning-fltx">!</span>
+                    </span>
+                    <p>
+                        {{roleData.warningMessage}}
+                    </p>
+                </div>
+                <div class="modal-body">
+                    <label>Facility Data</label>
+                    <form name="facilityForm" autocomplete="off" novalidate>
+                        <div class="modal-form overflow-visible">
+                            <div class="form-line"> 
+                                <div class="col-sm-4">
+                                    <label>
+                                        ID
+                                        <span ng-show="roleData.tooltip.address">
+                                            {{roleData.tooltip.code}}
+                                        </span>
+                                    </label> 
+                                    <input id="config_edit_code_input" type="text" class="form-control" ng-readonly="!createRecord && !editable" ng-model="roleData.code" />   
+                                </div>
+                                <div class="col-sm-4" ng-class="{'has-error': facilityForm.facilityCountry.$invalid }">
+                                    <label>
+                                        Country*
+                                        <span ng-show="roleData.tooltip.country">
+                                            {{roleData.tooltip.country}}
+                                        </span>
+                                    </label>
+                                    <span class="input-select">
+                                        <input id="config_edit_address_input" name="facilityCountry" class="form-control well-li" ng-required="true" ng-readonly="!createRecord && !editable" ng-change="visibility.country = true" ng-model="roleData.country" ng-click="showList('country')"><span class="droplist-arrow caret" ng-if="!readOnlyFlag && metaData.countryList.length"></span>
+                                        <ul ng-show="visibility.country" class="dropOptions-short deviceType">
+                                            <li class="well-li" ng-click="updateType('country', metaObj)" ng-repeat="metaObj in metaData.countryList">{{metaObj.displayName}}</li>
+                                        </ul>
+                                    </span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label>
+                                        Address
+                                        <span ng-show="roleData.tooltip.address">
+                                            {{roleData.tooltip.address}}
+                                        </span>
+                                    </label>
+                                    <input id="config_edit_address_input" type="text" class="form-control" ng-readonly="!createRecord && !editable" ng-model="roleData.address" />
+                                </div> 
+                            </div>
+                            <div class="form-line">               
+                                <div class="col-sm-4" ng-class="{'has-error': facilityForm.facilityName.$invalid }">
+                                    <label>
+                                        Name*
+                                        <span ng-show="roleData.tooltip.name">
+                                            {{roleData.tooltip.name}}
+                                        </span>
+                                    </label>
+                                    <input id="config_edit_name_input" type="text" name="facilityName" class="form-control" ng-readonly="!createRecord && !editable" ng-required="true" ng-model="roleData.name" />
+                                </div>
+                            </div>
+                            <div class="form-line">               
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

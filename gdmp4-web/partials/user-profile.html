@@ -1,0 +1,44 @@
+<div class="modal-header clearfix">
+    <span class="modal-title" id="userProfileModalLabel">User Profile</span>
+    <div class="pull-right">
+        <button type="button" class="close" ng-click="$dismiss()"><span aria-hidden="true">&times;</span></button>
+    </div>
+</div>
+<div class="modal-body bg-white">
+    <label>Display User Profile</label>
+    <div class="row col-sm-12">
+        <label class="col-sm-6">First Name:</label>
+        <span class="col-sm-6">{{userData.firstName}}</span>
+    </div>
+    <div class="row col-sm-12">
+        <label class="col-sm-6">Last Name:</label>
+        <span class="col-sm-6">{{userData.lastName}}</span>
+    </div>
+    <div class="row col-sm-12">
+        <label class="col-sm-6">Email Address:</label>
+        <span class="col-sm-6">{{userData.email}}</span>
+    </div>
+    <div class="row col-sm-12">
+        <label class="col-sm-6">Medtronic Employee:</label>
+        <span class="col-sm-6">{{userData.medtronicEmployee|yesNo}}</span>
+    </div>
+    <div class="row col-sm-12" ng-show="!userData.medtronicEmployee">
+        <label class="col-sm-6">Customer Name(Account Number):</label>
+        <span class="col-sm-6">{{userData.nameAndAccountNumber}}</span>
+    </div>
+    <div class="row col-sm-12">
+        <label class="col-sm-6">Country:</label>
+        <span class="col-sm-6">{{userData.country}}</span>
+    </div>
+    <div class="row col-sm-12">
+        <label class="col-sm-6">Language:</label>
+        <span class="col-sm-6">{{userData.language}}</span>
+    </div>
+    <div class="row col-sm-12">
+        <label class="col-sm-6">Class of Trade(Role):</label>
+        <span class="col-sm-6">{{userData.cotAndRole}}</span>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="changePassword()">CHANGE PASSWORD</button>
+</div>

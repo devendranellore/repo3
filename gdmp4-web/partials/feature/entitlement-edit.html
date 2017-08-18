@@ -1,0 +1,227 @@
+<div ng-show="showLoader" class="loader-box">
+    <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+    <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+</div>
+<div ng-show="modalError" class="loader-box modal-error">
+    <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+</div>
+<div class="modal-header clearfix">
+    <span class="modal-title" id="updateModalLabel" ng-if="createRecord">Add Feature Entitlement To Device</span>
+    <span class="modal-title" id="updateModalLabel" ng-if="!createRecord && readOnlyFlag">View Feature Entitlement To Device</span>
+    <span class="modal-title" id="updateModalLabel" ng-if="!createRecord && !readOnlyFlag">Edit Feature Entitlement To Device</span>    
+    <div class="pull-right">
+        <a uib-popover-html="help" popover-is-open="popoverIsOpen" ng-click="popoverIsOpen = !popoverIsOpen" popover-placement="left-top">Help</a>
+        <button class="btn btn-primary btn-mw" id="clone_role_btn" ng-show="readOnlyFlag" ng-click="clone()">CLONE</button>
+        <button class="btn btn-primary btn-mw" id="edit_role_btn" ng-show="readOnlyFlag" ng-click="readOnly(false)">EDIT</button>
+        <button class="btn btn-primary btn-mw" id="save_role_btn" ng-hide="readOnlyFlag" ng-disabled="entitlementForm.$invalid || !termSelected" ng-click="save()">SAVE</button>
+        <button data-dismiss="modal" aria-label="Close" class="btn btn-primary btn-mw" ng-click="cancel()">CANCEL</button>
+    </div>
+</div>
+<div class="modal-body edits edit-role">
+    <label>Basic Information</label>
+    <form name="entitlementForm" autocomplete="off">
+        <div class="modal-form overflow-visible">
+            <div class="form-line">
+                <div class="col-sm-4" ng-class="{ 'has-error': entitlementForm.deviceType.$invalid }">
+                    <label>
+                        Device Type*
+                        <span ng-show="roleData.tooltip.deviceType">
+                            {{roleData.tooltip.deviceType}}
+                        </span>
+                    </label>
+                    <span class="input-select" ng-mouseleave="showList('hide')">
+                        <span id="entitlement_device_type_input" name="deviceType" type="text" class="form-control" ng-model="roleData.deviceType" ng-readonly="!createRecord && (readOnlyFlag || (status!=='Limited Release'))" required ng-click="showList('deviceType')">{{roleData.deviceType}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                        <ul ng-show="!readOnlyFlag && visibility.deviceType && ((status==='Limited Release') || createRecord)" class="dropOptions">
+                            <li ng-click="changeDeviceType(deviceTypeObj)" ng-repeat="deviceTypeObj in metaData.device_types">{{deviceTypeObj.displayName}}</li>
+                        </ul>
+                    </span>
+                </div>
+                <div class="col-sm-4" ng-class="{ 'has-error': entitlementForm.deviceSerialNumber.$invalid }">
+                    <label>
+                        Device SN*
+                        <span ng-show="roleData.tooltip.deviceSerialNumber">
+                            {{roleData.tooltip.deviceSerialNumber}}
+                        </span>
+                    </label>
+                    <input id="entitlement_edit_device_sn_input" name="deviceSerialNumber" required type="text" class="form-control" ng-readonly="!createRecord && (readOnlyFlag || (status!=='Limited Release'))" ng-model="roleData.deviceSerialNumber"/>
+                </div>
+            </div>
+            <div class="form-line">
+                <div class="col-sm-12" ng-class="{ 'has-error': entitlementForm.featureName.$invalid }">
+                    <label>
+                        Feature ID/Name/SKU*
+                        <span ng-show="roleData.tooltip.featureName">
+                            {{roleData.tooltip.featureName}}
+                        </span>
+                    </label>
+                    <span class="input-select" ng-mouseleave="showList('hide')">
+                        <span class="form-control" id="entitlement_feature_name_input" name="featureName" type="text" ng-readonly="!createRecord && (readOnlyFlag || (status!=='Limited Release'))" ng-model="roleData.feature" required ng-click="showList('feature')">{{roleData.feature}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                        <ul ng-show="!readOnlyFlag && visibility.feature && ((status==='Limited Release') || (createRecord))" class="dropOptions" ng-if="metaData.feature_filtered.length">
+                            <li ng-click="updateType('feature', featureObj)" ng-repeat="featureObj in metaData.feature_filtered">{{featureObj.displayName}}</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+            <div class="form-line">
+                <div class="col-sm-8" ng-mouseleave="showList('hide')" ng-class="{ 'has-error': !termSelected }">
+                    <label>
+                        Term*
+                        <span ng-show="roleData.tooltip.term">
+                            {{roleData.tooltip.term}}
+                        </span>
+                    </label>
+                    <ul class="nav nav-radio nav-transparent">
+                        <li class="col-sm-2 col-xs-8"
+                            ng-class="{'active' : roleData.termId === termObj.value}"
+                            ng-repeat="termObj in metaData.term">
+                            <a ng-click="!readOnlyFlag && (status!=='In Production') && (status!=='Archived') && updateType('term', termObj)">
+                                <span>&nbsp;</span>{{termObj.displayName}}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-4" ng-mouseleave="showList('hide')">
+                    <label>
+                        Status*
+                        <span ng-show="roleData.tooltip.status">
+                            {{roleData.tooltip.status}}
+                        </span>
+                    </label>
+                    <span class="input-select">
+                        <ul id="edit_config_status_input_select_ul" ng-if="!termSelected" ng-show="!readOnlyFlag && visibility.status" class="dropOptions reverse">
+                            <li id="edit_config_status_input_select_li{{$index}}" ng-click="updateType('status', listObj)" ng-repeat="listObj in metaData.status">
+                                {{listObj.displayName}}
+                            </li>
+                        </ul>
+                        <span id="config_status_input" data-value="2" class="form-control" ng-readonly="readOnlyFlag" ng-model="roleData.status" ng-click="showList('status')">{{roleData.status}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                        <ul id="edit_config_status_input_select_ul" ng-if="termSelected" ng-show="!readOnlyFlag && visibility.status" class="dropOptions">
+                            <li id="edit_feature_entitlement_status_input_select_li" ng-click="updateType('status', currentStatus)">{{currentStatus.displayName}}</li>
+                            <li id="edit_feature_entitlement_status_input_select_li{{$index}}" ng-click="updateType('status', listObj)" ng-repeat="listObj in metaData.status">
+                                {{listObj.displayName}}
+                            </li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+            <div class="form-line" ng-if="roleData.term === 'Permanent'">
+                <div class="col-sm-4">
+                    <label>
+                        Start Date
+                        <span ng-show="entitlement.tooltip.startDate">
+                            {{roleData.tooltip.startDate}}
+                        </span>
+                    </label>
+                    <p class="input-group">
+                        <input type="text" id="entitlement_edit_start_date_input" ng-readonly="readOnlyFlag || (status==='In Production') || (status==='Archived')" class="form-control well-li" uib-datepicker-popup="{{format}}" ng-model="roleData.startDate" is-open="popup1.opened" datepicker-options="dateOptions"/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open1()" ng-disabled="readOnlyFlag || (status==='In Production') || (status==='Archived')"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="form-line" ng-if="roleData.term === 'Counting'" ng-class="{ 'has-error': entitlementForm.count.$invalid }">
+                <div class="col-sm-4">
+                    <label>
+                        Count*
+                        <span ng-show="roleData.tooltip.count">
+                            {{roleData.tooltip.count}}
+                        </span>
+                    </label>
+                    <input id="entitlement_edit_count_input" type="text" name="count" required pattern="^[ 0-9]*$" class="form-control" ng-readonly="readOnlyFlag || (status==='In Production') || (status==='Archived')" ng-model="roleData.count"/>
+                </div>
+            </div>
+            <div class="form-line" ng-if="roleData.term === 'Duration'">
+                <div class="col-sm-4" ng-class="{ 'has-error': entitlementForm.duration.$invalid }">
+                    <label>
+                        Duration*
+                        <span ng-show="roleData.tooltip.duration">
+                            {{roleData.tooltip.duration}}
+                        </span>
+                    </label>
+                    <input id="entitlement_edit_count_input" type="text" name="duration" required pattern="^[ 0-9]*$" class="form-control" ng-readonly="readOnlyFlag || (status==='In Production') || (status==='Archived')" ng-model="roleData.duration"/>
+                </div>
+                <div class="col-sm-4" ng-class="{ 'has-error': entitlementForm.durationUnit.$invalid }">
+                    <label>
+                        Duration Unit*
+                        <span ng-show="roleData.tooltip.durationUnit">
+                            {{roleData.tooltip.durationUnit}}
+                        </span>
+                    </label>
+                    <span class="input-select" ng-mouseleave="showList('hide')">
+                        <ul ng-show="visibility.durationUnit && (createRecord || (status==='Limited Release') || (status==='Unknown'))" class="dropOptions reverse">
+                            <li ng-click="updateType('durationUnit', durationUnitObj)" ng-repeat="durationUnitObj in metaData.duration_unit">{{durationUnitObj.displayName}}</li>
+                        </ul>
+                        <span id="entitlement_duration_unit_input" type="text" name="durationUnit" required class="form-control" ng-readonly="readOnlyFlag || (status==='In Production') || (status==='Archived')" ng-model="roleData.durationUnit" ng-click="showList('durationUnit')">{{roleData.durationUnit}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-line" ng-if="roleData.term === 'Time Limited'">
+                <div class="col-sm-4" ng-class="{ 'has-error': entitlementForm.startDate.$invalid }">
+                    <label>
+                        Start Date*
+                        <span ng-show="entitlement.tooltip.startDate">
+                            {{roleData.tooltip.startDate}}
+                        </span>
+                    </label>
+                    <p class="input-group">
+                        <input type="text" id="entitlement_edit_start_date_input" name="startDate" required ng-readonly="readOnlyFlag || (status==='In Production') || (status==='Archived')" class="form-control well-li" uib-datepicker-popup="{{format}}" ng-model="roleData.startDate" is-open="popup1.opened" datepicker-options="dateOptions"/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open1()" ng-disabled="readOnlyFlag || (status==='In Production') || (status==='Archived')"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </p>
+                </div>
+                <div class="col-sm-4" ng-class="{ 'has-error': entitlementForm.endDate.$invalid }">
+                    <label>
+                        End Date*
+                        <span ng-show="roleData.tooltip.endDate">
+                            {{roleData.tooltip.endDate}}
+                        </span>
+                    </label>
+                    <p class="input-group">
+                        <input type="text" id="entitlement_edit_end_date_input" name="endDate" required ng-readonly="readOnlyFlag || (status==='In Production') || (status==='Archived')" class="form-control well-li" uib-datepicker-popup="{{format}}" ng-model="roleData.endDate" is-open="popup2.opened" datepicker-options="dateOptions"/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open2()" ng-disabled="readOnlyFlag || (status==='In Production') || (status==='Archived')"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="form-line" ng-if="roleData.term === 'Info'" ng-class="{ 'has-error': entitlementForm.info.$invalid }">
+                <div class="col-sm-4">
+                    <label>
+                        Info*
+                        <span ng-show="roleData.tooltip.info">
+                            {{roleData.tooltip.info}}
+                        </span>
+                    </label>
+                    <input id="entitlement_edit_info_input" type="text" name="info" required class="form-control" ng-readonly="readOnlyFlag || (status==='In Production') || (status==='Archived')" ng-model="roleData.info"/>
+                </div>
+            </div>
+
+            <div class="form-line" ng-if="readOnlyFlag">
+                <div class="col-sm-4">
+                    <label>
+                        License Type
+                        <span ng-show="roleData.tooltip.licenseType">
+                            {{roleData.tooltip.licenseType}}
+                        </span>
+                    </label>
+                    <span class="input-select" ng-mouseleave="showList('hide')">
+                        <!-- <ul ng-show="!readOnlyFlag && visibility.licenseType && ((status==='Limited Release') || status==='Unknown')" class="dropOptions reverse">
+                            <li ng-click="updateType('licenseType', licenseTypeObj)" ng-repeat="licenseTypeObj in metaData.license_type">{{licenseTypeObj.displayName}}</li>
+                        </ul> -->
+                        <span class="form-control" id="entitlement_edit_license_type_input" type="text" ng-readonly="readOnlyFlag" ng-model="roleData.licenseType" ng-click="showList('licenseType')">{{roleData.licenseType}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                    </span>
+                </div>
+                <div class="col-sm-4">
+                    <label>
+                        License Key
+                        <span ng-show="roleData.tooltip.deviceSerialNumber">
+                            {{roleData.tooltip.licenseKey}}
+                        </span>
+                    </label>
+                    <input id="entitlement_edit_license_key_input" type="text" class="form-control" ng-readonly="readOnlyFlag" ng-model="roleData.licenseKey"/>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

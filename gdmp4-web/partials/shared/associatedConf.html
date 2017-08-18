@@ -1,0 +1,21 @@
+<div ng-show="roleData.associatedConfigurations.length">
+    <label class="modal-body-label modal-lab">Associated Configurations</label>
+    <div class="modal-form clearfix">
+        <div class="col-sm-12">
+            <table class="table table-bordered table-condensed">
+                <thead>
+                    <tr>
+                        <th>Configuration Name</th>
+                        <th>Configuration Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="aConfig in roleData.associatedConfigurations">
+                        <td>{{aConfig.name}}</td>
+                        <td>{{aConfig.configType}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,351 @@
+<div ng-show="showLoader" class="loader-box fixed">
+  <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+  <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+</div>
+<div ng-show="modalError" class="loader-box modal-error fixed">
+  <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+</div>
+<div class="container" ng-show="step == 1">
+  <div class="form-dant-alias">
+    <div class="common-title"></div>
+    <div class="common-title-alias">Welcome to Medtronic Device Management Portal</div>
+  </div>
+  <div class="row common-content">
+    <div class="col-xs-10 col-xs-offset-1">
+      <p>
+        Before using this system to update software in Medtronic medical devices, it is necessary to create a user login. We will
+        take you through the steps to create your user login.
+      </p>
+      <p><br /></p>
+      <p>
+        <b>Step 1:</b> Enter your user information.<br />
+      </p>
+      <p>
+        <b>Step 2:</b> Enter your user role (e.g. Service Technician, Biomed, Sales Rep).<br />
+      </p>
+      <p>
+        <b>Step 3:</b> Select all Medtronic devices that you will work with.<br />
+      </p>
+      <p>
+        <b>Step 4:</b> Acknowledge that you have been trained to use this system to update software on medical devices.<br
+        />
+      </p>
+      <p>
+        <b>Step 5:</b> Submit your login request.<br />
+      </p>
+      <p>
+        <b>Step 6:</b> Wait for an email confirmation that your login account has been created.<br />
+      </p>
+      <p>
+        <b>Step 7:</b> Log into the system and change your password. You are now able to update software on Medtronic devices.<br />
+        <br />
+      </p>
+
+      <div class="row">
+        <div class="col-xs-6"></div>
+        <div class="col-xs-6 text-right">
+          <span class="col-sm-4 text-right">
+            Enter Security Code:
+          </span>
+          <span class="col-sm-3">
+            <input class="form-control" ng-model="captcha.text">
+          </span>
+          <span class="col-sm-4">
+            <img ng-src="{{captcha.image}}" width="100" height="30" />
+          </span>
+          <span class="col-sm-1">
+            <span class="col-group-icon" ng-click="getCaptcha()"><i class="fa fa-refresh"></i></span>
+          </span>
+        </div>
+      </div>
+
+      <div class="login-btns">
+        <div class="login-btn">
+          <span>
+            <button class="btn btn-default" ui-sref="login">CANCEL</button>
+          </span>
+          <span>
+            <button class="btn btn-primary" ng-click="verifyCaptcha()">NEXT</button>
+          </span>
+        </div>
+      </div>
+    </p>
+  </div>
+</div>
+</div>
+
+<div class="container" ng-show="step == 2">
+  <form name="selfRegForm" ng-submit="save()">
+    <div class="form-dant-alias">
+      <div class="common-title"></div>
+      <div class="common-title-alias">Welcome to Medtronic Device Management Portal</div>
+    </div>
+    <div class="row common-content">
+      <span class="col-sm-6">
+        <div class="form-dant clearfix">
+          <span class="vacant-cant">First name*</span>
+          <span class="col-sm-12">
+            <input id="self_reg_first_name_input" class="form-control" type="text" pattern="[A-Za-z.]+" ng-model="roleData.firstName" required>
+          </span>
+        </div>
+        <div class="form-dant clearfix">
+          <span class="vacant-cant">Last name*</span>
+          <span class="col-sm-12">
+            <input id="self_reg_last_name_input" class="form-control" type="text" pattern="[A-Za-z.]+" ng-model="roleData.lastName" required>
+          </span>
+        </div>
+        <div class="form-dant clearfix">
+          <span class="vacant-cant">Email*</span>
+          <span class="col-sm-12">
+            <input id="self_reg_email_input" class="form-control" type="email" ng-model="roleData.mail" required>
+          </span>
+        </div>
+        <div class="form-dant clearfix">
+          <span class="vacant-cant">Confirm Email*</span>
+          <span class="col-sm-12">
+            <input id="self_reg_confirm_email_input" class="form-control" type="email" ng-model="roleData.confirmMail" required>
+          </span>
+        </div>
+        <div class="form-dant clearfix">
+          <span class="vacant-cant">Phone*</span>
+          <span class="col-sm-12">
+            <input id="self_reg_phone_input" class="form-control" type="text" ng-model="roleData.phone" required>
+          </span>
+        </div>
+      </span>
+      <span class="col-sm-6">
+        <div class="form-dant-ext">
+          <ul class="nav nav-checkbox nav-transparent">
+            <li class="col-sm-12" ng-class="{'active': roleData.isMedtronicEmployee}">
+              <a ng-click="changeMedtronicEmployee()"><span>&nbsp;</span>I am Medtronic Employee</a>
+            </li>
+          </ul>
+        </div>
+        <!-- <div class="form-dant clearfix" ng-if="roleData.isMedtronicEmployee">
+          <span class="vacant-cant">Approving Manager*</span>
+          <span class="input-select no-chevron" ng-mouseleave="showList('hide')">
+            <div class="col-search" ng-hide="readOnlyFlag">
+              <input id="self_reg_approving_manager_input" class="form-control" type="text" ng-model="roleData.approvingManager" ng-change="search('approvingmanager', roleData.approvingManager)" data-ng-trim="false" required autocomplete="off"/>
+              <span ng-click="search('approvingmanager', roleData.approvingManager)"><i class="fa fa-search"></i></span>
+            </div>
+            <ul class="dropOptions" ng-show="visibility.search_approvingmanager">
+              <li ng-click="roleData.approvingManager = approvingmanager.email" ng-repeat="approvingmanager in result.approvingmanager">{{approvingmanager.email}}</li>
+            </ul>
+          </span>
+        </div>
+        <div class="form-dant clearfix" ng-if="roleData.isMedtronicEmployee">
+          <span class="vacant-cant"></span>
+          <span class="col-sm-12" ng-if="!formCotValid">
+            <div>Select at least one Class of Trade.</div>
+          </span>
+        </div> -->
+        <div class="form-dant clearfix" ng-if="!roleData.isMedtronicEmployee">
+          <span class="vacant-cant">Customer name:*</span>
+          <span class="col-sm-12">
+            <div ng-show="roleData.customers && roleData.customers.length > 0" class="colps-body full-border clearfix">
+              <span class="col-sm-12" ng-repeat="customer in roleData.customers">
+                <div class="colps-child wrap-text">
+                  {{customer.name}}
+                  <span ng-click="!readOnlyFlag && deleteCustomer(customer)"><i class="fa fa-trash"></i></span>
+                </div>
+              </span>
+            </div>
+            <span class="input-select no-chevron" ng-mouseleave="showList('hide')">
+              <div class="col-search" ng-hide="readOnlyFlag">
+                <input id="self_reg_edit_customer_search_input" class="form-control" type="text" ng-model="search.customer" ng-change="search('customer', search.customer)" data-ng-trim="false" autocomplete="off"/>
+                <span ng-click="search('customer', search.customer)"><i class="fa fa-search"></i></span>
+              </div>
+              <ul class="dropOptions" ng-show="visibility.search_customer">
+                <li ng-click="addCustomer(customer)" ng-repeat="customer in result.customer">{{customer.name}}</li>
+              </ul>
+            </span>
+          </span>
+        </div>
+        <div class="form-dant clearfix" ng-if="!roleData.isMedtronicEmployee">
+          <span class="vacant-cant"></span>
+          <span class="col-sm-12" ng-if="!formValid">
+            <div class="no-break">Type a few letters to display a pick list of known Medtronic customers. If you do not see your facility listed, type in the entire name.</div>
+          </span>
+        </div>
+      </span>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-dant clearfix">
+          <span class="vacant-cant">Country*</span>
+          <span class="col-sm-12">
+            <span class="input-select" ng-mouseleave="showList('hide')">
+              <input id="self_reg_country_input" class="form-control bg-white" type="text" ng-change="visibility.country = true" ng-click="showList('country')" required ng-model="roleData.countryName"/><span class="droplist-arrow caret" ng-click="showList('country')"></span>
+              <ul ng-show="visibility.country" class="dropOptions">
+                <li ng-click="updateType('country', countryObj)" ng-repeat="countryObj in metaData.countryList">{{ countryObj.displayName }}</li>
+              </ul>
+            </span>
+          </span>
+        </div>
+      </div>
+      <div class="col-sm-6 form-dant-alias" ng-hide="roleData.isMedtronicEmployee">
+        This is the country of the facility where you work.
+      </div>
+      <div class="col-sm-6 form-dant-alias" ng-show="roleData.isMedtronicEmployee">
+        This is the country of the office you operate out of, could be your domicile.
+      </div>
+    </div>
+
+    <div ng-if="cotData.canSelfRegister" ng-repeat="(cotName, cotData) in metaData.roles track by $index">
+      <div class="common-line-dashed"></div>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-dant clearfix">
+            <span class="vacant-cant">Class of Trade</span>
+            <span class="col-sm-12 form-dant-alx">{{cotName}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-dant clearfix">
+            <span class="vacant-cant">Role</span>
+            <span class="col-sm-12">
+              <span class="input-select" ng-mouseleave="showList('hide')">
+                <span id="pending_reg_role_input_select" type="text" class="form-control" ng-click="showList(cotName + '_role')" ng-model="roleData.roles[cotName]" ng-disabled="readOnlyFlag">{{roleData.roles[cotName]}}<span class="droplist-arrow caret" ng-click="showList(cotName + '_role')"></span></span>
+                <ul ng-show="visibility[cotName + '_role']" class="dropOptions" ng-class="{'reverse':$last}">
+                  <li ng-click="deleteRole(cotName)"><span>&nbsp;</span></li>
+                  <li ng-repeat="role in (roleData.isMedtronicEmployee ? cotData.medtronicRoles : cotData.nonMedtronicRoles)" ng-click="roleData.roles[cotName] = role">
+                    {{role}}
+                  </li>
+                </ul>
+              </span>
+            </span>
+          </div>
+        </div>
+        <div class="col-sm-6 form-dant-alias" ng-hide="roleData.isMedtronicEmployee">
+          This is the role you wish to perform for the facility.
+        </div>
+        <div class="col-sm-6 form-dant-alias" ng-show="roleData.isMedtronicEmployee">
+          This is the role you wish to perform for Medtronic, if you are a Medtronic employee.
+        </div>
+      </div>
+      <div ng-if="cotData.materialTraining" class="row">
+        <div class="col-sm-6">
+          <div class="form-dant-alias">
+            <table class="table table-bordered table-nopd table-show">
+              <thead>
+                <tr>
+                  <th>Device</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="deviceType in cotData.deviceTypes">
+                  <td>
+                    <ul class="nav nav-radio nav-transparent nav-nopadding">
+                      <li class="col-sm-12" ng-class="{ 'active' : roleData.trainingRecords[deviceType.name], 'disabled': readOnlyFlag }">
+                        <a ng-click="toggleTrainingRecord(cotName, deviceType)"><span>&nbsp;</span>{{deviceType.name}}</a>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <a ng-href="{{cotData.materialLink}}" target="_blank" class="col-sm-12">{{cotData.materialName}}</a>
+            <ul class="nav nav-radio nav-transparent">
+              <li ng-class="{ 'active' : roleData.trainingMaterial[cotName] }">
+                <a ng-click="roleData.trainingMaterial[cotName] = !roleData.trainingMaterial[cotName]"><span>&nbsp;</span>Acknowledge User Guide Training Material</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div ng-if="!cotData.materialTraining" class="form-dant-alias">
+        <table class="table table-bordered table-nopd table-show">
+          <thead>
+            <tr>
+              <th>Device</th>
+              <th>Trainer</th>
+              <th>Training Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="deviceType in cotData.deviceTypes">
+              <td>
+                <ul class="nav nav-radio nav-transparent nav-nopadding">
+                  <li class="col-sm-12" ng-class="{ 'active' : roleData.trainingRecords[deviceType.name], 'disabled': readOnlyFlag }">
+                    <a ng-click="toggleTrainingRecord(cotName, deviceType)"><span>&nbsp;</span>{{deviceType.name}}</a>
+                  </li>
+                </ul>
+              </td>
+              <td>
+                <span class="input-select" ng-mouseleave="showList('hide')">
+                  <input type="text" class="form-control" ng-click="showList(deviceType.name + '_trainer')" ng-model="roleData.trainingRecords[deviceType.name].trainerName" ng-disabled="deviceType.defaultTrainer || readOnlyFlag"/><span class="droplist-arrow caret" ng-click="showList(deviceType.name + '_trainer')"></span>
+                  <ul ng-show="visibility[deviceType.name + '_trainer']" class="dropOptions" ng-class="{'reverse':$last}">
+                    <li ng-repeat="trainer in deviceType.trainerSet" ng-click="setTrainer(deviceType, trainer)">
+                      {{ trainer.mail }}
+                    </li>
+                  </ul>
+                </span>
+              </td>
+              <td>
+                <p class="input-group">
+                  <input class="form-control" type="text" id="training_date" data-readonly="true" class="form-control well-li" uib-datepicker-popup="{{format}}" ng-change="setTrainingDate(deviceType, trainingDates[deviceType.name])" ng-model="trainingDates[deviceType.name]" is-open="opened[deviceType.name]" datepicker-options="dateOptions"/>
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="open($event, deviceType.name)"><i class="glyphicon glyphicon-calendar"></i></button>
+                  </span>
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <span class="col-sm-6">
+        <div class="form-dant clearfix" ng-if="roleData.isMedtronicEmployee">
+          <span class="vacant-cant">Approving Manager*</span>
+          <span class="input-select no-chevron col-sm-12" ng-mouseleave="showList('hide')">
+            <div class="col-search" ng-hide="readOnlyFlag">
+              <input id="self_reg_approving_manager_input" class="form-control" type="text" ng-model="roleData.approvingManager" ng-change="search('approvingmanager', roleData.approvingManager)" data-ng-trim="false" required autocomplete="off"/>
+              <span ng-click="search('approvingmanager', roleData.approvingManager)"><i class="fa fa-search"></i></span>
+            </div>
+            <ul class="dropOptions" ng-show="visibility.search_approvingmanager">
+              <li ng-click="roleData.approvingManager = approvingmanager.email" ng-repeat="approvingmanager in result.approvingmanager">{{approvingmanager.email}}</li>
+            </ul>
+          </span>
+        </div>
+      </span>
+      <span class="col-sm-6 form-dant-alias" ng-if="roleData.isMedtronicEmployee">
+          <span ng-if="!formCotValid">
+            <div>Select at least one Class of Trade.</div>
+          </span>
+      </span>
+    </div>
+    <div class="form-dant-alias">
+      <input type="submit" id="self_reg_register_btn" class="btn btn-primary" ng-disabled="selfRegForm.$invalid || !formValid" value="REGISTER" />
+      <a id="self_reg_cancel_btn" type="button" class="btn btn-default" ui-sref="login">CANCEL</a>
+      <button id="self_reg_reset_btn" type="button" class="btn btn-default" ng-click="reset()">RESET</button>
+    </div>
+  </form>
+</div>
+</div>
+<div class="container" ng-show="step == 3">
+  <div class="form-dant-alias">
+    <div class="common-title"></div>
+    <div class="common-title-alias">Congratulations!</div>
+  </div>
+  <div class="row common-content">
+    <div class="col-xs-10 col-xs-offset-1">
+      <p>
+        The registration form is complete!
+      </p>
+      <p>
+        Congratulations! Thank you for registering, your user ID will be sent promptly to {{roleData.mail}} upon approval. Your request has been submitted and you will receive an email with your account registration status.
+      </p>
+      <div class="login-btns">
+        <div class="login-btn">
+          <span>
+            <button class="btn btn-default" ui-sref="login">CLOSE</button>
+          </span>
+        </div>
+      </div>
+    </p>
+    </div>
+  </div>
+</div>

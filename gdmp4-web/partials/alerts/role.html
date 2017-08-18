@@ -1,0 +1,21 @@
+<div class="content alerts" id="alerts">
+    <ul class="nav nav-tabs nav-headers">
+        <li ng-class="{'active': activeTabs.alerts}" data-target="1"><a ng-click="activateTab('alerts')">My Alerts</a></li>
+        <li ng-class="{'active': activeTabs.subscriptions}" ng-if="(entitlement === 'W') && (authority != 10)" data-target="2"><a ng-click="activateTab('subscriptions')">My Subscriptions</a></li>
+        <li ng-class="{'active': activeTabs.mAlerts}" data-target="3" ng-if="authority >= 8"><a ng-click="activateTab('mAlerts')">Admin</a></li>
+    </ul>
+
+    <!-- My Alerts -->
+    <div class="nav-tabs-area open" ng-class="{'open': activeTabs.alerts}">
+        <ng-include src="'partials/alerts/myAlerts.html'"></ng-include>
+    </div>
+
+    <!-- My Subscriptions -->
+    <div class="nav-tabs-area" ng-if="(entitlement === 'W') && (authority != 10)" ng-class="{'open': activeTabs.subscriptions}">
+        <ng-include src="'partials/alerts/subscriptions.html'"></ng-include>
+    </div>
+    <!-- Manage Alerts -->
+    <div class="nav-tabs-area" ng-if="authority >= 8" ng-class="{'open': activeTabs.mAlerts}">
+        <ng-include src="'partials/alerts/manageAlerts.html'"></ng-include>
+    </div>
+</div>

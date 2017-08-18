@@ -1,0 +1,14 @@
+<div class="role-pagination pull-left" ng-show="viewFlag" ng-if="reportName!=='Named Configuration'">
+    <dir-pagination-controls on-page-change="turnPage(newPageNumber)" pagination-id="noPrint" boundary-links="true"></dir-pagination-controls>
+</div>
+
+<div class="pull-right" ng-show="viewFlag">
+    <button class="btn btn-primary btn-mw" ng-click="printPreview()" ng-if="reportName!=='Named Configuration'">PRINT PREVIEW</button>
+    <div class="pull-right" ng-repeat ="(columnKey, colData) in reportDetails.reportUrls">
+        <a class="btn btn-primary btn-mw pull-right" id="report_download_btn_{{$index}}" ng-href="{{base_url + colData}}" target="_blank">DOWNLOAD {{columnKey|uppercase}}</a>
+    </div>
+</div>
+
+<div class="pull-right" style="margin-top: 7px; margin-right: 7px;" ng-show="viewFlag" ng-if="reportName==='Named Configuration'">
+    Report Must Be Downloaded For Viewing
+</div>

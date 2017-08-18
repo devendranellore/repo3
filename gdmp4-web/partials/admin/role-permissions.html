@@ -1,0 +1,98 @@
+<div class="content-box">
+    <div ng-show="showLoader" class="loader-box">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+    </div>
+    <div ng-show="modalError" class="loader-box modal-error" >
+        <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+    </div>
+    <div class="filter-area">
+        <div class="clearfix cant-line-down">
+            <div class="col-sm-4">
+                <div class="form-cant clearfix">
+                    <span class="vacant-cant">Medtronic Employee:</span>
+                    <div class="col-sm-12">
+                        <span class="input-select" ng-mouseleave="showList('hide')">
+                            <span id="choose_medtronic_emplpyee_input_select" class="form-control" type="text" ng-model="rolePermissionData.medtronicEmployee" ng-click="showList('medtronicEmployee')">{{rolePermissionData.medtronicEmployee}}<span class="droplist-arrow caret" ng-click="showList('medtronicEmployee')"></span></span>
+                            <ul ng-show="visibility.medtronicEmployee" class="dropOptions">
+                                <li ng-click="setMedtronicEmployee(true)">Yes</li>
+                                <li ng-click="setMedtronicEmployee(false)">No</li>
+                            </ul>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-cant clearfix">
+                    <span class="vacant-cant">Role:</span>
+                    <div class="col-sm-12">
+                        <span class="input-select" ng-mouseleave="showList('hide')">
+                            <span id="choose_role_input_select" class="form-control" type="text" ng-model="rolePermissionData.roleName" ng-click="showList('role')">{{rolePermissionData.roleName}}<span class="droplist-arrow caret" ng-if="rolePermissionData.medtronicEmployee" ng-click="showList('role')"></span></span>
+                            <ul ng-show="visibility.role" class="dropOptions">
+                                <li ng-click="rolePermissionData.roleName = roleName; rolePermissionData.roleData = roleData; showList('hide')" ng-repeat="(roleName, roleData) in (rolePermissionData.medtronicEmployee == 'Yes' ? rolePermissionData.medtronicRole : rolePermissionData.nonMedtronicRole)">{{ roleName }}</li>
+                            </ul>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="pull-right">
+                <div class="form-cant-buttons clearfix">
+                    <span class="btn btn-primary btn-mw" id="edit_role_btn" ng-click="readOnly(false)" ng-show="readOnlyFlag">EDIT</span>
+                    <span class="btn btn-primary btn-mw" id="save_role_btn" ng-click="saveRolePermission()" ng-hide="readOnlyFlag">SAVE</span>
+                    <span class="btn btn-default" id="cancel_role_btn" ng-click="cancel()" ng-hide="readOnlyFlag">CANCEL</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="well-title">Permissions</div>
+    <div class="well">
+        <div class="form-line" ng-repeat="(catalog, type) in rolePermissionMetaData">
+            <label>{{ catalog }}</label>
+            <div class="form-dant clearfix">
+                <ul class="nav nav-radio nav-transparent">
+                    <li ng-click="!readOnlyFlag && setPermission(catalog)"
+                        ng-class="{ 'active' : !getPermission(catalog) }"
+                        class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                        <a><span>&nbsp;</span>NO</a>
+                    </li>
+                    <li ng-if="type === 'YN'"
+                        ng-click="!readOnlyFlag && setPermission(catalog, 'ACCESSIBLE')"
+                        ng-class="{ 'active' : getPermission(catalog) === 'ACCESSIBLE' }"
+                        class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                        <a><span>&nbsp;</span>YES</a>
+                    </li>
+                    <li ng-if="type === 'R' || type === 'RW'"
+                        ng-click="!readOnlyFlag && setPermission(catalog, 'READ')"
+                        ng-class="{ 'active' : getPermission(catalog) === 'READ' }"
+                        class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                        <a><span>&nbsp;</span>View Only</a>
+                    </li>
+                    <li ng-if="type === 'RW'"
+                        ng-click="!readOnlyFlag && setPermission(catalog, 'WRITE')"
+                        ng-class="{ 'active' : getPermission(catalog) === 'WRITE' }"
+                        class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                        <a><span>&nbsp;</span>View&amp;Edit</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-line">
+            <label>Device Access</label>
+            <div class="form-dant clearfix" ng-repeat="(key, display) in rolePermissionDeviceAccessMapping">
+                <span>{{ display }}</span>
+                <ul class="nav nav-radio nav-transparent">
+                    <li ng-click="!readOnlyFlag && setDeviceAccess(key, false)"
+                        ng-class="{ 'active' : !hasDeviceAccess(key) }"
+                        class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                        <a><span>&nbsp;</span>NO</a>
+                    </li>
+                    <li ng-click="!readOnlyFlag && setDeviceAccess(key, true)"
+                        ng-class="{ 'active' : hasDeviceAccess(key) }"
+                        class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                        <a><span>&nbsp;</span>YES</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,88 @@
+<div id="clone-report" class="reports" ng-if="!showPrint">
+    <div ng-include="'partials/reports/modalError.html'"></div>
+    <div class="report-params">
+        <div class="edits">
+            <label>Clone Report</label>
+            <form name="reportForm" autocomplete="off">
+                <div class="overflow-visible">
+                    <div class="form-line">
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')" ng-class="{'has-error': report.deviceType.$invalid}">
+                            <label>
+                                Device Type*
+                            </label>
+                            <span class="input-select">
+                                <span id="report_device_type_input" class="form-control well-li" name="deviceType" ng-required="true" ng-model="repData.deviceType" ng-click="showList('deviceType')">{{repData.deviceType}}<span class="droplist-arrow caret" ng-if="metaRepData.deviceType.length"></span></span>
+                                <ul ng-show="visibility.deviceType" class="dropOptions deviceType">
+                                    <li ng-click="clear('deviceType')" ng-if="metaRepData.deviceType.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('deviceType', repMetaObj)" ng-repeat="repMetaObj in metaRepData.deviceType">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')" ng-class="{'has-error': report.cloneEntityType.$invalid}">
+                            <label>
+                                Clone Entity Type*
+                            </label>
+                            <span class="input-select">
+                                <span id="report_entity_type_input" class="form-control well-li" name="cloneEntityType" ng-required="true" ng-model="repData.cloneEntityType" ng-click="showList('cloneEntityType')">{{repData.cloneEntityType}}<span class="droplist-arrow caret" ng-if="metaRepData.cloneEntityType.length"></span></span>
+                                <ul ng-show="visibility.cloneEntityType" class="dropOptions deviceType">
+                                    <li ng-click="clear('cloneEntityType')" ng-if="metaRepData.cloneEntityType.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('cloneEntityType', repMetaObj)" ng-repeat="repMetaObj in metaRepData.cloneEntityType">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')" ng-class="{'has-error': report.cloneName.$invalid}">
+                            <label>
+                                Clone Name*
+                            </label>
+                            <span class="input-select">
+                                <input id="report_clone_name_input" type="text" name="cloneName" ng-required="true" ng-change="repData.cloneName && getAutoCompleteData('cloneName', 'cloneName')" ng-click="showList('cloneName')" class="form-control well-li" ng-model="repData.cloneName" ng-trim="false"/><span class="droplist-arrow caret" ng-click="showList('cloneName')" ng-if="metaRepData.cloneName.length"></span>
+                                <ul ng-show="visibility.cloneName" class="dropOptions deviceType">
+                                    <li ng-if="wait">Please wait a moment...</li>
+                                    <li ng-click="clear('cloneName')" ng-if="metaRepData.cloneName.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('cloneName', repMetaObj)" ng-repeat="repMetaObj in metaRepData.cloneName">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')">
+                            <label>
+                                Clone Entity Status 
+                            </label>
+                            <span class="input-select">
+                                <span id="report_entity_type_input" class="form-control well-li" data-requried="true" data-readonly="true" ng-model="repData.cloneEntityStatus" ng-click="showList('cloneEntityStatus')">{{repData.cloneEntityStatus}}<span class="droplist-arrow caret" ng-if="metaRepData.cloneEntityStatus.length"></span></span>
+                                <ul ng-show="visibility.cloneEntityStatus" class="dropOptions deviceType">
+                                    <li ng-click="clear('cloneEntityStatus')" ng-if="metaRepData.cloneEntityStatus.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('cloneEntityStatus', repMetaObj)" ng-repeat="repMetaObj in metaRepData.cloneEntityStatus">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-line">
+                        <div ng-include="'partials/reports/viewReport.html'"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div ng-show="showReportData">
+        <div class="table-box scroll">
+            <div ng-include="'partials/reports/header.html'"></div>
+            <table ng-hide="dataRepError" class="table table-condensed table-hover table-modal table-sorting role-table header-line-top">
+                <thead>
+                    <tr>
+                        <th ng-repeat="(colKey,col) in reportDetails.columns" ng-class="sortCol[col.column].cssClass" ng-click="getSorted(col.column)">{{col.display_name}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr dir-paginate="(rowKey, role) in reportDetails.currentPageData|itemsPerPage:reportParams.itemsPerPage" total-items="reportParams.total_count" pagination-id="noPrint" current-page="reportParams.pageNo" >
+                        <td ng-repeat ="(columnKey, col) in reportDetails.columns">
+                            <p class="report-content">{{role.detail[col.column]}}</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div ng-include="'partials/reports/footer.html'"></div>
+    </div>
+</div>
+
+<div ng-if="showPrint" ng-include="'partials/reports/printReport.html'"></div>

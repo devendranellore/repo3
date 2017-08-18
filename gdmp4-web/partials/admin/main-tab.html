@@ -1,0 +1,7 @@
+<ul class="nav nav-tabs nav-headers nav-headers-seven">
+    <li ng-repeat="tab in tabs" ui-sref-active="active" ui-sref="{{ tab.name }}">
+        <a>{{ tab.title }}</a>
+    </li>
+</ul>
+
+<div ui-view></div>

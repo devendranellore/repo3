@@ -1,0 +1,113 @@
+<div id="audit-trail-report" class="reports" ng-if="!showPrint">
+    <div ng-include="'partials/reports/modalError.html'"></div>
+    <div class="report-params">
+        <div class="edits">
+            <label>Audit Trail Report</label>
+            <form name="reportForm" autocomplete="off">
+                <div class="overflow-visible">
+                    <div class="form-line">
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')">
+                            <label>
+                                User Name
+                            </label>
+                            <span class="input-select">
+                                <input id="report_user_name_input" type="text" ng-change="repData.userName && getAutoCompleteData('userNames','userName')" ng-click="showList('userName')" class="form-control well-li" data-readonly="true" ng-model="repData.userName" ng-trim="false"/><span class="droplist-arrow caret" ng-click="showList('userName')" ng-if="metaRepData.userName.length"></span>
+                                <ul ng-show="visibility.userName" class="dropOptions deviceType">
+                                    <li ng-if="wait">Please wait a moment...</li>
+                                    <li ng-click="clear('userName')" ng-if="metaRepData.userName.length"><span>&nbsp;</span></li>
+                                    <li ng-click="updateType('userName', repMetaObj)" ng-repeat="repMetaObj in metaRepData.userName">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')">
+                            <label>
+                                Email Address
+                            </label>
+                            <span class="input-select">
+                                <input id="report_email_address_input" type="text" ng-change="repData.emailAddress && getAutoCompleteData('emailAddress', 'emailAddress')" ng-click="showList('emailAddress')" class="form-control well-li" ng-model="repData.emailAddress" ng-trim="false"/><span class="droplist-arrow caret" ng-click="showList('emailAddress')" ng-if="metaRepData.emailAddress.length"></span>
+                                <ul ng-show="visibility.emailAddress" class="dropOptions deviceType">
+                                    <li ng-if="wait">Please wait a moment...</li>
+                                    <li ng-click="clear('emailAddress')" ng-if="metaRepData.emailAddress.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('emailAddress', repMetaObj)" ng-repeat="repMetaObj in metaRepData.emailAddress">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')">
+                            <label>
+                                Customer Name
+                            </label>
+                            <span class="input-select">
+                                <input id="report_cname_input" type="text" ng-change="repData.customerName && getAutoCompleteData('customerNames', 'customerName')" ng-click="showList('customerName')" class="form-control well-li" ng-model="repData.customerName" ng-trim="false"/><span class="droplist-arrow caret" ng-click="showList('customerName')" ng-if="metaRepData.customerName.length"></span>
+                                <ul ng-show="visibility.customerName" class="dropOptions deviceType">
+                                    <li ng-if="wait">Please wait a moment...</li>
+                                    <li ng-click="clear('customerName')" ng-if="metaRepData.customerName.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('customerName', repMetaObj)" ng-repeat="repMetaObj in metaRepData.customerName">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')">
+                            <label>
+                                Activity Type
+                            </label>
+                            <span class="input-select" ng-mouseleave="showList('hide')">
+                                <span id="report_activity_type_input" class="form-control well-li" data-requried="true" data-readonly="true" ng-model="repData.activityType" ng-click="showList('activityType')">{{repData.activityType}}<span class="droplist-arrow caret" ng-if="metaRepData.activityType.length"></span></span>
+                                <ul ng-show="visibility.activityType" class="dropOptions deviceType">
+                                    <li ng-click="clear('activityType')" ng-if="metaRepData.activityType.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('activityType', repMetaObj)" ng-repeat="repMetaObj in metaRepData.activityType">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-line">
+                        <div class="col-sm-3">
+                            <label>
+                                From
+                            </label>
+                            <p class="input-group">
+                                <input type="text" id="report_from_input" data-readonly="true" class="form-control well-li" uib-datepicker-popup="{{format}}" ng-model="repData.from" is-open="popup1.opened" datepicker-options="dateOptions"/>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>
+                                To
+                            </label>
+                            <p class="input-group">
+                                <input type="text" id="report_to_input" data-readonly="true" class="form-control well-li" uib-datepicker-popup="{{format}}" ng-model="repData.to" is-open="popup2.opened" datepicker-options="dateOptions"/>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                            </p>
+                        </div>
+                        <div ng-include="'partials/reports/viewReport.html'"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div ng-show="showReportData">
+        <div class="table-box scroll">
+            <div ng-include="'partials/reports/header.html'"></div>
+            <table ng-hide="dataRepError" class="table table-condensed table-hover table-modal table-sorting role-table header-line-top">
+                <thead>
+                    <tr>
+                        <th ng-repeat="(colKey,col) in reportDetails.columns track by $index" ng-class="sortCol[col.column].cssClass" ng-click="getSorted(col.column)">{{col.display_name}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr dir-paginate="(rowKey, role) in reportDetails.currentPageData|itemsPerPage:reportParams.itemsPerPage" total-items="reportParams.total_count" pagination-id="noPrint" current-page="reportParams.pageNo" >
+                        <td ng-repeat ="(columnKey, col) in reportDetails.columns track by $index">
+                            <p class="report-content">{{role.detail[col.column]}}</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div ng-include="'partials/reports/footer.html'"></div>
+    </div>
+</div>
+
+<div ng-if="showPrint" ng-include="'partials/reports/printReport.html'"></div>

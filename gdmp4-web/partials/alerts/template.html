@@ -1,0 +1,74 @@
+<div class="filter-area" ng-show="tabPageParams.primaryFilter.display_name && tabPageParams.primaryFilter.entries">
+    <form class="form-vacent" name="sForm" ng-submit="search.name && searchTabRoles()">
+        <div class="form-cant clearfix">
+            <span class="col-md-3 col-md-offset-6 col-lg-offset-6 col-sm-6 form-gcant text-center">
+                <a ng-show="showMoreTabFilters" id="show_more_filters_btn" ng-click="mTabFilters = !mTabFilters" class="more-filters-btn filters pull-left"><i class="fa fa-bars" aria-hidden="true"></i><span ng-hide="mTabFilters"> Show More Filters</span> <span ng-show="mTabFilters">Hide Filters</span></a>
+            </span>
+            <span class="col-md-3 col-sm-4 text-left">
+                <button id="create_new_notification_btn" class="btn btn-primary" type="button" ng-click="openModal('NEW')">CREATE NEW TEMPLATE</button>
+            </span>
+        </div>
+        <div class="form-cant clearfix cant-line-down">{{sFilter}}
+            <span class="vacant-cant">{{tabPageParams.primaryFilter.display_name}}
+            </span>
+            <ul class="nav nav-checkbox">
+                <li ng-repeat="entry in tabPageParams.primaryFilter.entries">
+                    <span class="check-box-filter">
+                        <label class="label-filter">
+                            <input type="checkbox" ng-click="searchTabRoles()" ng-model="tabSearchFilters[tabPageParams.primaryFilter.name][entry.value]"> <span></span>{{entry.name}}
+                        </label>
+                    </span>
+                </li>
+            </ul>
+        </div>
+        <!-- Show More Filters Click Function -->
+        <div ng-show="mTabFilters">
+            <div class="filter-area">
+                <div class="form-cant clearfix" ng-repeat="filter in tabPageParams.filters">
+                    <span class="vacant-cant">{{filter.display_name}}</span>
+                    <ul class="nav nav-checkbox">
+                        <li ng-repeat="entry in filter.entries"><span class="check-box-filter">
+                                <label class="label-filter">
+                                    <input type="checkbox" ng-click="searchTabRoles()" ng-model="tabSearchFilters[filter.name][entry.value]"> <span></span>{{entry.name}}
+                                </label>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="table-box scroll">
+    <div ng-show="showLoader" class="loader-box">
+        <i ng-show="!dataTabError && showLoader" class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+    </div>
+    <div ng-show="dataTabError">
+        <div class="alert alert-danger error-box fa fa-exclamation-triangle">
+            {{dataTabError}}
+        </div>
+    </div>
+    <table ng-hide="dataTabError" class="table table-condensed table-hover table-modal table-sorting role-table">
+        <thead>
+            <tr>
+                <th ng-repeat="(colKey,col) in subData.columns" ng-class="sortTabCol[col.name.column].cssClass" ng-click="getTabSort(col.name.column)">{{col.name.display_name}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr dir-paginate="(rowKey, role) in subData.data|itemsPerPage:tabPageParams.itemsPerPage" pagination-id="templates" total-items="tabPageParams.total_count" current-page="tabPageParams.pageNo" ng-click="openModal(rowKey)">
+                <td ng-repeat="(columnKey, col) in subData.columns">
+                    <div ng-if="role.detail[col.name.column].length>25" uib-popover="{{role.detail[col.name.column]}}" popover-trigger="mouseenter" popover-placement="right" popover-append-to-body="true">
+                        {{role.detail[col.name.column]|limitTo : 25}}...
+                    </div>
+                    <div ng-if="role.detail[col.name.column].length<=25">
+                        {{role.detail[col.name.column]}}
+                    </div>
+                    
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div ng-hide="dataTabError" class="role-pagination">
+    <dir-pagination-controls on-page-change="getTabPageData(newPageNumber)" boundary-links="true" pagination-id="templates"></dir-pagination-controls>
+</div>

@@ -1,0 +1,70 @@
+<div class="content-box">
+    <div ng-show="showLoader" class="loader-box">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+    </div>
+    <div ng-show="modalError" class="loader-box modal-error" >
+        <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+    </div>
+    <div class="filter-area">
+        <div class="clearfix cant-line-down">
+            <div class="pull-right">
+                <div class="form-cant-buttons clearfix">
+                    <span class="btn btn-primary btn-mw" id="edit_role_btn" ng-click="readOnly(false)" ng-show="readOnlyFlag">EDIT</span>
+                    <span class="btn btn-primary btn-mw" id="save_role_btn" ng-click="save()" ng-hide="readOnlyFlag">SAVE</span>
+                    <span class="btn btn-default" id="cancel_role_btn" ng-click="cancel()" ng-hide="readOnlyFlag">CANCEL</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="well-title">Set the default trainer ID</div>
+    <div class="well">
+        <div class="col-sm-12">
+            <table class="table table-bordered table-nopadding-bordered table-center bg-white table-updating">
+                <thead>
+                    <tr>
+                        <th>Device Type</th>
+                        <th>Default Trainer ID</th>
+                        <!-- <th>Enable</th> -->
+                        <!-- <th>Use as Approving Manager</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="row in roleData">
+                        <td>{{ row.deviceTypeName }}</td>
+                        <td>
+                            <input class="form-control" type="text" ng-model="row.trainerEmail" ng-readonly="readOnlyFlag">
+                        </td>
+                        <!-- <td>
+                            <span class="input-select" ng-mouseleave="showList('hide')">
+                                <span type="text" class="form-control" ng-readonly="readOnlyFlag" ng-model="row.useAsApprovingProxy" ng-click="showList(row.deviceTypeName + '_proxy')" yes-no-attr>
+                                    <div ng-if="row.useAsApprovingProxy">Yes</div>
+                                    <div ng-if="!row.useAsApprovingProxy">No</div>
+                                    <span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span>
+                                </span>
+                                <ul ng-show="!readOnlyFlag && visibility[row.deviceTypeName + '_proxy']" class="dropOptions">
+                                    <li ng-click="row.useAsApprovingProxy = true; showList('hide')">Yes</li>
+                                    <li ng-click="row.useAsApprovingProxy = false; showList('hide')">No</li>
+                                </ul>
+                            </span>
+                        </td> -->
+                        <!-- <td>
+                            <span class="input-select" ng-mouseleave="showList('hide')">
+                                <span type="text" class="form-control" ng-readonly="readOnlyFlag" ng-model="row.useAsApprovingManager" ng-click="showList(row.deviceTypeName + '_manager')" yes-no-attr>
+                                    <div ng-if="row.useAsApprovingManager">Yes</div>
+                                    <div ng-if="!row.useAsApprovingManager">No</div>
+                                    <span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span>
+                                </span>
+                                <ul ng-show="!readOnlyFlag && visibility[row.deviceTypeName + '_manager']" class="dropOptions">
+                                    <li ng-click="row.useAsApprovingManager = true; showList('hide')">Yes</li>
+                                    <li ng-click="row.useAsApprovingManager = false; showList('hide')">No</li>
+                                </ul>
+                            </span>
+                        </td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

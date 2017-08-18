@@ -1,0 +1,18 @@
+<div class="well clearfix device-tab-content">
+    <device-items
+        device-data="deviceData.configurations.hardwares"
+        display-sl-number="deviceData.basic.displaySlNumber"
+        role-type="hardware" 
+        is-empty-obj="isEmptyObj(obj)">
+    </device-items>
+    <device-items
+        device-data="deviceData.configurations.softwares"
+        role-type="software" 
+        is-empty-obj="isEmptyObj(obj)">
+    </device-items>
+    <device-items
+        device-data="deviceData.configurations.features"
+        role-type="feature" 
+        is-empty-obj="isEmptyObj(obj)">
+    </device-items>
+</div>

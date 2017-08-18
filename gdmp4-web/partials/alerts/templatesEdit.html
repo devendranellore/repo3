@@ -1,0 +1,126 @@
+<div ng-show="showLoader" class="loader-box">
+    <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+    <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+</div>
+<div ng-show="modalError" class="loader-box modal-error" >
+    <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+</div>
+<div class="modal-header clearfix">
+    <span class="modal-title" id="myModalLabel"></span>
+    <span class="modal-title" id="updModalAlert"><span ng-hide="createAlertRecord">View</span> <span ng-show="createAlertRecord">Create</span> Template Item</span>
+    <div class="pull-right">
+        <span ng-if="!readOnlyPermission">
+            <button id="template_edit_btn" type="button" class="btn btn-primary btn-mw" ng-show="readOnlyAlertFlag" ng-click="readOnlyAlert(false)">EDIT</button>
+            <button id="template_save_btn" type="button" class="btn btn-primary btn-mw" ng-hide="readOnlyAlertFlag" ng-click="saveAlert('templates')" ng-disabled="tpForm.$invalid">SAVE</button>
+            <button class="btn btn-primary btn-mw" data-dismiss="modal" aria-label="Delete" ng-hide="createAlertRecord" ng-click="delete(alertData); cancelAlert()">DELETE</button>
+        </span>
+        <button class="btn btn-primary btn-mw" data-dismiss="modal" aria-label="Close" ng-click="cancelAlert()">CANCEL</button>
+    </div>
+</div>
+<form name="tpForm" autocomplete="off" novalidate>
+    <div class="modal-body">
+    <label>Basic Information</label>
+    <div class="modal-form overflow-visible">
+        <div class="form-line">
+            <div class="col-sm-4" ng-class="{'has-error': tpForm.tpName.$invalid}">
+                <label>
+                    Name*
+                </label>
+                <input type="text" class="form-control" ng-readonly="readOnlyAlertFlag" name="tpName" ng-model="alertData.name" required />
+            </div>
+        </div>
+        <div class="form-line">
+            <div class="col-sm-12">
+                <label>
+                    Description
+
+                </label>
+                <textarea class="form-control" ng-readonly="readOnlyAlertFlag" ng-model="alertData.description">
+                </textarea>
+            </div>
+        </div>
+        <div class="form-line">
+            <div class="col-sm-12" ng-class="{'has-error': tpForm.tpSubjectLine.$invalid}">
+                <label>
+                    Subject Line*
+                </label>
+                <input type="text" class="form-control" ng-readonly="readOnlyAlertFlag" name="tpSubjectLine" ng-readonly="readOnlyAlertFlag" ng-model="alertData.subjectLine" required/>
+            </div>
+        </div>
+        <div class="form-line">
+            <div class="col-sm-12" ng-class="{'has-error': tpForm.tpBody.$invalid}">
+                <label>
+                    Body*  
+                </label>
+                <div class="place-holders" id="place-holder-buttons">
+                    Placeholders : <button  type="button" class="btn btn-primary btn-mw" ng-hide="readOnlyAlertFlag" ng-click="addPlaceHolder('{device_type}')">Device Type</button>  <button  type="button" class="btn btn-primary btn-mw" ng-hide="readOnlyAlertFlag" ng-click="addPlaceHolder('{device_serial_number}')">Device Serial Number</button>
+                    <button type="button" class="btn btn-primary btn-mw" ng-hide="readOnlyAlertFlag" ng-click="addPlaceHolder('{reason}')">Reason</button>
+                </div>
+                <textarea class="form-control" name="tpBody" ng-readonly="readOnlyAlertFlag" ng-model="alertData.filePath" required>
+                </textarea>
+            </div>
+        </div>
+        <div class="form-line">
+            <div class="col-sm-8" ng-mouseleave="showList('hide')" ng-class="{'has-error': tpForm.tpAlertType.$invalid}">
+                <label>
+                    Alert Type*
+                </label>
+                <div class="col-sm-12 no-padding-left">
+                    <span class="input-select">
+                        <span class="form-control" type="text" name="tpAlertType" ng-model="alertData.alertType" ng-click="showList('alertType')" ng-disabled="!createAlertRecord" required>{{alertData.alertType}}<span class="droplist-arrow caret" ng-if="alertMeta.alertType.length && createAlertRecord"></span></span>
+                        <ul ng-show="checkEditable('alertType')" class="dropOptions deviceType">
+                            <li ng-click="updateAlertType('alertType', alertStatusObj)" ng-repeat="alertStatusObj in alertMeta.alertType">{{alertStatusObj.displayName}}</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+
+        </div>
+        <div class="form-line">
+            <div class="col-sm-4" ng-mouseleave="showList('hide')" ng-class="{'has-error': tpForm.tpDeviceType.$invalid}">
+                <label>
+                    Device Type*
+                </label>
+                <div class="col-sm-12 no-padding-left">
+                    <span class="input-select">
+                        <ul ng-show="checkEditable('deviceType')" class="dropOptions deviceType reverse">
+                            <li ng-click="updateType('deviceType', alertStatusObj)" ng-repeat="alertStatusObj in alertMeta.deviceType">{{alertStatusObj.displayName}}</li>
+                        </ul>
+                        <span class="form-control" type="text" name="tpDeviceType" ng-model="alertData.deviceType" ng-click="showList('deviceType')" ng-disabled="!createAlertRecord" required>{{alertData.deviceType}}<span class="droplist-arrow caret" ng-if="alertMeta.deviceType.length && createAlertRecord"></span></span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-sm-4" ng-mouseleave="showList('hide')" ng-class="{'has-error': tpForm.tpAlertEvent.$invalid}">
+                <label>
+                    Alert Event*
+                </label>
+                <div class="form-line" >
+                    <div class="col-sm-12 no-padding-left">
+                        <span class="input-select">
+                            <ul id="edit_alert_notif_ul" ng-show="checkEditable('alertEvent')" class="dropOptions deviceType reverse">
+                                <li id="edit_alert_notif_li_{{$index}}" ng-click="updateType('alertEvent', alertStatusObj)" ng-repeat="alertStatusObj in alertMeta.alertEvent">{{alertStatusObj.displayName}}</li>
+                            </ul>
+                            <span id="edit_alert_notif" class="form-control" name="tpAlertEvent" type="text" ng-disabled="!alertData.alertType || !createAlertRecord" ng-model="alertData.alertEvent" ng-click="showList('alertEvent')" required>{{alertData.alertEvent}}<span class="droplist-arrow caret" ng-if="alertMeta.alertEvent.length && createAlertRecord"></span></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4" ng-mouseleave="showList('hide')" ng-class="{'has-error': tpForm.tpDelivery.$invalid}">
+                <label>
+                    Delivery*
+                </label>
+                <div class="col-sm-12 no-padding-left">
+                    <span class="input-select">
+                        <ul ng-show="checkEditable('delivery')" class="dropOptions deviceType reverse">
+                            <li ng-click="updateType('delivery', alertStatusObj)" ng-repeat="alertStatusObj in alertMeta.delivery">{{alertStatusObj.displayName}}</li>
+                        </ul>
+                        <span class="form-control" type="text" name="tpDelivery" ng-model="alertData.delivery" ng-click="showList('delivery')" ng-disabled="!createAlertRecord" required>{{alertData.delivery}}<span class="droplist-arrow caret" ng-if="alertMeta.delivery.length && createAlertRecord"></span></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</form>

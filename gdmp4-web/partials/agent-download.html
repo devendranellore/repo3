@@ -1,0 +1,30 @@
+<div ng-show="showLoader" class="loader-box relative">
+	<i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+	<div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+</div>
+<div ng-show="modalError" class="loader-box modal-error relative">
+	<i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+</div>
+<div class="container-agent" ng-if="!modalError">
+  <div class="row common-content">
+    <div class="common-title">Client Application Download</div>
+    <table class="table table-condensed table-hover table-modal table-sorting role-table">
+      <thead>
+        <tr>
+            <th class="noPointer">Device</th>
+            <th class="noPointer">Version</th>
+            <th class="noPointer">Upload Date</th>
+            <th class="noPointer">Download</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in data">
+          <td class="noPointer">{{row.name}}</td>
+          <td class="noPointer">{{row.version}}</td>
+          <td class="noPointer">{{row.file_upload_time | date:'MM/dd/yyyy'}}</td>
+          <td class="noPointer"><a href="{{data.base_url+row.download_url}}"><button type="button">Download</button></a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

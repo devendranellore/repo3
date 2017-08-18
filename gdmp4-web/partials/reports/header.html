@@ -1,0 +1,20 @@
+<div ng-show="dataRepError">
+    <div class="alert alert-danger error-box fa fa-exclamation-triangle">
+        {{dataRepError}}
+    </div>
+</div>
+<div class="header-area">
+    <div class="form-line report-header-line">
+        <div class="col-md-12 col-sm-12" ng-if="showPrint">
+            <label>Report: {{reportName}} Report</label>
+        </div>
+        <div class="col-md-3 col-sm-3" ng-repeat="header in reportDetails.header">
+            <label ng-if="isDate(header.name)">
+            	{{header.name}}: {{header.value | date:'yyyy-MM-dd'}}
+            </label>
+            <label ng-if="!isDate(header.name)">
+            	{{header.name}}: {{header.value}}
+            </label>
+        </div>
+    </div>
+</div>

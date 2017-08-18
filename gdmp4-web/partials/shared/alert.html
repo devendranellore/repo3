@@ -1,0 +1,7 @@
+<div class="alert alert-{{alertType.class}} fade in col-xs-offset-3 col-xs-6 alert-type">
+    <span ng-click="closeUpdateLoader()" ng-if="!alertType.auth" class="close">&times;</span>
+    <span ng-click="logOut()" ng-if="alertType.auth" class="close">&times;</span>
+    <span class="error-msg">{{alertType.msg}}</span>
+    <span ng-click="closeUpdateLoader()" ng-if="!alertType.auth" class="ok">OK</span>
+    <span ng-click="logOut()" ng-if="alertType.auth" class="ok">OK</span>
+</div>

@@ -1,0 +1,47 @@
+<label class="modal-body-label modal-lab">Country Exclusion</label>
+<div class="modal-form clearfix">
+    <div class="col-sm-12">
+        <table class="table table-bordered table-condensed">
+            <thead>
+                <tr>
+                    <th class="col-sm-6">Name</th>
+                    <th class="col-sm-6">Country</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="roleData.softwares" ng-repeat="item in roleData.softwares track by $index">
+                    <td>{{item.name}}</td>
+                    <td>
+                        <div ng-repeat="country in item.excludedCountries track by $index">
+                            {{country}}
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-if="roleData.features" ng-repeat="item in roleData.features track by $index">
+                    <td>{{item.name}}</td>
+                    <td>
+                        <div ng-repeat="country in item.excludedCountries track by $index">
+                            {{country}}
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-if="roleData.softwareConfiguration" ng-repeat="item in roleData.softwareConfiguration track by $index">
+                    <td>{{item.name}}</td>
+                    <td>
+                        <div ng-repeat="country in item.excludedCountries track by $index">
+                            {{country}}
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-if="roleData.featureConfiguration" ng-repeat="item in roleData.featureConfiguration track by $index">
+                    <td>{{item.name}}</td>
+                    <td>
+                        <div ng-repeat="country in item.excludedCountries track by $index">
+                            {{country}}
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

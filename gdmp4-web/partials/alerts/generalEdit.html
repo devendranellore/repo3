@@ -1,0 +1,268 @@
+<div ng-show="showLoader" class="loader-box">
+    <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+    <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+</div>
+<div ng-show="modalError" class="loader-box modal-error" >
+    <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+</div>
+<div class="modal-header clearfix">
+    <span class="modal-title" id="myModalLabel"></span>
+    <span class="modal-title" id="updModalAlert"><span ng-hide="createAlertRecord">View</span> <span ng-show="createAlertRecord">Create</span>  Notification</span>
+    <div class="pull-right">
+        <span ng-if="!readOnlyPermission">
+            <button id="update_alert_btn" ng-if="authority >= 9" type="button" class="btn btn-primary btn-mw" ng-show="readOnlyAlertFlag" ng-click="readOnlyAlert(false)">EDIT</button>
+            <button id="update_alert_save_btn" type="button" class="btn btn-primary btn-mw" ng-hide="readOnlyAlertFlag" ng-click="saveAlert('generalNotifications')">SAVE</button>
+        </span>
+        <button class="btn btn-primary btn-mw" data-dismiss="modal" aria-label="Close" ng-click="cancelAlert()">CLOSE</button>
+    </div>
+</div>
+<div class="modal-body">
+    <label>Basic Information</label>
+    <div class="modal-form overflow-visible">
+        <div class="form-line">
+            <div class="col-sm-6" ng-mouseleave="showList('hide')">
+                <label>
+                    Notification Event
+                </label>
+                <div class="form-line" >
+                    <div class="col-sm-12 no-padding">
+                        <span class="input-select">
+                            <span id="edit_alert_notif" class="form-control" type="text" ng-readonly="readOnlyAlertFlag" ng-model="alertData.notificationEvent" ng-click="showList('notificationEvent')">{{alertData.notificationEvent}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                            <ul id="edit_alert_notif_ul" ng-show="!readOnlyAlertFlag && visibility.notificationEvent" class="dropOptions deviceType">
+                                <li id="edit_alert_notif_li_{{$index}}" ng-click="updateType('notificationEvent', alertStatusObj)" ng-repeat="alertStatusObj in alertMeta.notificationEvent">{{alertStatusObj.displayName}}</li>
+                            </ul>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-2 pull-right">
+                <label>
+                    Active
+                </label>
+                <div class="radio-flag-content">
+                    <!-- <span class="radio-flag pull-left" ng-class="{
+                            'active'
+                            : alertData.active}" ng-click="changeCheckStatus('active')">
+                        <span></span>
+                    </span> -->
+                    <ul class="nav nav-radio nav-radio nav-transparent">
+                        <li ng-click="changeCheckStatus('active')"
+                            ng-class="{'active' : alertData.active}">
+                            <a><span>&nbsp;</span></a>
+                        </li>
+                    </ul>
+                    <!-- <a>{{alertData.active|yesNo}}</a> -->
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="col-sm-4">
+                <label>
+                    Name
+                </label>
+                <input type="text" class="form-control" ng-readonly="readOnlyAlertFlag" ng-model="alertData.name"/>
+            </div>
+        </div>
+        <div class="form-line">
+            <div class="col-sm-12">
+                <label>
+                    Message
+
+                </label>
+                <textarea class="form-control" ng-readonly="readOnlyAlertFlag" ng-model="alertData.scheduleMessage"></textarea>
+            </div>
+        </div>
+        <div class="form-line">
+            <div class="col-sm-6" ng-mouseleave="showList('hide')">
+                <label>
+                    Time Zone
+                </label>
+                <div class="col-sm-12 no-padding">
+                    <span class="input-select">
+                        <span id="edit_alert_tz" class="form-control" type="text" data-value="" data-requried="true" data-readonly="true" ng-disabled="readOnlyAlertFlag" ng-model="alertData.timeZone" ng-click="showList('timeZone')">{{alertData.timeZone}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                        <ul id="edit_alert_tz_ul" ng-show="!readOnlyAlertFlag && visibility.timeZone" class="dropOptions deviceType">
+                            <li id="edit_alert_tz_li_{{$index}}" ng-click="updateType('timeZone', alertStatusObj)" ng-repeat="alertStatusObj in alertMeta.timeZone">{{alertStatusObj.displayName}}</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-6" ng-mouseleave="showList('hide')">
+                <label>
+                    Delivery
+                </label>
+                <div class="col-sm-12 no-padding">
+                    <span class="input-select">
+                        <span id="edit_alert_del" class="form-control" type="text" data-value="" data-requried="true" data-readonly="true" ng-disabled="readOnlyAlertFlag" ng-model="alertData.delivery" ng-click="showList('delivery')">{{alertData.delivery}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                        <ul id="edit_alert_del_ul" ng-show="!readOnlyAlertFlag && visibility.delivery" class="dropOptions deviceType">
+                            <li id="edit_alert_del_li_{{$index}}" ng-click="updateType('delivery', alertStatusObj)" ng-repeat="alertStatusObj in alertMeta.delivery">{{alertStatusObj.displayName}}</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-line">
+            <div class="col-sm-2">
+                <label>
+                    Display on Home
+                </label>
+                <div class="radio-flag-content">
+                    <!-- <span class="radio-flag pull-left" ng-class="{
+                            'active'
+                            : alertData.displayHome}" ng-click="changeCheckStatus('displayHome')">
+                        <span></span>
+                    </span> -->
+                    <ul class="nav nav-radio nav-radio nav-transparent">
+                        <li ng-click="changeCheckStatus('displayHome')"
+                            ng-class="{'active' : alertData.displayHome}">
+                            <a><span>&nbsp;</span></a>
+                        </li>
+                    </ul>
+                    <!-- <a>{{alertData.displayHome|yesNo}}</a> -->
+                </div>
+            </div>
+            <div ng-show='alertData.displayHome'>
+                <div class="col-sm-4">
+                    <label>
+                        Start Time
+                    </label>
+                    <a class="dropdown-toggle date-time" id="dropdownStart" ng-if="readOnlyAlertFlag" role="button">
+                        <div class="input-group date">
+                            <input type="text" class="form-control" data-ng-model="alertData.scheduleFrom" disabled data-date-time-input="MM/DD/YYYY HH:mm">
+                        </div>
+                    </a>
+                    <a class="dropdown-toggle date-time" id="dropdownStart" ng-if="!readOnlyAlertFlag" role="button" data-toggle="dropdown">
+                        <div class="input-group date">
+                            <input type="text" class="form-control uneditable" data-ng-model="alertData.scheduleFrom" data-date-time-input="MM/DD/YYYY HH:mm" readonly>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu reversed-date-time-picker" role="menu" aria-labelledby="dLabel">
+                        <datetimepicker data-ng-model="alertData.scheduleFrom"
+                        data-datetimepicker-config="{ dropdownSelector: '#dropdownStart', renderOn: 'end-date-changed' }"
+                        data-on-set-time="startDateOnSetTime()"
+                        data-before-render="startDateBeforeRender($dates)"></datetimepicker>
+                    </ul>
+                </div>
+                <div class="col-sm-4">
+                    <label>
+                        End Time
+                    </label>
+                    <a class="dropdown-toggle date-time" id="dropdownEnd" ng-if="readOnlyAlertFlag" role="button">
+                        <div class="input-group date">
+                            <input type="text" class="form-control" data-ng-model="alertData.scheduleTo" disabled data-date-time-input="MM/DD/YYYY HH:mm">
+                        </div>
+                    </a>
+                    <a class="dropdown-toggle date-time" id="dropdownEnd" ng-if="!readOnlyAlertFlag" role="button" data-toggle="dropdown">
+                        <div class="input-group date">
+                            <input type="text" class="form-control uneditable" data-ng-model="alertData.scheduleTo" data-date-time-input="MM/DD/YYYY HH:mm" readonly>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu reversed-date-time-picker" role="menu" aria-labelledby="dLabel">
+                        <datetimepicker data-ng-model="alertData.scheduleTo"
+                        data-datetimepicker-config="{ dropdownSelector: '#dropdownEnd', renderOn: 'start-date-changed' }"
+                        data-on-set-time="endDateOnSetTime()"
+                        data-before-render="endDateBeforeRender($view, $dates, $leftDate, $upDate, $rightDate)"></datetimepicker>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-form clearfix delivery-schedule" ng-if="(alertData.deliverySchedule.length || !readOnlyAlertFlag) && alertData.recipientAsDeviceType !== undefined">
+        <label>Delivery Schedule</label>
+        <table class="table table-condensed table-hover table-modal">
+            <thead>
+                <tr>
+                    <th class="col-xs-4">Subject Line</th>
+                    <th class="col-xs-3" ng-if="!alertData.recipientAsDeviceType">Recipient</th>
+                    <th class="col-xs-3" ng-if="alertData.recipientAsDeviceType">Device Type</th>
+                    <th class="col-xs-4">Date/Time (local time)</th>
+                    <!-- <th class="col-xs-1" ng-hide="true">Active</th> -->
+                    <th class="col-xs-1"></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr id="delivery-add" ng-if="!readOnlyAlertFlag && alertData.recipientAsDeviceType !== undefined">
+                    <td><input type="text" class="form-control" ng-model="newSchedule.subjectLine"/></td>
+                    <td ng-mouseleave="showList('hide')">
+                        <div ng-show="alertData.recipientAsDeviceType">
+                            <span class="input-select">
+                                <ul ng-show="visibility.deviceType" class="dropOptions deviceType reverse">
+                                    <li ng-click="updateSchedule('deviceType', deviceTypeObj)" ng-repeat="deviceTypeObj in alertMeta.deviceType">{{deviceTypeObj.displayName}}</li>
+                                </ul>
+                                <span ng-model="newSchedule.deviceType" class="form-control bg-white" ng-readonly="true"  ng-click="showList('deviceType')">{{newSchedule.deviceType}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                            </span>
+                        </div>
+                        <div ng-hide="alertData.recipientAsDeviceType">
+                            <div class="recipient">
+                                <div class="radio-flag-content"> 
+                                    <span class="radio-flag pull-left" ng-class="{'active': newSchedule.recipient}" ng-click="changeRecipient()">
+                                        <span></span>
+                                    </span>
+                                    <a>{{newSchedule.recipient|receipants}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <a class="dropdown-toggle date-time" id="dropdownSchedule" role="button" data-toggle="dropdown">
+                            <div class="input-group date">
+                                <input type="text" class="form-control uneditable" ng-disabled="readOnlyAlertFlag" data-ng-model="newSchedule.sDate" data-date-time-input="YYYY-MM-DD HH:mm" readonly/>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-disabled="readOnlyAlertFlag" class="btn btn-default">
+                                        <i class="glyphicon glyphicon-calendar"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu reversed-date-time-picker" role="menu" aria-labelledby="dLabel">
+                            <datetimepicker data-ng-model="newSchedule.sDate" data-before-render="beforeRender($view, $dates)"
+                            data-datetimepicker-config="{ dropdownSelector: '#dropdownSchedule' }"></datetimepicker>
+                        </ul>
+                    </td>
+                    <!-- <td ng-hide="true">
+                        <div class="radio-flag-content">
+                            <span class="radio-flag pull-left" ng-class="{'active': newSchedule.active}" ng-click="changeActive(newSchedule)">
+                                <span></span>
+                            </span>
+                            <a>{{newSchedule.active|yesNo}}</a>
+                        </div>
+                    </td> -->
+                    <td class="pull-right"><button id="addSchedule" type="button" class="btn btn-primary" ng-click="newSchedule.subjectLine && addSchedule()">ADD</button> </td>
+                </tr>
+                <tr id="sub_setting_{{$index}}" ng-repeat="(colKey, subObj) in alertData.deliverySchedule">
+                    <td class="col-xs-4">{{subObj.subjectLine}}</td>
+                    <td class="col-xs-3">
+                        <div ng-show="alertData.recipientAsDeviceType">
+                            {{subObj.deviceType}}
+                        </div>
+                        <div ng-hide="alertData.recipientAsDeviceType">
+                            {{subObj.recipient|receipants}}
+                        </div>
+                    </td>
+                    <td class="col-xs-4">{{subObj.dateTime|date: 'yyyy-MM-dd HH:mm'}}</td>
+                    <!-- <td class="col-xs-1" ng-hide="true">{{subObj.active|yesNo}}</td> -->
+                    <td class="col-xs-1">
+                        <span class="td-remove" ng-click="removeSchedule(colKey)">
+                            <i class="fa fa-trash-o"></i>
+                        </span>
+                    </td>   
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    &nbsp;
+</div>
+

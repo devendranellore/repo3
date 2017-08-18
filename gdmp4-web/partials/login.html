@@ -1,0 +1,44 @@
+<div>
+    <div class="login-content">
+        <div class="login-mintitle">Medtronic</div>
+        <div class="login-title">Device Management Portal</div>
+
+        <div class="login-form">
+            <form ng-submit="login()" name="form">
+                <div ng-show="error" class="alert alert-danger fa fa-exclamation-triangle all-block">{{error}}</div>
+                <div class="login-line" ng-class="{ 'has-error': form.username.$touched && form.username.$invalid }">
+                    <span>Username</span>
+                    <input name="username" type="text" class="form-control" ng-model="username" ng-required="true" autocomplete="off" required autofocus/>
+                </div>
+                <div class="login-line" ng-class="{ 'has-error': form.password.$touched && form.password.$invalid }">
+                    <span>Password</span>
+                    <input name="password" type="password" class="form-control" ng-model="password" required/>
+                </div>
+                <div class="login-btns">
+                    <div class="login-btn">
+                        <span>
+							<button type="submit" ng-disabled="form.$invalid || dataLoading" class="btn btn-primary">SIGN IN</button>
+						</span>
+                        <span>
+							<a class="btn" ng-click="reset()">RESET</a>
+						</span>
+                    </div>
+                    <div class="login-btn">
+                        <span>
+                            {{version}}
+                        </span>
+                        <span>
+							<a class="btn" ng-click="forgetPassword()">FORGOT PASSWORD</a>
+						</span>
+                        <span>
+							<a ui-sref="selfRegistration" class="btn">REQUEST ID</a>
+						</span>
+                    </div>
+                </div>
+            </form>
+            <div class="login-copy">
+                For support related to this screen, send an email to <a href="mailto:gate.notifications@covidien.com">gate.notifications@covidien.com</a>. Please include name of your product in email subject line so that your query can be redirected to appropriate support group.
+            </div>
+        </div>
+    </div>
+</div>

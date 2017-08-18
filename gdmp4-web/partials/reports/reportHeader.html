@@ -1,0 +1,146 @@
+<form name="reports">
+    <div class="clearfix row line-header">
+        <span class="col-xs-3 pull-left">
+            <a  id="show_report_cat_btn" ng-click="toggleRHeader()" class="more-filters-btn filters pull-left"><i class="fa fa-bars" aria-hidden="true"></i> Report Categories</a>
+        </span>
+        <div class="col-xs-2 pull-right" ng-if="showPrint">
+            <span>
+                <button class="col-xs-2 btn btn-primary btn-mw pull-left" id="print_btn" ng-click="print()">PRINT</button>
+            </span>
+            <span>
+                <button class="col-xs-2 btn btn-primary btn-mw pull-right" id="print_btn" ng-click="back()">BACK</button>
+            </span>
+        </div>
+    </div>
+    <!-- Show More Filters Click Function -->
+    <div ng-hide="hideReportCategories" >
+        <div class="filter-area">
+            <div class="col-xs-12 no-padding report-category">
+                Administrative Reports
+            </div>
+            <div class="clearfix col-xs-12 no-padding categories">
+                <ul class="nav nav-checkbox">
+                    <li class='col-xs-2 no-padding' tooltip-placement="top-left" uib-tooltip="Report of all activities performed on the system for a specific CoT.">
+                        <span class="check-box-filter report-label" ng-click="showReport('auditTrail')">
+                            <label class="label-filter wrap-text-ellipsis">
+                                Audit Trail Report
+                            </label>
+                        </span>
+                    </li>
+                    <li class='col-xs-2 no-padding' tooltip-placement="top-left" uib-tooltip="Report of all user training performed as a pre-requisite for granting software update permission to a user.">
+                        <span class="check-box-filter report-label" ng-click="showReport('training')">
+                            <label class="label-filter wrap-text-ellipsis">
+                                Training Report
+                            </label>
+                        </span>
+                    </li>
+                    <li class='col-xs-2 no-padding' ng-if="viewUserActReport" tooltip-placement="top-left" uib-tooltip="Report lists all activities performed by a user.">
+                        <span class="check-box-filter report-label" ng-click="showReport('userActivity')">
+                            <label class="label-filter wrap-text-ellipsis">
+                                User Activity Report
+                            </label>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-12 no-padding report-category">
+                Alert Reports
+            </div>
+            <div class="clearfix col-xs-12 no-padding categories">
+                <ul class="nav nav-checkbox">
+                    <li class='col-xs-2 no-padding' tooltip-placement="top-left" uib-tooltip="Report of all devices which reported a different hardware, software, or feature component than what was expected by the system.">
+                        <span class="check-box-filter report-label" ng-click="showReport('componentDiscrepancy')">
+                            <label class="label-filter wrap-text-ellipsis">
+                                Component Discrepancy Report
+                            </label>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-12 no-padding report-category">
+                Device Reports
+            </div>
+            <div class="clearfix col-xs-12 no-padding categories">
+                <ul class="nav nav-checkbox">
+                    <li class='col-xs-2 no-padding' ng-if="false" tooltip-placement="top-left" uib-tooltip="Report of a specified cloned entity and its relationships to other cloned entities. Relationships are parent, siblings, and children entities.">
+                        <span class="check-box-filter report-label" ng-click="showReport('clone')">
+                            <label class="label-filter wrap-text-ellipsis">
+                                Clone Report
+                            </label>
+                        </span>
+                    </li>
+                    <li class='col-xs-2 no-padding' tooltip-placement="top-left" uib-tooltip="Report lists all software update service events.">
+                        <span class="check-box-filter report-label" ng-click="showReport('softwareUpdate')">
+                            <label class="label-filter wrap-text-ellipsis">
+                                Software Update Report
+                            </label>
+                        </span>
+                    </li>
+                    <li class='col-xs-2 no-padding' tooltip-placement="top-left" uib-tooltip="Report shows current software versions by serial number.">
+                        <span class="check-box-filter report-label" ng-click="showReport('softwareVersions')">
+                            <label class="label-filter wrap-text-ellipsis">
+                                Software Versions Report
+                            </label>
+                        </span>
+                    </li>
+                    <li class='col-xs-2 no-padding' tooltip-placement="top-left" uib-tooltip="Report shows the number of devices, whether gathered by a specified device type at each software version by customer by Country, or at each reported software version by customer for all device types in the selected CoT.">
+                        <span class="check-box-filter report-label" ng-click="showReport('softwareAudit')">
+                            <label class="label-filter wrap-text-ellipsis">
+                                Software Audit Report
+                            </label>
+                        </span>
+                    </li>
+                    <li class='col-xs-2 no-padding' tooltip-placement="top-left" uib-tooltip="Report of the current configuration of all devices of a specific device type.">
+                        <span class="check-box-filter report-label" ng-click="showReport('deviceCurrentConfiguration')">
+                            <label class="label-filter wrap-text-ellipsis">
+                                Device Current Config Report
+                            </label>
+                        </span>
+                    </li>
+                    <li class='col-xs-2 no-padding' tooltip-placement="top-left" uib-tooltip="Report of all service events performed to devices.">
+                        <span class="check-box-filter report-label" ng-click="showReport('serviceRecords')">
+                            <label class="label-filter wrap-text-ellipsis">
+                                Service Records Report
+                            </label>
+                        </span>
+                    </li>
+                    <li class='col-xs-2 no-padding' tooltip-placement="top-left" uib-tooltip="Report shows where a selected entity is used. Entities include hardware/software/feature items and hardware/software/feature configurations.">
+                        <span class="check-box-filter report-label" ng-click="showReport('configurationWhereUsed')">
+                            <label class="label-filter wrap-text-ellipsis">
+                                Config Where Used Report
+                            </label>
+                        </span>
+                    </li>
+                    <li class='col-xs-2 no-padding' tooltip-placement="top-left" uib-tooltip="Report of device historical configuration information for a device serial number.">
+                        <span class="check-box-filter report-label" ng-click="showReport('deviceHistoricalConfiguration')">
+                            <label class="label-filter wrap-text-ellipsis">
+                                Device Historical Config Report
+                            </label>
+                        </span>
+                    </li>
+                    <li class='col-xs-2 no-padding' tooltip-placement="top-left" uib-tooltip="Report of all named configurations by device type.">
+                        <span class="check-box-filter report-label" ng-click="showReport('namedConfiguration')">
+                            <label class="label-filter wrap-text-ellipsis">
+                                Named Configs Report
+                            </label>
+                        </span>
+                    </li>
+                    <li class='col-xs-2 no-padding' tooltip-placement="top-left" uib-tooltip="Report shows the history of all changes made to a device’s country setting.">
+                        <span class="check-box-filter report-label" ng-click="showReport('deviceCountryChange')">
+                            <label class="label-filter wrap-text-ellipsis">
+                                Device Country Change Report
+                            </label>
+                        </span>
+                    </li>
+                    <li class='col-xs-2 no-padding' tooltip-placement="top-left" uib-tooltip="Report of all feature entitlement information for a specific CoT.">
+                        <span class="check-box-filter report-label" ng-click="showReport('featureEntitlement')">
+                            <label class="label-filter wrap-text-ellipsis">
+                                Feature Entitlement Report
+                            </label>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</form>

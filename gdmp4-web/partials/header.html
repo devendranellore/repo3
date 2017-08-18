@@ -1,0 +1,55 @@
+<div class="container">
+    <div class="bg-grey">
+        <div class="navbar navbar-default">
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-first">
+                    <li class="dropdown" ng-class="{'open': dbox.home}">
+                        <a class="dropdown-toggle" ng-show="roleSelectedDisplay" ng-click="openDropdown('home')">
+                            <i class="fa fa-crop"></i>{{roleSelectedDisplay|titleCase}}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" ng-mouseleave="openDropdown('hide')">
+                            <li><a ng-click="goHome()">Home</a></li>
+                            <li ng-repeat="(role,roleDetails) in userRoles track by $index">
+                                <a ng-click="roleChange(role);showDetails(role)" ng-class="{'alert-danger': roleDetails.error}">{{menuUserRoles[$index]|titleCase}}</a>
+                            </li>
+                            <li class="dropdown-line">
+                            <li><a>Help</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="navbar-header">
+                    <a class="navbar-brand">Medtronic</a>
+                </div>
+                <div class="navbar-header">
+                    <a class="navbar-brand">Device Management Portal</a>
+                </div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown" ng-class="{'open': dbox.cot}">
+                        <a class="dropdown-toggle"   ng-click="openDropdown('cot')">
+                            CoT: {{cotSelected}}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" ng-mouseleave="openDropdown('hide')">
+                            <li ng-repeat="coT in coTs">
+                                <a ng-click="cotChange(coT)">{{coT}}</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" ng-class="{'open': dbox.user}">
+                        <a class="dropdown-toggle" ng-click="openDropdown('user')">
+                            <div class="navbar-right-line"></div>
+                            {{user}}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" ng-mouseleave="openDropdown('hide')">
+                            <li><a ng-click="openProfile()">{{user}}</a></li>
+                            <li><a ng-click="logOut()">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="content" ui-view></div>
+</div>

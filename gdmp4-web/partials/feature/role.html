@@ -1,0 +1,104 @@
+<ul class="nav nav-tabs nav-headers">
+    <li ng-class="{'active' : !tab}">
+        <a ng-click="switchTab()">Feature Catalog</a>
+    </li>
+    <li ng-class="{'active' : tab === 'featureEntitlement'}">
+        <a ng-click="switchTab('featureEntitlement')">Feature Entitlement</a>
+    </li>
+</ul>
+
+<div class="filter-area">
+    <form class="form-vacent" name="sForm" ng-submit="searchRoles()" novalidate>
+        <button type="submit" ng-hide="true"></button>
+        <div class="form-cant clearfix" ng-if="!tab">
+            <span class="vacant-cant">Search</span>
+            <span class="col-md-4 col-sm-4 col-search">
+                <input type="text" ng-model="search.name" ng-change="!search.name && searchRoles()" class="form-control pl-grey" placeholder="Enter {{role|titleCase}} Name" required/>                
+                <span ng-click="searchRoles()"><i class="fa fa-search"></i></span>
+            </span>
+            <span class="col-md-3 col-sm-3 form-gcant text-center">
+                <a id="show_more_filters_btn" ng-show="roleTableParams.filters && roleTableParams.filters.length" ng-click="toggleMoreFilter()" class="more-filters-btn filters pull-left"><i class="fa fa-bars" aria-hidden="true"></i><span ng-hide="mFilters"> Show More Filters</span> <span ng-show="mFilters">Hide Filters</span></a>
+            </span>
+            <span class="pull-right">
+                <button id="create_new_{{role}}_btn" class="btn btn-primary" type="button" ng-if="acctAccess[role] === 'W'" ng-show="isCreate()" ng-click="open('NEW')">CREATE NEW {{role|uppercase}}</button>
+            </span>
+        </div>
+        <div class="form-cant clearfix" ng-if="tab === 'featureEntitlement'">
+            <span class="vacant-cant">Search</span>
+            <span class="col-md-4 col-sm-4 col-search">
+                <input type="text" ng-model="searchKeywords.name" ng-change="!searchKeywords.name && searchRoles()" class="form-control pl-grey" placeholder="Enter Feature Name"/>
+                <span ng-click="searchRoles()"><i class="fa fa-search"></i></span>
+            </span>
+            <span class="col-md-3 col-sm-3 form-gcant text-center">
+                <a id="show_more_filters_btn" ng-show="roleTableParams.filters && roleTableParams.filters.length" ng-click="toggleMoreFilter()" class="more-filters-btn filters pull-left"><i class="fa fa-bars" aria-hidden="true"></i><span ng-hide="mFilters"> Show More Filters</span> <span ng-show="mFilters">Hide Filters</span></a>
+            </span>
+            <span class="pull-right">
+                <button id="create_new_{{role}}_btn" class="btn btn-primary" type="button" ng-show="isCreate()" ng-click="open('NEW')">ADD FEATURE ENTITLEMENT TO DEVICE</button>
+            </span>
+        </div>
+        <div ng-if="tab === 'featureEntitlement'" class="form-cant clearfix">
+            <span class="vacant-cant">Device SN</span>
+            <span class="col-md-6 col-sm-6 col-search">
+                <input type="text" ng-model="searchKeywords.deviceSN" ng-change="!searchKeywords.deviceSN && searchRoles()" class="form-control pl-grey" placeholder="Enter Serial No."/>                
+                <span ng-click="searchRoles()"><i class="fa fa-search"></i></span>
+            </span>
+        </div>
+        <div class="form-cant clearfix cant-line-down" ng-show="roleTableParams.primaryFilter.display_name && roleTableParams.primaryFilter.entries.length">{{sFilter}}
+            <span class="vacant-cant">{{roleTableParams.primaryFilter.display_name}}
+            </span>
+            <ul class="nav nav-checkbox">
+                <li ng-repeat="entry in roleTableParams.primaryFilter.entries">
+                    <span class="check-box-filter">
+                        <label class="label-filter">
+                            <input type="checkbox" ng-click="searchRoles(roleTableParams.primaryFilter.name)" ng-model="searchFilters[roleTableParams.primaryFilter.name][entry.value]"> <span></span>{{entry.name}}
+                        </label>
+                    </span>
+                </li>
+            </ul>
+        </div>
+        <!-- Show More Filters Click Function -->
+        <div ng-show="mFilters">
+            <div class="filter-area">
+                <div class="form-cant clearfix" ng-repeat="filter in roleTableParams.filters">
+                    <span class="vacant-cant">{{filter.display_name}}</span>
+                    <ul class="nav nav-checkbox">
+                        <li ng-repeat="entry in filter.entries"><span class="check-box-filter">
+                                <label class="label-filter">
+                                    <input type="checkbox" ng-click="searchRoles(filter.name)" ng-model="searchFilters[filter.name][entry.value]"> <span></span>{{entry.name}}
+                                </label>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="table-box">
+    <div ng-show="showLoader" class="loader-box">
+        <i ng-show="!dataError && showLoader" class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+    </div>
+    <div ng-show="dataError">
+        <div class="alert alert-danger error-box fa fa-exclamation-triangle">
+            {{dataError}}
+        </div>
+    </div>
+
+    <table ng-hide="dataError" class="table table-condensed table-hover table-modal table-sorting role-table">
+        <thead>
+            <tr>
+                <th ng-repeat="(colKey,col) in roleDetails.columns" ng-class="sortCol[col.name.column].cssClass" ng-click="getSorted(col.name.column)">{{col.name.display_name}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr dir-paginate="(rowKey, role) in roleDetails.data|itemsPerPage:roleTableParams.itemsPerPage" total-items="roleTableParams.total_count" current-page="roleTableParams.pageNo" ng-click="open(rowKey)" >
+                <td ng-repeat ="(columnKey, col) in roleDetails.columns">
+                    {{role.detail[col.name.column]|limitTo : 25}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div ng-hide="dataError" class="role-pagination">
+    <dir-pagination-controls on-page-change="getData(newPageNumber)" boundary-links="true"></dir-pagination-controls>
+</div>

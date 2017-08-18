@@ -1,0 +1,118 @@
+<div id="feature-entitlement-report" class="reports" ng-if="!showPrint">
+    <div ng-include="'partials/reports/modalError.html'"></div>
+    <div class="report-params">
+        <div class="edits">
+            <label>Feature Entitlement Report</label>
+            <form name="reportForm" autocomplete="off">
+                <div class="overflow-visible">
+                    <div class="form-line">
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')">
+                            <label>
+                                Country
+                            </label>
+                            <span class="input-select">
+                                <input id="report_country_input" class="form-control well-li" ng-change="visibility.country = true" ng-model="repData.country" ng-click="showList('country')"><span class="droplist-arrow caret" ng-if="metaRepData.countryList.length"></span>
+                                <ul ng-show="visibility.country" class="dropOptions deviceType">
+                                    <li ng-click="clear('country')" ng-if="metaRepData.country.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('country', repMetaObj)" ng-repeat="repMetaObj in metaRepData.countryList">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')">
+                            <label>
+                                Customer Name
+                            </label>
+                            <span class="input-select">
+                                <input id="report_customer_name_input" type="text" ng-change="repData.customerName && getAutoCompleteData('customerNames', 'customerName')" ng-click="showList('customerName')" class="form-control well-li" ng-model="repData.customerName" ng-trim="false"/><span class="droplist-arrow caret" ng-click="showList('customerName')" ng-if="metaRepData.customerName.length"></span>
+                                <ul ng-show="visibility.customerName" class="dropOptions deviceType">
+                                    <li ng-if="wait">Please wait a moment...</li>
+                                    <li ng-click="clear('customerName')" ng-if="metaRepData.customerName.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('customerName', repMetaObj)" ng-repeat="repMetaObj in metaRepData.customerName">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')">
+                            <label>
+                                Device Type
+                            </label>
+                            <span class="input-select">
+                                <span id="report_device_type_input" class="form-control well-li" ng-model="repData.deviceType" ng-click="showList('deviceType')">{{repData.deviceType}}<span class="droplist-arrow caret" ng-if="metaRepData.deviceType.length"></span></span>
+                                <ul ng-show="visibility.deviceType" class="dropOptions deviceType">
+                                    <li ng-click="clear('deviceType')" ng-if="metaRepData.deviceType.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('deviceType', repMetaObj)" ng-repeat="repMetaObj in metaRepData.deviceType">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')">
+                            <label>
+                                Entitlement Term
+                            </label>
+                            <span class="input-select">
+                                <span id="report_feature_type_input" class="form-control well-li" data-requried="true" ng-model="repData.featureType" ng-click="showList('featureType')">{{repData.featureType}}<span class="droplist-arrow caret" ng-if="metaRepData.featureType.length"></span></span>
+                                <ul ng-show="visibility.featureType" class="dropOptions deviceType">
+                                    <li ng-click="clear('featureType')" ng-if="metaRepData.featureType.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('featureType', repMetaObj)" ng-repeat="repMetaObj in metaRepData.featureType">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-line">
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')">
+                            <label>
+                                Entitlement State
+                            </label>
+                            <span class="input-select">
+                                <span id="report_entitled_input" class="form-control well-li" data-requried="true" ng-model="repData.entitled" ng-click="showList('entitled')">{{repData.entitled}}<span class="droplist-arrow caret" ng-if="metaRepData.entitled.length"></span></span>
+                                <ul ng-show="visibility.entitled" class="dropOptions deviceType">
+                                    <li ng-click="clear('entitled')" ng-if="metaRepData.entitled.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('entitled', repMetaObj)" ng-repeat="repMetaObj in metaRepData.entitled">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')">
+                            <label>
+                                Device Feature Enabled Status
+                            </label>
+                            <span class="input-select">
+                                <span id="report_enabled_input" class="form-control well-li" data-requried="true" ng-model="repData.enabled" ng-click="showList('enabled')">{{repData.enabled}}<span class="droplist-arrow caret" ng-if="metaRepData.enabled.length"></span></span>
+                                <ul ng-show="visibility.enabled" class="dropOptions deviceType">
+                                    <li ng-click="clear('enabled')" ng-if="metaRepData.enabled.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('enabled', repMetaObj)" ng-repeat="repMetaObj in metaRepData.enabled">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div ng-include="'partials/reports/viewReport.html'"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div ng-show="showReportData">
+        <div class="table-box scroll">
+            <div ng-include="'partials/reports/header.html'"></div>
+            <table ng-hide="dataRepError" class="table table-condensed table-hover table-modal table-sorting role-table header-line-top">
+                <thead>
+                    <tr>
+                        <th ng-repeat="(colKey,col) in reportDetails.columns" ng-class="sortCol[col.column].cssClass" ng-click="getSorted(col.column)">{{col.display_name}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr dir-paginate="(rowKey, role) in reportDetails.currentPageData | itemsPerPage:reportParams.itemsPerPage" total-items="reportParams.total_count" pagination-id="noPrint" current-page="reportParams.pageNo" >
+                        <td ng-repeat ="(columnKey, col) in reportDetails.columns">
+                            <div ng-if="role.detail[col.column]">
+                                <p class="report-content">{{role.detail[col.column]}}</p>
+                            </div>
+                            <div ng-if="!role.detail[col.column]" ng-repeat="item in role.detail.entitlement">
+                                <p class="report-content">{{item[col.column]}}</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div ng-include="'partials/reports/footer.html'"></div>
+    </div>
+</div>
+
+<div ng-if="showPrint" ng-include="'partials/reports/printReport.html'"></div>

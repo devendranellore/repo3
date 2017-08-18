@@ -1,0 +1,28 @@
+<div ng-show="roleData.cloneMap">
+    <label class="modal-body-label modal-lab">Clone Map</label>
+    <div class="modal-form clearfix" >
+        <div class="clone-line">
+            <div class="col-sm-4">
+                <div class="clone-title">
+                    Cloned from Parent
+                </div>
+                <div ng-hide="roleData.cloneMap.parent.length">This item has no parent clones</div>
+                <table class="table table-clone table-condensed" ng-show="roleData.cloneMap.parent" ng-repeat="item in roleData.cloneMap.parent" ng-include="'partials/shared/cloneMapItem.html'"></table>
+            </div>
+            <div class="col-sm-4 col-line-right col-line-left" >
+                <div class="clone-title">
+                    Sibling Clones
+                </div>
+                <div ng-hide="roleData.cloneMap.sibling.length">This item has no sibling clones</div>
+                <table class="table table-clone table-condensed" ng-show="roleData.cloneMap.sibling" ng-repeat="item in roleData.cloneMap.sibling" ng-include="'partials/shared/cloneMapItem.html'"></table>
+            </div>
+            <div class="col-sm-4">
+                <div class="clone-title">
+                    Child Clones
+                </div>
+                <div ng-hide="roleData.cloneMap.child.length">This item has no child clones</div>
+                <table class="table table-clone table-condensed" ng-show="roleData.cloneMap.child" ng-repeat="item in roleData.cloneMap.child" ng-include="'partials/shared/cloneMapItem.html'"></table>
+            </div>
+        </div>
+    </div>
+</div>

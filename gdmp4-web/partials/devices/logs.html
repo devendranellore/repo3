@@ -1,0 +1,55 @@
+<script language="javascript" type="text/javascript" src="assets/js/My97DatePicker/WdatePicker.js"></script>
+
+<div class="well bg-white clearfix tab-content no-padding device-logs" data-target="4">
+    <div class="col-sm-5 clearfix">
+        <div class="form-cant clearfix">
+            <span class="vacant-cant">Log Type</span>
+            <span class="col-sm-12 col-search">
+                <input ng-model="deviceData.logType" type="text" class="form-control pl-grey" placeholder="Log Type"/>
+                <span ng-click="logSearch(1)"><i class="fa fa-search"></i></span>
+            </span>
+        </div>
+    </div>
+    <div class="col-sm-5">
+        <div class="form-cant clearfix">
+            <span class="vacant-cant">Service Date</span>
+            <span class="col-sm-12">
+                <input ng-model="deviceData.serviceDate" id="serviceDate" type="text" class="form-control" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})"/>
+            </span>
+        </div>
+    </div>
+    <div class="col-sm-2 form-vant text-right">
+        <button id="" class="btn btn-primary btn-mw" type="button" ng-click="logSearch(1)">GO</button>
+    </div>
+    <div class="clearfix"></div>
+    <div class="logs">
+        <table class="table table-device table-Wrap" ng-hide="deviceLogError">
+            <thead>
+                <tr>
+                    <th ng-repeat="(colKey,col) in deviceData.logs.columns">{{col.name.display_name}}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr dir-paginate="(rowKey,row) in deviceData.logs.logRecords|itemsPerPage:paginationParams.itemsPerPage" pagination-id="logs" total-items="paginationParams.logs.total_count" current-page="paginationParams.logs.pageNo" >
+                    <td class="{{serviceColWidth}}" ng-repeat ="(columnKey, col) in deviceData.logs.columns">
+                        <div class="">{{row[col.name.column]}}</div>
+
+                    </td>
+                    <td class="nowrap pull-right">
+                        <a class="btn btn-primary btn-square log-buttons" ng-show="row['longDescriptionUrl'] !== null" target="_blank" href="{{deviceData.base_url + row['longDescriptionUrl']}}"><i class="fa fa-eye"></i></a>
+                        <a class="btn btn-primary btn-square log-buttons" ng-show="row['downloadUrl'] !== null" href="{{deviceData.base_url + row['downloadUrl']}}"><i class="fa fa-cloud-download"></i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div ng-hide="deviceLogError" class="role-pagination device-pagination">
+        <dir-pagination-controls on-page-change="logSearch(newPageNumber)" boundary-links="true" pagination-id="logs"></dir-pagination-controls>
+    </div>
+    <div ng-show="deviceLogError" class="device-error">
+        <div class="alert alert-danger error-box fa fa-exclamation-triangle">
+            {{deviceLogError}}
+        </div>
+    </div>
+</div>

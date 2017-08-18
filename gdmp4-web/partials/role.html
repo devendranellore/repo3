@@ -1,0 +1,120 @@
+<div class="filter-area" ng-show="true">
+    <form class="form-vacent" name="sForm" ng-submit="search.name && searchRoles()" novalidate>
+        <div class="form-cant clearfix">
+            <span class="vacant-cant">Search</span>
+            <span class="col-md-4 col-sm-4 col-search">
+                <input type="text" ng-model="search.name" ng-change="!search.name && searchRoles()" ng-if="role!=='devices'" class="form-control pl-grey" placeholder="Enter {{role|titleCase}} Name" required/>
+                <input type="text" ng-model="search.name" ng-change="!search.name && searchRoles()" ng-if="role==='devices'" class="form-control pl-grey" placeholder="Enter Device Serial Number" required/>
+                <span ng-click="searchRoles()"><i class="fa fa-search"></i></span>
+            </span>
+            <span class="col-md-3 col-sm-3 form-gcant text-center">
+                <a ng-show="showMoreFilters" id="show_more_filters_btn" ng-click="mFilters = !mFilters" class="more-filters-btn filters pull-left"><i class="fa fa-bars" aria-hidden="true"></i><span ng-hide="mFilters"> Show More Filters</span> <span ng-show="mFilters">Hide Filters</span></a>
+            </span>
+
+            <span class="pull-right">
+                <button id="create_new_{{role}}_btn" class="btn btn-primary" type="button" ng-if="acctAccess[role] === 'W'" ng-show="isCreate()" ng-click="open('NEW')">CREATE NEW {{role|uppercase}}</button>
+            </span>
+        </div>
+    </form>
+    <div class="form-cant clearfix cant-line-down">{{sFilter}}
+        <span class="vacant-cant">{{roleTableParams.primaryFilter.display_name}}
+        </span>
+        <ul class="nav nav-checkbox">
+            <li ng-repeat="entry in roleTableParams.primaryFilter.entries">
+                <span class="check-box-filter">
+                    <label class="label-filter">
+                        <input type="checkbox" ng-click="searchRoles(roleTableParams.primaryFilter.name)" ng-model="searchFilters[roleTableParams.primaryFilter.name][entry.value]"> <span></span>{{entry.name}}
+                    </label>
+                </span>
+            </li>
+        </ul>
+    </div>
+    <!-- Show More Filters Click Function -->
+    <div ng-show="mFilters">
+        <div class="filter-area">
+            <div class="form-cant clearfix" ng-repeat="filter in roleTableParams.filters" ng-if="filter.entries.length">
+                <div ng-if="filter.entries.length <= 6">
+                    <span class="vacant-cant">{{filter.display_name}}</span>
+                    <ul class="nav nav-checkbox">
+                        <li ng-repeat="entry in filter.entries">
+                            <span class="check-box-filter">
+                                <label class="label-filter">    
+                                    <input type="checkbox" ng-click="searchRoles(filter.name)" ng-model="searchFilters[filter.name][entry.value]"> <span></span>{{entry.name}}
+                                </label>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+                <span class="vacant-cant">{{filter.display_name}}</span>
+                <div class="col-sm-4" ng-mouseleave="showList('hide')" ng-if="filter.entries.length > 6">
+                    <span class="input-select">
+                        <span id="{{filter.display_name}}_filter" class="form-control well-li" ng-if="filter.display_name !== 'Country'" ng-click="showList(filter.display_name)">{{moreFilters[filter.name]}}<span class="droplist-arrow caret" ng-if="filter.entries.length"></span></span>
+                        <input id="{{filter.display_name}}_filter" class="form-control well-li" ng-if="filter.display_name === 'Country'" ng-model="moreFilters[filter.name]" ng-change="visibility[filter.display_name] = true" ng-click="showList(filter.display_name)"><span class="droplist-arrow caret" ng-if="filter.entries.length"></span>
+                        <ul ng-show="visibility[filter.display_name]" class="dropOptions deviceType">
+                            <li ng-click="clearFilter(filter.name)" ng-if="filter.entries.length"><span>&nbsp;</span></li>
+                            <li class="well-li" ng-if="filter.display_name !== 'Country'" ng-click="addFilter(filter.name, item)" ng-repeat="item in filter.entries" ng-model="searchFilters[filter.name][country.value]">{{item.name}}</li>
+                            <li class="well-li" ng-if="filter.display_name === 'Country'" ng-click="addFilter(filter.name, item)" ng-repeat="item in countryList" ng-model="searchFilters[filter.name][country.value]">{{item.name}}</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+            <div class="form-cant clearfix" ng-if="role==='devices'">
+                <span class="vacant-cant">Customer Name</span>
+                <div class="col-sm-4" ng-mouseleave="showList('hide')">
+                    <span class="input-select">
+                        <input id="cname_filter" type="text" ng-change="filter.customer_name && getAutoCompleteData('customerNames', 'customer_name')" ng-click="showList('customer_name')" class="form-control well-li" ng-model="filter.customer_name" ng-trim="false"/><span class="droplist-arrow caret" ng-click="showList('customer_name')" ng-if="metaData.customer_name.length"></span>
+                        <ul ng-show="visibility.customer_name" class="dropOptions deviceType">
+                            <li ng-click="clearFilter('customer_name')" ng-if="metaData.customer_name.length"><span>&nbsp;</span></li>
+                            <li class="well-li" ng-click="addFilter('customer_name', item)" ng-repeat="item in metaData.customer_name">{{item.displayName}}</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+            <div class="form-cant clearfix" ng-if="role==='devices'">
+                <span class="vacant-cant">Customer Account</span>
+                <div class="col-sm-4" ng-mouseleave="showList('hide')">
+                    <span class="input-select">
+                        <input id="caccount_input" type="text" ng-change="filter.customer_account && getAutoCompleteData('customerAccount', 'customer_account')" ng-click="showList('customer_account')" class="form-control well-li" ng-model="filter.customer_account" ng-trim="false"/><span class="droplist-arrow caret" ng-click="showList('customer_account')" ng-if="metaData.customer_account.length"></span>
+                        <ul ng-show="visibility.customer_account" class="dropOptions deviceType">
+                            <li ng-click="clearFilter('customer_account')" ng-if="metaData.customer_account.length"><span>&nbsp;</span></li>
+                            <li class="well-li" ng-click="addFilter('customer_account', item)" ng-repeat="item in metaData.customer_account">{{item.displayName}}</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="table-box scroll">
+    <div ng-show="showLoader" class="loader-box">
+        <i ng-show="!dataError && showLoader" class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+    </div>
+    <div ng-show="dataError">
+        <div class="alert alert-danger error-box fa fa-exclamation-triangle">
+            {{dataError}}
+        </div>
+    </div>
+
+    <table ng-hide="dataError" class="table table-condensed table-hover table-modal table-sorting role-table">
+        <thead>
+            <tr>
+                <th ng-repeat="(colKey,col) in roleDetails.columns" ng-class="sortCol[col.name.column].cssClass" ng-click="getSorted(col.name.column)">{{col.name.display_name}}</th>
+                <th ng-show="roleDetails.actions.viewable" ng-click="getSorted(Action)">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr dir-paginate="(rowKey, role) in roleDetails.data|itemsPerPage:roleTableParams.itemsPerPage" total-items="roleTableParams.total_count" current-page="roleTableParams.pageNo" ng-click="open(rowKey)" >
+                <td ng-repeat ="(columnKey, col) in roleDetails.columns">
+                    {{role.detail[col.name.column]}}
+                </td>
+                <td ng-click="stopPropagation($event)" ng-show="role.additional.download">
+                    <!-- <a ng-href="{{url}}{{role.additional.download.url}}&name=document.pdf#toolbar=0&navpanes=0" target="_blank">View</a> -->
+                    <span ng-click="viewPDF(url + role.additional.download.url + '&name=document.pdf#toolbar=0&navpanes=0')">View</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div ng-hide="dataError" class="role-pagination">
+    <dir-pagination-controls on-page-change="getData(newPageNumber)" boundary-links="true"></dir-pagination-controls>
+</div>

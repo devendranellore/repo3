@@ -1,0 +1,57 @@
+<div class="filter-area">
+    <form class="form-vacent" name="sForm" ng-submit="search.name && searchRoles()">
+        <div class="form-cant clearfix">
+            <span class="vacant-cant">Search</span>
+            <span class="col-md-4 col-sm-4 col-search" ng-if="role !== 'mdtapprovemgr' && role !=='clientsoftware'">
+                <input type="text" ng-model="search.name" ng-change="!search.name && searchRoles()" class="form-control pl-grey" placeholder="Enter {{role|titleCase}} Name" required/>
+                <span ng-click="searchRoles()"><i class="fa fa-search"></i></span>
+            </span>
+            <span class="col-md-4 col-sm-4 col-search" ng-if="role === 'mdtapprovemgr'">
+                <input type="text" ng-model="search.name" ng-change="!search.name && searchRoles()" class="form-control pl-grey" placeholder="Enter Approving Manager Name" required/>
+                <span ng-click="searchRoles()"><i class="fa fa-search"></i></span>
+            </span>
+            <span class="col-md-4 col-sm-4 col-search" ng-if="role === 'clientsoftware'">
+                <input type="text" ng-model="search.name" ng-change="!search.name && searchRoles()" class="form-control pl-grey" placeholder="Enter Client Software Name" required/>
+                <span ng-click="searchRoles()"><i class="fa fa-search"></i></span>
+            </span>
+            <span class="pull-right" ng-if="role !== 'mdtapprovemgr' && role !=='clientsoftware'">
+                <button id="create_new_{{role}}_btn" class="btn btn-primary" type="button" ng-show="isCreate()" ng-click="open('NEW')">CREATE NEW {{role|uppercase}}</button>
+            </span>
+            <span class="pull-right" ng-if="role === 'mdtapprovemgr'">
+                <button id="create_new_{{role}}_btn" class="btn btn-primary" type="button" ng-show="isCreate()" ng-click="open('NEW')">CREATE NEW APPROVING MANAGER</button>
+            </span>
+            <span class="pull-right" ng-if="role === 'clientsoftware'">
+                <button id="create_new_{{role}}_btn" class="btn btn-primary" type="button" ng-show="isCreate()" ng-click="open('NEW')">CREATE NEW CLIENT SOFTWARE</button>
+            </span>
+        </div>
+    </form>
+</div>
+<div class="table-box scroll">
+    <div ng-show="showLoader" class="loader-box">
+        <i ng-show="!dataError && showLoader" class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+    </div>
+    <div ng-show="dataError">
+        <div class="alert alert-danger error-box fa fa-exclamation-triangle">
+            {{dataError}}
+        </div>
+    </div>
+
+    <table ng-hide="dataError" class="table table-condensed table-hover table-modal table-sorting role-table">
+        <thead>
+            <tr>
+                <th ng-repeat="(colKey,col) in roleDetails.columns" ng-class="sortCol[col.name.column].cssClass" ng-click="getSorted(col.name.column)">{{col.name.display_name}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr dir-paginate="(rowKey, role) in roleDetails.data|itemsPerPage:roleTableParams.itemsPerPage" total-items="roleTableParams.total_count" current-page="roleTableParams.pageNo" ng-click="open(rowKey)" >
+                <td ng-repeat ="(columnKey, col) in roleDetails.columns">
+                    <div ng-if='col.name.display_name=="Upload Date"'>{{role.detail[col.name.column]|date : 'MM/dd/yyyy'}}</div>
+                    <div ng-if='col.name.display_name!="Upload Date"'>{{role.detail[col.name.column]|limitTo : 25}}</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div ng-hide="dataError" class="role-pagination">
+    <dir-pagination-controls on-page-change="getData(newPageNumber)" boundary-links="true"></dir-pagination-controls>
+</div>

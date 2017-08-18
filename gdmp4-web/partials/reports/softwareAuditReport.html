@@ -1,0 +1,67 @@
+<div id="software-audit-report" class="reports" ng-if="!showPrint">
+    <div ng-include="'partials/reports/modalError.html'"></div>
+    <div class="report-params">
+        <div class="edits">
+            <label>Software Audit Report</label>
+            <form name="reportForm" autocomplete="off">
+                <div class="overflow-visible">
+                    <div class="form-line">
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')" ng-class="{'has-error': report.searchType.$invalid}">
+                            <label>
+                                Search Type*
+                            </label>
+                            <span class="input-select">
+                                <span id="report_search_type_input" class="form-control well-li" name="searchType" ng-required="true" ng-model="repData.searchType" ng-click="showList('searchType')">{{repData.searchType}}<span class="droplist-arrow caret" ng-if="metaRepData.searchType.length"></span></span>
+                                <ul ng-show="visibility.searchType" class="dropOptions deviceType">
+                                    <li ng-click="clear('searchType')" ng-if="metaRepData.searchType.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('searchType', repMetaObj)" ng-repeat="repMetaObj in metaRepData.searchType">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')" ng-if="repData.searchType === 'Audit By Device Type'" ng-class="{'has-error': report.deviceType.$invalid}">
+                            <label>
+                                Device Type*
+                            </label>
+                            <span class="input-select">
+                                <span id="report_device_type_input" class="form-control well-li" name="deviceType" ng-required="true" ng-model="repData.deviceType" ng-click="showList('deviceType')">{{repData.deviceType}}<span class="droplist-arrow caret" ng-if="metaRepData.deviceType.length"></span></span>
+                                <ul ng-show="visibility.deviceType" class="dropOptions deviceType">
+                                    <li ng-click="clear('deviceType')" ng-if="metaRepData.deviceType.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('deviceType', repMetaObj)" ng-repeat="repMetaObj in metaRepData.deviceType">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div ng-include="'partials/reports/viewReport.html'"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div ng-show="showReportData">
+        <div class="table-box scroll">
+            <div ng-include="'partials/reports/header.html'"></div>
+            <table ng-hide="dataRepError" class="table table-condensed table-hover table-modal table-sorting role-table header-line-top">
+                <thead>
+                    <tr>
+                        <th ng-repeat="(colKey,col) in reportDetails.columns" ng-class="sortCol[col.column].cssClass" ng-click="getSorted(col.column)">{{col.display_name}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr dir-paginate="(rowKey, role) in reportDetails.currentPageData | itemsPerPage:reportParams.itemsPerPage" total-items="reportParams.total_count" pagination-id="noPrint" current-page="reportParams.pageNo" >
+                        <td ng-repeat ="(columnKey, col) in reportDetails.columns">
+                            <div ng-if="isDecimal(col.display_name)">
+                                <p class="report-content">{{role.detail[col.column]|number:2}}%</p>
+                            </div>
+                            <div ng-if="!isDecimal(col.display_name)">
+                                <p class="report-content">{{role.detail[col.column]}}</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div ng-include="'partials/reports/footer.html'"></div>
+    </div>
+</div>
+
+<div ng-if="showPrint" ng-include="'partials/reports/printReport.html'"></div>

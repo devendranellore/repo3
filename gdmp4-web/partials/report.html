@@ -1,0 +1,7 @@
+<div class="reports container-fluid no-padding no-print">
+    <ng-include src="'partials/reports/reportHeader.html'"></ng-include>
+</div>
+
+<div class="report-filter" id="reportFilter" ng-if="selectedReport">
+    <ng-include src="'partials/reports/'+selectedReport+'Report.html'"></ng-include>
+</div>

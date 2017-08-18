@@ -1,0 +1,321 @@
+<div>
+    <div ng-show="showLoader" class="loader-box">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+    </div>
+    <div ng-show="modalError" class="loader-box modal-error" >
+        <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+    </div>
+    <div class="modal-dialog modal-lg" role="document" ng-hide="modalError">
+        <div class="modal-content">
+            <div class="modal-header clearfix">
+                <span ng-if="createRecord" class="modal-title" id="updateModalLabel">Create User</span>
+                <span ng-if="!createRecord && readOnlyFlag" class="modal-title" id="updateModalLabel">View Existing User</span>
+                <span ng-if="!createRecord && !readOnlyFlag" class="modal-title" id="updateModalLabel">Edit Existing User</span>
+                <div class="pull-right">
+                    <a uib-popover-html="help" popover-is-open="popoverIsOpen" ng-click="popoverIsOpen = !popoverIsOpen" popover-placement="left-top">Help</a>
+                    <span class="btn btn-primary btn-mw" id="edit_role_btn" ng-show="readOnlyFlag && authorizedEdit" ng-click="readOnly(false)">EDIT</span>
+                    <button class="btn btn-primary btn-mw" id="save_role_btn" ng-hide="readOnlyFlag && hideSave" ng-disabled="userForm.$invalid || !formValid || !cotSelected || !selectedValidCountry || !selectedValidLanguage" ng-click="save()">SAVE</button>
+                    <span data-dismiss="modal" aria-label="Close" class="btn btn-primary btn-mw" ng-click="cancel()">CANCEL</span>
+                </div>
+            </div>
+            <form name="userForm" autocomplete="off" novalidate>
+                <div class="modal-body edits">
+                    <label>Basic Information</label>
+                    <div class="form-line pull-right">
+                        <button id="edit_user_management_unlock_btn" class="btn btn-primary" type="button" ng-show="authorizedEdit" ng-if="!createRecord && roleData.isLocked" ng-click="userAction('unlock')">Unlock User</button>
+                        <button id="edit_user_management_delete_btn" class="btn btn-primary" type="button" ng-show="authorizedEdit" ng-if="!createRecord && (roleData.mail!==userEmail)" ng-click="userAction('delete')">Delete User</button>
+                        <button id="edit_user_management_deactivate_btn" class="btn btn-primary btn-mw" type="button" ng-show="authorizedEdit" ng-if="!createRecord && !roleData.isDeactived && (roleData.mail!==userEmail)" ng-click="userAction('deactivate')">Deactivate</button>
+                        <button id="edit_user_management_activate_btn" class="btn btn-primary btn-mw" type="button" ng-show="authorizedEdit" ng-if="!createRecord && roleData.isDeactived" ng-click="userAction('activate')">Activate</button>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="modal-form overflow-visible">
+                        <div class="form-line">
+                            <div class="col-sm-4">
+                                Is the user a Medtronic employee?
+                            </div>
+                            <div class="col-sm-8">
+                                <ul class="nav nav-radio nav-transparent">
+                                    <li class="col-sm-3 col-xs-6" ng-class="{'active' : roleData.isMedtronicEmployee, 'disabled': readOnlyFlag}">
+                                        <a ng-click="createRecord && !readOnlyFlag && changeMedtronicEmployee()"><span>&nbsp;</span>YES</a>
+                                    </li>
+                                    <li class="col-sm-3 col-xs-6" ng-class="{'active' : !roleData.isMedtronicEmployee, 'disabled': readOnlyFlag}">
+                                        <a ng-click="createRecord && !readOnlyFlag && changeMedtronicEmployee()"><span>&nbsp;</span>NO</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="form-line">
+                            <div class="col-sm-4" ng-class="{ 'has-error': userForm.fName.$invalid }">
+                                <label>
+                                    First Name*
+                                    <span ng-show="roleData.tooltip.firstName">
+                                        {{roleData.tooltip.firstName}}
+                                    </span>
+                                </label>
+                                <input id="user_edit_first_name_input" type="text" name="fName" pattern="[A-Za-z.]+" uib-popover="Please fill with only alphabet and period" popover-is-open="fNamePopover && userForm.fName.$invalid" popover-trigger="userForm.fName.$invalid" ng-click="fNamePopover = !fNamePopover" popover-placement="top-right" class="form-control" ng-readonly="readOnlyFlag || !createRecord" ng-model="roleData.firstName" required/>
+                            </div>
+                            <div class="col-sm-4" ng-class="{ 'has-error': userForm.sName.$invalid }" >
+                                <label>
+                                    Last Name*
+                                    <span ng-show="roleData.tooltip.lastName">
+                                        {{roleData.tooltip.lastName}}
+                                    </span>
+                                </label>
+                                <input id="user_edit_last_name_input" type="text" name="sName" pattern="[A-Za-z.]+" uib-popover="Please fill with only alphabet and period" popover-is-open="sNamePopover && userForm.sName.$invalid" popover-trigger="userForm.sName.$invalid" ng-click="sNamePopover = !sNamePopover" popover-placement="top-right" class="form-control" ng-readonly="readOnlyFlag || !createRecord" ng-model="roleData.lastName" required/>
+                            </div>
+                            <div class="col-sm-4" ng-class="{ 'has-error': userForm.email.$invalid }">
+                                <label>
+                                    Email Address*
+                                    <span ng-show="roleData.tooltip.mail">
+                                        {{roleData.tooltip.mail}}
+                                    </span>
+                                </label>
+                                <input id="user_edit_email_input" type="email" name="email" class="form-control" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$" uib-popover="Please fill with valid email" popover-is-open="emailPopover && userForm.email.$invalid" popover-trigger="userForm.email.$invalid" ng-click="emailPopover = !emailPopover" popover-placement="top-right" ng-readonly="readOnlyFlag" ng-model="roleData.mail" required/>
+                            </div>
+                        </div>                     
+                        <div class="form-line">
+                            <div class="col-sm-4" ng-mouseleave="showList('hide')" ng-class="{ 'has-error': userForm.countryName.$invalid || !selectedValidCountry }">
+                                <label>
+                                    Country*
+                                    <span ng-show="roleData.tooltip.country">
+                                        {{roleData.tooltip.country}}
+                                    </span>
+                                </label>
+                                <span class="input-select">
+                                    <input id="user_edit_country_input" type="text" name="countryName" ng-change="visibility.country = true" class="form-control" ng-readonly="readOnlyFlag" ng-model="roleData.countryName" required ng-click="showList('country')"><span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span>
+                                    <ul ng-show="!readOnlyFlag && visibility.country" class="dropOptions">
+                                        <li ng-click="updateType('country', countryObj)" ng-repeat="countryObj in metaData.countryList">{{countryObj.displayName}}</li>
+                                    </ul>
+                                </span>
+                            </div>
+                            <div class="col-sm-4" ng-mouseleave="showList('hide')" ng-class="{ 'has-error': userForm.languageName.$invalid || !selectedValidLanguage}">
+                                <label>
+                                    Language*
+                                    <span ng-show="roleData.tooltip.language">
+                                        {{roleData.tooltip.language}}
+                                    </span>
+                                </label>
+                                <span class="input-select">
+                                    <input id="user_edit_language_input" type="text" name="languageName" ng-change="visibility.language = true" class="form-control" ng-readonly="readOnlyFlag" ng-model="roleData.languageName" required ng-click="showList('language')"><span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span>
+                                    <ul ng-show="!readOnlyFlag && visibility.language" class="dropOptions">
+                                        <li ng-click="updateType('language', languageObj)" ng-repeat="languageObj in metaData.languageList">{{languageObj.displayName}}</li>
+                                    </ul>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-line" ng-show="!roleData.isMedtronicEmployee">
+                            <div class="col-sm-4" ng-class="{'has-error': !formValid}">
+                                <label>
+                                    Customer*
+                                    <span ng-show="roleData.tooltip.customerName">
+                                        {{roleData.tooltip.customerName}}
+                                    </span>
+                                </label>
+                                <div ng-show="roleData.customers && roleData.customers.length > 0" class="colps-body full-border clearfix">
+                                    <span class="col-sm-12" ng-repeat="customer in roleData.customers">
+                                        <div class="colps-child wrap-text">
+                                            {{customer.name}}
+                                            <span ng-click="!readOnlyFlag && deleteCustomer(customer)"><i class="fa fa-trash"></i></span>
+                                        </div>
+                                    </span>
+                                </div>
+                                <span class="input-select no-chevron" ng-mouseleave="showList('hide')">
+                                    <div class="col-search" ng-hide="readOnlyFlag">
+                                        <input id="user_edit_customer_search_input" class="form-control" type="text" ng-model="search.customer" ng-change="search('customer', search.customer)" data-ng-trim="false" autocomplete="off"/>
+                                        <span ng-click="search('customer', search.customer)"><i class="fa fa-search"></i></span>
+                                    </div>
+                                    <ul class="dropOptions" ng-show="visibility.search_customer">
+                                        <li ng-click="addCustomer(customer)" ng-repeat="customer in result.customer">{{ customer.name}}</li>
+                                    </ul>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="modal-lab">Roles</label>
+                    <div class="modal-form clearfix overflow-visible" ng-class="{'has-error': !roleData.roles}" uib-popover="Please select a role for at least one Class of Trade" popover-is-open="(rolesPopover && !roleData.roles)" popover-trigger="!roleData.roles" ng-click="rolesPopover = !rolesPopover" popover-placement="top-right">
+                        <div class="col-sm-12">
+                            <table class="table table-bordered table-nopadding-bordered table-center">
+                                <thead>
+                                    <tr>
+                                        <th>Class of Trade</th>
+                                        <th>Role</th>
+                                        <th>Default</th>
+                                        <th>Installation Privileges</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="(cotName, cotData) in metaData.cot_role_devicetype">
+                                        <td>{{cotName}}</td>
+                                        <td>
+                                            <span class="input-select" ng-mouseleave="showList('hide')">
+                                                <span class="form-control" type="text" ng-model="roleData.roles[cotName].roleName" ng-click="showList(cotName + '_role')" ng-disabled="readOnlyFlag">{{roleData.roles[cotName].roleName}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                                                <ul class="dropOptions" ng-show="visibility[cotName + '_role']">
+                                                    <li ng-click="updateCotRole(cotName)">No Role</li>
+                                                    <li ng-click="updateCotRole(cotName, roleName, roleData)" ng-repeat="(roleName, roleData) in (roleData.isMedtronicEmployee ? cotData.medtronicDeviceAccessRole : cotData.nonMedtronicDeviceAccessRole)">{{ roleName}}</li>
+                                                </ul>
+                                            </span>
+                                        </td>
+                                        <td class="table-checkbox">
+                                            <span ng-class="{'active' : roleData.roles[cotName].isDefault, 'disabled': readOnlyFlag}" ng-click="!readOnlyFlag && selectDefaultCot(cotName)"></span>
+                                        </td>
+                                        <td style="min-width:200px;">
+                                            <span class="input-select" ng-mouseleave="showList('hide')">
+                                                <span class="form-control" ng-click="showList(cotName + '_deviceAccessList')" ng-disabled="readOnlyFlag">{{ (roleData.roles[cotName] && roleData.roles[cotName].roleName) ? ((roleData.roles[cotName].deviceAccess | toArray | filter:{$value:true}).length + ' device access selected') : ''}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                                                <ul class="dropOptions nav nav-checkbox nav-transparent" ng-show="visibility[cotName + '_deviceAccessList']">
+                                                    <li ng-repeat="deviceAccess in metaData.all_device_access" ng-class="{'active': roleData.roles[cotName].deviceAccess[deviceAccess]}">
+                                                        <a ng-click="roleData.roles[cotName].deviceAccess[deviceAccess] = !roleData.roles[cotName].deviceAccess[deviceAccess]">
+                                                            <span>&nbsp;</span>{{ deviceAccessMapping[deviceAccess]}}
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <label class="modal-lab">Trainer Privileges</label>
+                    <div class="modal-form clearfix overflow-visible">
+                        <div class="col-sm-12">
+                            <div class="table-addon">
+                                <div class="table-addon-inputs">
+                                    <table class="table table-bordered table-nopadding-bordered table-center">
+                                        <thead>
+                                            <tr>
+                                                <th>Class of Trade</th>
+                                                <th>Device Type</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="(deviceTypeName, cotName) in roleData.trainerPrivileges">
+                                                <td>{{ cotName}}</td>
+                                                <td>{{ deviceTypeName}}</td>
+                                                <td class="table-addon-btns table-edit-btn">
+                                                    <button class="btn btn-primary" ng-class="{'disabled': readOnlyFlag}" ng-click="!readOnlyFlag && removeTrainerPrivilege(deviceTypeName)">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr ng-if="!readOnlyFlag" class="table-addon-inptr">
+                                                <td>
+                                                    <span class="input-select" ng-mouseleave="showList('hide')">
+                                                        <span class="form-control" ng-click="showList('trainer_privileges_cot')" ng-model="trainerPrivilege.cotName">{{trainerPrivilege.cotName}}<span class="droplist-arrow caret"></span></span>
+                                                        <ul class="dropOptions" ng-show="visibility.trainer_privileges_cot">
+                                                            <li ng-repeat="(cotName, cotData) in metaData.cot_role_devicetype" ng-click="trainerPrivilege.cotName = cotName; trainerPrivilege.deviceTypeList = cotData.deviceTypeList">{{ cotName}}</li>
+                                                        </ul>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="input-select" ng-mouseleave="showList('hide')">
+                                                        <span class="form-control" ng-model="trainerPrivilege.deviceType.name" ng-click="showList('trainer_privileges_device_type')">{{trainerPrivilege.deviceType.name}}<span class="droplist-arrow caret"></span></span>
+                                                        <ul class="dropOptions" ng-show="visibility.trainer_privileges_device_type">
+                                                            <li ng-click="trainerPrivilege.deviceType = deviceType" ng-repeat="deviceType in trainerPrivilege.deviceTypeList">{{ deviceType.name}}</li>
+                                                        </ul>
+                                                    </span>
+                                                </td>
+                                                <td class="table-addon-btns table-edit-btn">
+                                                    <button class="btn btn-primary" ng-click="addTrainerPrivilege()">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="modal-lab">Training Records</label>
+                    <div class="modal-form clearfix overflow-visible">
+                        <div class="col-sm-12 training-records">
+                            <div class="table-addon">
+                                <div class="table-addon-inputs">
+                                    <table class="table table-bordered table-nopadding-bordered table-center">
+                                        <thead>
+                                            <tr>
+                                                <th>Class of Trade</th>
+                                                <th>Device Type</th>
+                                                <th>Trainer User ID</th>
+                                                <th>Date of Training</th>
+                                                <th>Status</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="(deviceTypeName, record) in roleData.trainingRecords">
+                                                <td>{{ record.cotName}}</td>
+                                                <td>{{ deviceTypeName}}</td>
+                                                <td>{{ record.trainerEmail}}</td>
+                                                <td ng-if="record.trainingDateString">{{ record.trainingDateString}}</td>
+                                                <td ng-if="!record.trainingDateString">{{ record.trainingDate | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+                                                <td>{{ record.certificated ? 'Certified' : 'Uncertified' }}</td>
+                                                <td class="table-addon-btns table-edit-btn">
+                                                    <button class="btn btn-primary" ng-class="{'disabled': readOnlyFlag}" ng-click="!readOnlyFlag && removeTrainingRecord(deviceTypeName)">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr ng-if="!readOnlyFlag" class="table-addon-inptr" ng-mouseleave="showList('hide')">
+                                                <td>
+                                                    <span class="input-select">
+                                                        <ul class="dropOptions reverse" ng-show="visibility.training_record_cot">
+                                                            <li ng-repeat="(cotName, roleName) in roleData.roles" ng-click="trainingRecord.cotName = cotName; trainingRecord.deviceTypeList = metaData.cot_role_devicetype[cotName].deviceTypeList">{{ cotName}}</li>
+                                                        </ul>
+                                                        <span class="form-control" ng-click="showList('training_record_cot')" ng-model="trainingRecord.cotName">{{trainingRecord.cotName}}<span class="droplist-arrow caret"></span></span>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="input-select">
+                                                        <ul class="dropOptions reverse" ng-show="visibility.training_record_device_type">
+                                                            <li ng-click="changeTrainingRecordDeviceType(trainingRecord, deviceType)" ng-repeat="deviceType in trainingRecord.deviceTypeList">{{ deviceType.name}}</li>
+                                                        </ul>
+                                                        <span class="form-control" ng-model="trainingRecord.deviceType.name" ng-click="showList('training_record_device_type')">{{trainingRecord.deviceType.name}}<span class="droplist-arrow caret"></span></span>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="input-select">
+                                                        <ul class="dropOptions reverse" ng-show="visibility.training_record_trainer">
+                                                            <li ng-click="trainingRecord.trainer = trainer" ng-repeat="trainer in trainingRecord.trainerList">{{ trainer.mail}}</li>
+                                                        </ul>
+                                                        <span class="form-control" ng-model="trainingRecord.trainer.mail" ng-click="showList('training_record_trainer')">{{trainingRecord.trainer.mail}}<span class="droplist-arrow caret"></span></span>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <p class="input-group">
+                                                        <input class="form-control well-li" type="text" data-readonly="true" uib-datepicker-popup="{{format}}" ng-model="trainingRecord.date" is-open="popup.opened" datepicker-options="dateOptions"/>
+                                                        <span class="input-group-btn">
+                                                            <button type="button" class="btn btn-default" ng-click="open()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                        </span>
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <span class="input-select">
+                                                        <ul class="dropOptions reverse" ng-show="visibility.training_record_certificated">
+                                                            <li ng-click="trainingRecord.certificatedText = 'Certified'; trainingRecord.certificated = true">Certified</li>
+                                                            <li ng-click="trainingRecord.certificatedText = 'Uncertified'; trainingRecord.certificated = false">Uncertified</li>
+                                                        </ul>
+                                                        <span class="form-control" ng-model="trainingRecord.certificatedText" ng-click="showList('training_record_certificated')">{{trainingRecord.certificatedText}}<span class="droplist-arrow caret"></span></span>
+                                                    </span>
+                                                </td>
+                                                <td class="table-addon-btns table-edit-btn">
+                                                    <button class="btn btn-primary" ng-click="addTrainingRecord()">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="msg_end" style="height:0px;overflow:hidden"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

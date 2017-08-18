@@ -1,0 +1,80 @@
+<div>
+    <div ng-show="showLoader || LoadError" class="loader-box">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+    </div>
+    <div ng-show="modalError" class="loader-box modal-error">
+        <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+    </div>
+    <div style="height:400px!important" class="modal-dialog modal-lg" id="updModal" tabindex="-1" role="dialog" data-target=".bs-example-modal-lg">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header clearfix">
+                    <span class="modal-title" id="updModalLabel" ng-hide="createRecord">View {{role|titleCase}} Item</span>
+                    <span class="modal-title" id="updModalCreateLabel" ng-show="createRecord">Create {{role|titleCase}} Item</span>
+                    <div class="pull-right">
+                        <a uib-popover-html="help" popover-is-open="popoverIsOpen" ng-click="popoverIsOpen = !popoverIsOpen" popover-placement="left-top">Help</a>
+                        <button id="save_config_submit_btn_alias" type="button" class="btn btn-primary btn-mw" ng-show="readOnlyFlag" ng-click="readOnly(false)">EDIT</button>
+                        <button id="save_config_submit_btn_alias" type="button" class="btn btn-primary btn-mw" ng-hide="readOnlyFlag" ng-disabled="roleForm.$invalid" ng-click="save()">SAVE</button>
+                        <button class="btn btn-primary btn-mw" data-dismiss="modal" aria-label="Close" ng-click="cancel()">CANCEL</button>
+                    </div>
+                </div>
+                <div ng-show="roleData.warningMessage" class="alert alert-warning alert-modal-fixed">
+                    <span class="alert-warning-flag">
+                        <span class="alert-warning-flbg"></span>
+                    <span class="alert-warning-fltx">!</span>
+                    </span>
+                    <p>
+                        {{roleData.warningMessage}}
+                    </p>
+                </div>
+                <div class="modal-body">
+                    <div class="form-line pull-right">
+                        <button id="edit_role_delete_btn" class="btn btn-primary" type="button" ng-if="!createRecord" ng-click="customAction('delete')">Delete Role</button>
+                    </div>
+                    <form name="roleForm" autocomplete="off" novalidate>
+                        <div class="modal-form overflow-visible">
+                            <div class="form-line">
+                                <div class="col-sm-4" ng-class="{ 'has-error': roleForm.role.$invalid }">
+                                    <label>
+                                       Role Name*
+                                        <span ng-show="roleData.tooltip.name">
+                                            {{roleData.tooltip.name}}
+                                        </span>
+                                    </label>
+                                    <input id="config_edit_name_input" type="text" name="role" pattern="^[A-Za-z0-9_]*$" uib-popover="Please fill with only alphanumeric and _" popover-is-open="rolePopover && roleForm.role.$invalid" popover-trigger="roleForm.role.$invalid" ng-click="rolePopover = !rolePopover" popover-placement="right-top" class="form-control" ng-readonly="!createRecord && !editable" ng-model="roleData.name" ng-required="true"/>
+                                </div>
+                            </div>
+                            <div class="form-line">
+                                <div class="col-sm-8">
+                                <label>
+                                    Medtronic Role*
+                                </label>
+                                    <ul class="nav nav-radio nav-transparent">
+                                        <li class="col-sm-3 col-xs-6" ng-class="{'active' : roleData.isMedtronicRole, 'disabled': readOnlyFlag}">
+                                            <a ng-click="!readOnlyFlag && (roleData.isMedtronicRole = true)"><span>&nbsp;</span>YES</a>
+                                        </li>
+                                        <li class="col-sm-3 col-xs-6" ng-class="{'active' : !roleData.isMedtronicRole, 'disabled': readOnlyFlag}">
+                                            <a ng-click="!readOnlyFlag && (roleData.isMedtronicRole = false)"><span>&nbsp;</span>NO</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="form-line">
+                                <div class="col-sm-12">
+                                    <label>
+                                    Description
+                                    <span ng-show="roleData.tooltip.description">
+                                        {{roleData.tooltip.description}}
+                                    </span>
+                                </label>
+                                    <textarea id="software_edit_description_input" class="form-control" ng-readonly="!createRecord && !editable" ng-model="roleData.description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

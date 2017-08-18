@@ -1,0 +1,78 @@
+<div class="filter-area" ng-show="roleTableParams.primaryFilter.display_name && roleTableParams.primaryFilter.entries.length">
+    <form class="form-vacent" name="sForm" ng-submit="search.name && searchRoles()">
+        <div class="form-cant clearfix">
+            <span class="col-md-3 col-sm-3 form-gcant text-center pull-right">
+                <a ng-show="showMoreFilters" id="show_more_filters_btn" ng-click="mFilters = !mFilters" class="more-filters-btn filters pull-left"><i class="fa fa-bars" aria-hidden="true"></i><span ng-hide="mFilters"> Show More Filters</span> <span ng-show="mFilters">Hide Filters</span></a>
+            </span>
+        </div>
+        <div class="form-cant clearfix cant-line-down">{{sFilter}}
+            <span class="vacant-cant">{{roleTableParams.primaryFilter.display_name}}
+            </span>
+            <ul class="nav nav-checkbox">
+                <li ng-repeat="entry in roleTableParams.primaryFilter.entries">
+                    <span class="check-box-filter">
+                        <label class="label-filter">
+                            <input type="checkbox" ng-click="searchRoles(roleTableParams.primaryFilter.name)" ng-model="searchFilters[roleTableParams.primaryFilter.name][entry.value]"> <span></span>{{entry.name}}
+                        </label>
+                    </span>
+                </li>
+            </ul>
+        </div>
+        <!-- Show More Filters Click Function -->
+        <div ng-show="mFilters">
+            <div class="filter-area">
+                <div class="form-cant clearfix" ng-repeat="filter in roleTableParams.filters">
+                    <span class="vacant-cant">{{filter.display_name}}</span>
+                    <ul class="nav nav-checkbox">
+                        <li ng-repeat="entry in filter.entries"><span class="check-box-filter">
+                                <label class="label-filter">
+                                    <input type="checkbox" ng-click="searchRoles(filter.name)" ng-model="searchFilters[filter.name][entry.value]"> <span></span>{{entry.name}}
+                                </label>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="form-cant clearfix">
+                    <span class="vacant-cant">Customer Name</span>
+                    <div class="col-sm-4" ng-mouseleave="showList('hide')">
+                        <span class="input-select">
+                            <input id="cname_filter" type="text" ng-change="filter.customer_name && getAutoCompleteData('customerNames', 'customer_name')" ng-click="showList('customer_name')" class="form-control well-li" ng-model="filter.customer_name" ng-trim="false"/><span class="droplist-arrow caret" ng-click="showList('customer_name')" ng-if="metaData.customer_name.length"></span>
+                            <ul ng-show="visibility.customer_name" class="dropOptions deviceType">
+                                <li ng-click="clearFilter('customer_name')" ng-if="metaData.customer_name.length"><span>&nbsp;</span></li>
+                                <li class="well-li" ng-click="addFilter('customer_name', item)" ng-repeat="item in metaData.customer_name">{{item.displayName}}</li>
+                            </ul>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="table-box scroll">
+    <div ng-show="showLoader" class="loader-box">
+        <i ng-show="!dataError && showLoader" class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+    </div>
+    <div ng-show="dataError">
+        <div class="alert alert-danger error-box fa fa-exclamation-triangle">
+            {{dataError}}
+        </div>
+    </div>
+
+    <table ng-hide="dataError" class="table table-condensed table-hover table-modal table-sorting role-table">
+        <thead>
+            <tr>
+                <th ng-repeat="(colKey,col) in roleDetails.columns" ng-class="sortCol[col.name.column].cssClass" ng-click="getSorted(col.name.column)">{{col.name.display_name}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr dir-paginate="(rowKey, role) in roleDetails.data|itemsPerPage:roleTableParams.itemsPerPage" total-items="roleTableParams.total_count" current-page="roleTableParams.pageNo" ng-click="openModal(rowKey)" >
+                <td ng-repeat ="(columnKey, col) in roleDetails.columns">
+                    {{role.detail[col.name.column]|limitTo : 25}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div ng-hide="dataError" class="role-pagination">
+    <dir-pagination-controls on-page-change="getData(newPageNumber)" boundary-links="true"></dir-pagination-controls>
+</div>

@@ -1,0 +1,79 @@
+<div>
+    <div ng-show="showLoader || LoadError" class="loader-box">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+    </div>
+    <div ng-show="modalError" class="loader-box modal-error">
+        <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+    </div>
+    <div class="modal-dialog modal-lg" id="updModal" tabindex="-1" role="dialog" data-target=".bs-example-modal-lg">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header clearfix">
+                    <span class="modal-title" id="updModalLabel" ng-hide="createRecord">View {{role|titleCase}} Item</span>
+                    <span class="modal-title" id="updModalCreateLabel" ng-show="createRecord">Create  {{role|titleCase}} Item</span>
+                    <div class="pull-right">
+                        <a uib-popover-html="help" popover-is-open="popoverIsOpen" ng-click="popoverIsOpen = !popoverIsOpen" popover-placement="left-top">Help</a>
+                        <button id="edit_config_submit_btn_alias" type="button" class="btn btn-primary btn-mw" ng-show="readOnlyFlag" ng-click="readOnly(false)">EDIT</button>
+                        <button id="save_config_submit_btn_alias" type="button" class="btn btn-primary btn-mw" ng-hide="readOnlyFlag" ng-click="save()">SAVE</button>
+                        <button class="btn btn-primary btn-mw" data-dismiss="modal" aria-label="Delete" ng-hide="createRecord" ng-click="customAction('delete')">DELETE</button>
+                        <button class="btn btn-primary btn-mw" data-dismiss="modal" aria-label="Close" ng-click="cancel()">CANCEL</button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <label>Customer Data</label>
+                    <div class="modal-form overflow-visible">
+                        <div class="form-line">
+                            <div class="col-sm-4">
+                                <label>
+                                    Account Number*
+                                    <span ng-show="roleData.tooltip.accountNumber">
+                                        {{roleData.tooltip.accountNumber}}
+                                    </span>
+                                </label>
+                                <input id="config_edit_accountNumber_input" type="text" class="form-control" ng-readonly="!createRecord && !editable" ng-model="roleData.accountNumber"
+                                />
+                            </div>
+                            <div class="col-sm-4">
+                                <label>
+                                    Name*
+                                    <span ng-show="roleData.tooltip.name">
+                                        {{roleData.tooltip.name}}
+                                    </span>
+                                </label>
+                                <input id="config_edit_name_input" type="text" class="form-control" ng-readonly="!createRecord && !editable" ng-model="roleData.name"
+                                />
+                            </div>
+
+                        </div>
+                        <div class="form-line">
+                            <div class="col-sm-4">
+                                <label>
+                                    Address
+                                    <span ng-show="roleData.tooltip.address">
+                                        {{roleData.tooltip.address}}
+                                    </span>
+                                </label>
+                                <input id="config_edit_address_input" type="text" class="form-control" ng-readonly="!createRecord && !editable" ng-model="roleData.address"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <facility-items
+                        role-config="facility"
+                        doc-type="false"
+                        role-data="roleData"
+                        search-type="searchType(role,config)"
+                        read-only-flag="!createRecord"
+                        search-result="searchResult"
+                        add-association="addAssociation(index, associationKey, searchObj, type, root)"
+                        remove-association="removeAssociation(index, ObjKey)"
+                        is-empty-obj="isEmptyObj(obj)">
+                    </facility-items> -->
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

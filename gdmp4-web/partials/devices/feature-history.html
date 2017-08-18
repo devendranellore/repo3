@@ -1,0 +1,30 @@
+<div class="well bg-white clearfix tab-content no-padding feature-history">
+    <div class="clearfix"></div>
+    <div class="logs">
+        <table class="table table-device table-Wrap">
+            <thead>
+                <tr>
+                    <th ng-repeat="(colKey,col) in deviceData.feature_history.columns">{{col.name.display_name}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr dir-paginate="(rowKey,row) in deviceData.feature_history.operations|itemsPerPage:paginationParams.itemsPerPage" pagination-id="feature_history" total-items="paginationParams.feature_history.total_count" current-page="paginationParams.feature_history.pageNo">
+                    <td class="{{serviceColWidth}}" ng-repeat ="(columnKey, col) in deviceData.feature_history.columns">
+                        <div class="">{{row[col.name.column]}}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div ng-hide="deviceFeatureHistoryError" class="role-pagination device-pagination">
+        <dir-pagination-controls on-page-change="getFeatureHistoryLog(newPageNumber)" boundary-links="true" pagination-id="feature_history"></dir-pagination-controls>
+    </div>
+    <div ng-show="deviceFeatureHistoryError" class="device-error">
+        <div class="alert alert-danger error-box fa fa-exclamation-triangle">
+            {{deviceFeatureHistoryError}}
+        </div>
+    </div>
+    <div class="well-line-relative history-log">
+        <a>{{deviceData.feature_history.log}}</a>
+    </div>
+</div>

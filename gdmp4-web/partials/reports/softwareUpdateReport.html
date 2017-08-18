@@ -1,0 +1,124 @@
+<div id="software-update-report" class="reports" ng-if="!showPrint">
+    <div ng-include="'partials/reports/modalError.html'"></div>
+    <div class="report-params">
+        <div class="edits">
+            <label>Software Update Report</label>
+            <form name="reportForm" autocomplete="off">
+                <div class="overflow-visible">
+                    <div class="form-line">
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')" ng-class="{'has-error': report.deviceType.$invalid}">
+                            <label>
+                                Device Type*
+                            </label>
+                            <span class="input-select">
+                                <span id="report_device_type_input" class="form-control well-li" name="deviceType" ng-required="true" ng-model="repData.deviceType" ng-click="showList('deviceType')">{{repData.deviceType}}<span class="droplist-arrow caret" ng-if="metaRepData.deviceType.length"></span></span>
+                                <ul ng-show="visibility.deviceType" class="dropOptions deviceType">
+                                    <li ng-click="clear('deviceType')" ng-if="metaRepData.deviceType.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('deviceType', repMetaObj)" ng-repeat="repMetaObj in metaRepData.deviceType">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')">
+                            <label>
+                                User Name
+                            </label>
+                            <span class="input-select">
+                                <input id="report_user_name_input" type="text" ng-change="repData.userName && getAutoCompleteData('userNamesByDeviceType','userName')" ng-click="showList('userName')" class="form-control well-li" ng-model="repData.userName" ng-trim="false"/><span class="droplist-arrow caret" ng-click="showList('userName')" ng-if="metaRepData.userName.length"></span>
+                                <ul ng-show="visibility.userName" class="dropOptions deviceType">
+                                    <li ng-if="wait">Please wait a moment...</li>
+                                    <li ng-click="clear('userName')" ng-if="metaRepData.userName.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('userName', repMetaObj)" ng-repeat="repMetaObj in metaRepData.userName">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')">
+                            <label>
+                                Customer Name
+                            </label>
+                            <span class="input-select">
+                                <input id="report_customer_name_input" type="text" ng-change="repData.customerName && getAutoCompleteData('customerNamesByDeviceType','customerName')" ng-click="showList('customerName')" class="form-control well-li" ng-model="repData.customerName" ng-trim="false"/><span class="droplist-arrow caret" ng-click="showList('customerName')" ng-if="metaRepData.customerName.length"></span>
+                                <ul ng-show="visibility.customerName" class="dropOptions deviceType">
+                                    <li ng-if="wait">Please wait a moment...</li>
+                                    <li ng-click="clear('customerName')" ng-if="metaRepData.customerName.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('customerName', repMetaObj)" ng-repeat="repMetaObj in metaRepData.customerName">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')">
+                            <label>
+                                Country
+                            </label>
+                            <span class="input-select">
+                                <input id="report_country_input" class="form-control well-li" ng-change="visibility.country = true" ng-model="repData.country" ng-click="showList('country')"><span class="droplist-arrow caret" ng-if="metaRepData.countryList.length"></span>
+                                <ul ng-show="visibility.country" class="dropOptions deviceType">
+                                    <li ng-click="clear('country')" ng-if="metaRepData.country.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('country', repMetaObj)" ng-repeat="repMetaObj in metaRepData.countryList">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-line">
+                        <div class="col-sm-3">
+                            <label>
+                                From
+                            </label>
+                            <p class="input-group">
+                                <input type="text" id="report_from_input" data-readonly="true" class="form-control well-li" uib-datepicker-popup="{{format}}" ng-model="repData.from" is-open="popup1.opened" datepicker-options="dateOptions"/>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>
+                                To
+                            </label>
+                            <p class="input-group">
+                                <input type="text" id="report_to_input" data-readonly="true" class="form-control well-li" uib-datepicker-popup="{{format}}" ng-model="repData.to" is-open="popup2.opened" datepicker-options="dateOptions"/>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')">
+                            <label>
+                                Software Upgrade Status 
+                            </label>
+                            <span class="input-select">
+                                <span id="report_software_upgrade_input" class="form-control well-li" data-requried="true" data-readonly="true" ng-model="repData.softwareUpgradeStatus" ng-click="showList('softwareUpgradeStatus')">{{repData.softwareUpgradeStatus}}<span class="droplist-arrow caret" ng-if="metaRepData.softwareUpgradeStatus.length"></span></span>
+                                <ul ng-show="visibility.softwareUpgradeStatus" class="dropOptions deviceType">
+                                    <li ng-click="clear('softwareUpgradeStatus')" ng-if="metaRepData.softwareUpgradeStatus.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('softwareUpgradeStatus', repMetaObj)" ng-repeat="repMetaObj in metaRepData.softwareUpgradeStatus">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div ng-include="'partials/reports/viewReport.html'"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div ng-show="showReportData">
+        <div class="table-box scroll">
+            <div ng-include="'partials/reports/header.html'"></div>
+            <table ng-hide="dataRepError" class="table table-condensed table-hover table-modal table-sorting role-table header-line-top">
+                <thead>
+                    <tr>
+                        <th ng-repeat="(colKey,col) in reportDetails.columns" ng-class="sortCol[col.column].cssClass" ng-click="getSorted(col.column)">{{col.display_name}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr dir-paginate="(rowKey, role) in reportDetails.currentPageData|itemsPerPage:reportParams.itemsPerPage" total-items="reportParams.total_count" pagination-id="noPrint" current-page="reportParams.pageNo" >
+                        <td ng-repeat ="(columnKey, col) in reportDetails.columns">
+                            <p class="report-content">{{role.detail[col.column]}}</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div ng-include="'partials/reports/footer.html'"></div>
+    </div>
+</div>
+
+<div ng-if="showPrint" ng-include="'partials/reports/printReport.html'"></div>

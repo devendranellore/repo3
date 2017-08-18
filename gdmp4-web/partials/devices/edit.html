@@ -1,0 +1,85 @@
+<div class="devices">
+    <div ng-show="showLoader" class="loader-box">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+    </div>
+    <div ng-show="modalError" class="loader-box modal-error" >
+        <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+    </div>
+    <div class="modal-dialog modal-lg" id="updateModel" tabindex="-1" role="dialog" data-target=".bs-example-modal-lg">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header clearfix padding-bottom-none">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <span class="col-sm-3">
+                                <label>Type</label>
+                                <span>{{deviceData.basic.type}}</span>
+                            </span>
+                            <span class="col-sm-3">
+                                <label>Serial No.</label>
+                                <span>{{deviceData.basic.serial}}</span>
+                            </span>
+                            <span class="col-sm-3">
+                                <label>Customer</label>
+                                <span>{{deviceData.basic.customer}}</span>
+                            </span>
+                            <span class="col-sm-3">
+                                <label>Account</label>
+                                <span>{{deviceData.basic.account}}</span>
+                            </span>
+                        </div>
+                        <div class="row">
+                            <span class="col-sm-3">
+                                <label>Country</label>
+                                <span>{{deviceData.basic.country}}</span>
+                            </span>
+                            <span class="col-sm-3">
+                                <label>Region</label>
+                                <span>{{deviceData.basic.region}}</span>
+                            </span>
+                            <span class="col-sm-3">
+                                <label>Location</label>
+                                <span>{{deviceData.basic.location}}</span>
+                            </span>
+                            <span class="col-sm-3">
+                                <label>Expires</label>
+                                <span>{{deviceData.basic.expires| date:'MM/dd/yy'}}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <ul class="nav nav-tabs nav-headers nav-headers-six">
+                        <li ng-class="{'active': activeTabs.hist}"  data-target="1"><a ng-click="activate('hist')">History</a></li>
+                        <li ng-class="{'active': activeTabs.config}" data-target="2"><a ng-click="activate('config')">Configurations</a></li>
+                        <li ng-class="{'active': activeTabs.disc}" data-target="3"><a ng-click="activate('disc')"> Discrepancies</a></li>
+                        <li ng-class="{'active': activeTabs.logs}" data-target="4"><a ng-click="activate('logs')"> Logs</a></li>
+                        <li ng-class="{'active': activeTabs.feHist}" data-target="6"><a ng-click="activate('feHist')"> Feature History</a></li>
+                        <li><button class="btn btn-primary btn-mw pull-right" data-dismiss="modal" aria-label="Close" ng-click="cancel()">BACK</button></li>
+                    </ul>
+
+                </div>
+                <!-- History -->
+                <div class="modal-body nav-tabs-area device-tabs"  ng-class="{'open': activeTabs.hist}" data-target="1">
+                    <ng-include src="'partials/devices/history.html'"></ng-include>
+                </div>
+                <!-- Configurations -->
+                <div class="modal-body nav-tabs-area device-tabs" data-target="2" ng-class="{'open': activeTabs.config}" data-target="2">
+                    <ng-include src="'partials/devices/configurations.html'"></ng-include>
+                </div>
+                <!-- Discrepancies -->
+                <div class="modal-body nav-tabs-area device-tabs" ng-class="{'open': activeTabs.disc}" data-target="2">
+                    <ng-include src="'partials/devices/discrepancies.html'"></ng-include>
+                </div>
+                <!-- Logs -->
+                <div class="modal-body nav-tabs-area device-tabs" ng-class="{'open': activeTabs.logs}" data-target="2">
+                    <ng-include src="'partials/devices/logs.html'"></ng-include>
+                </div>
+                <!-- Feature History -->
+                <div class="modal-body nav-tabs-area device-tabs" ng-class="{'open': activeTabs.feHist}" data-target="2">
+                    <ng-include src="'partials/devices/feature-history.html'"></ng-include>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

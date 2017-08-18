@@ -1,0 +1,7 @@
+<ul class="nav nav-tabs nav-headers">
+    <li ng-repeat="subTab in subTabs" ui-sref="{{ subTab.name }}" ui-sref-active="active">
+        <a>{{ subTab.title }}</a>
+    </li>
+</ul>
+
+<div ui-view></div>

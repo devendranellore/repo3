@@ -1,0 +1,295 @@
+<ul class="nav nav-tabs nav-headers">
+    <li ng-class="{'active' : !tab}">
+        <a ng-click="switchTab()">Users</a>
+    </li>
+    <li ng-class="{'active' : tab === 'defaultApprovingProxy'}">
+        <a ng-click="switchTab('defaultApprovingProxy')">Default Approving Manager</a>
+    </li>
+    <li ng-class="{'active' : tab === 'approvingManager'}">
+        <a ng-click="switchTab('approvingManager')">Approving Manager</a>
+    </li>
+    <li ng-class="{'active' : tab === 'pendingRegistration'}">
+        <a ng-click="switchTab('pendingRegistration')">Pending Registration</a>
+    </li>
+</ul>
+<div class="nav-tabs-area" ng-class="{'open': !tab}">    
+    <div class="filter-area" ng-show="roleTableParams.primaryFilter.display_name && roleTableParams.primaryFilter.entries.length">
+        <form class="form-vacent" name="usersForm" ng-submit="search.name && searchRoles()" novalidate>
+            <div class="form-cant clearfix">
+                <span class="vacant-cant">Search</span>
+                <span class="col-md-4 col-sm-4 col-search">
+                    <input type="text" ng-model="search.name" ng-change="!search.name && searchRoles()" class="form-control pl-grey" placeholder="Enter {{role|titleCase}} Name" required/>
+                    <span ng-click="searchRoles()"><i class="fa fa-search"></i></span>
+                </span>
+                <span class="col-md-3 col-sm-3 form-gcant text-center">
+                    <a id="show_more_filters_btn" ng-click="mFilters = !mFilters" class="more-filters-btn filters pull-left"><i class="fa fa-bars" aria-hidden="true"></i><span ng-hide="mFilters"> Show More Filters</span> <span ng-show="mFilters">Hide Filters</span></a>
+                </span>
+
+                <span class="pull-right">
+                    <button id="create_new_{{role}}_btn" class="btn btn-primary" type="button" ng-if="acctAccess[role] === 'W'" ng-show="isCreate()" ng-click="open('NEW')">CREATE NEW {{role|uppercase}}</button>
+                </span>
+            </div>
+            <div class="form-cant clearfix cant-line-down">{{sFilter}}
+                <span class="vacant-cant">{{roleTableParams.primaryFilter.display_name}}
+                </span>
+                <ul class="nav nav-checkbox">
+                    <li ng-repeat="entry in roleTableParams.primaryFilter.entries">
+                        <span class="check-box-filter">
+                            <label class="label-filter">
+                                <input type="checkbox" ng-click="searchRoles(roleTableParams.primaryFilter.name)" ng-model="searchFilters[roleTableParams.primaryFilter.name][entry.value]"> <span></span>{{entry.name}}
+                            </label>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <!-- Show More Filters Click Function -->
+            <div ng-show="mFilters">
+                <div class="filter-area">
+                    <div class="form-cant clearfix" ng-repeat="filter in roleTableParams.filters">
+                        <span class="vacant-cant">{{filter.display_name}}</span>
+                        <ul class="nav nav-checkbox">
+                            <li ng-repeat="entry in filter.entries">
+                                <span class="check-box-filter">
+                                    <label class="label-filter">
+                                        <input type="checkbox" ng-click="searchRoles(filter.name)" ng-model="searchFilters[filter.name][entry.value]"> <span></span>{{entry.name}}
+                                    </label>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="table-box">
+        <div ng-show="showLoader" class="loader-box">
+            <i ng-show="!dataError && showLoader" class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        </div>
+        <div ng-show="dataError">
+            <div class="alert alert-danger error-box fa fa-exclamation-triangle">
+                {{dataError}}
+            </div>
+        </div>
+
+        <table ng-hide="dataError" class="table table-condensed table-hover table-modal table-sorting role-table">
+            <thead>
+                <tr>
+                    <th ng-repeat="(colKey,col) in roleDetails.columns" ng-class="sortCol[col.name.column].cssClass" ng-click="getSorted(col.name.column)">{{col.name.display_name}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr dir-paginate="(rowKey, role) in roleDetails.data|itemsPerPage:roleTableParams.itemsPerPage" pagination-id="user" total-items="roleTableParams.total_count" current-page="roleTableParams.pageNo" ng-click="open(rowKey)" >
+                    <td ng-repeat ="(columnKey, col) in roleDetails.columns">
+                        {{role.detail[col.name.column]|limitTo : 25}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div ng-hide="dataError" class="role-pagination">
+        <dir-pagination-controls pagination-id="user" on-page-change="getUserData(newPageNumber)" boundary-links="true"></dir-pagination-controls>
+    </div>
+</div>
+
+<div class="nav-tabs-area" ng-class="{'open': tab === 'defaultApprovingProxy'}">
+    <div class="content-box">
+        <div ng-show="showLoader" class="loader-box">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+    </div>
+    <div ng-show="modalError" class="loader-box modal-error" >
+        <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+    </div>
+        <div class="well-title">Set the default Approving Proxy
+        <div class="pull-right">
+                <span class="btn btn-primary btn-mw" id="edit_role_btn" ng-click="readOnly(true)" ng-show="!readOnlyFlag">EDIT</span>
+                <span class="btn btn-primary btn-mw" id="save_role_btn" ng-click="!approvingProxyForm.$invalid && saveApprovingProxy()" ng-disabled="approvingProxyForm.$invalid" ng-hide="!readOnlyFlag">SAVE</span>
+                <span class="btn btn-default" id="cancel_role_btn" ng-click="cancel()" ng-hide="!readOnlyFlag">CANCEL</span>
+            </div>
+        </div>
+        <div class="well">
+            <form name="approvingProxyForm" novalidate="true" autocomplete="off">
+                <div class="col-sm-12">
+                    <table class="table table-bordered table-nopadding-bordered table-center bg-white table-updating">
+                        <thead>
+                            <tr>
+                                <th>Device Type</th>
+                                <th>Approver</th>
+                                <th>Use as Proxy (Non-Medtronic User)</th>
+                                <th>Use as Default Approving Manager (Medtronic User)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="(key, proxyData) in approvingProxy">
+                                <td>{{ proxyData.displayName }}</td>
+                                <td>
+                                    <input class="form-control" name="{{proxyData.displayName}}" type="email" ng-model="proxyData.proxy" ng-readonly="!readOnlyFlag" uib-popover="Please fill with an email address" popover-is-open="proxyPopover[proxyData.displayName] && approvingProxyForm[proxyData.displayName].$invalid" popover-trigger="approvingProxyForm[proxyData.displayName].$invalid" ng-click="proxyPopover[proxyData.displayName] = !proxyPopover[proxyData.displayName]" popover-placement="top-right"/>
+                                </td>
+                                <td>
+                                    <span class="input-select" ng-mouseleave="showList('hide')">
+                                        <span type="text" class="form-control" ng-readonly="!readOnlyFlag" ng-model="proxyData.non_medtronic_proxy" ng-click="showList(key + 'non_medtronic_proxy')" yes-no-attr>
+                                            <div ng-if="proxyData.non_medtronic_proxy">Yes</div>
+                                            <div ng-if="!proxyData.non_medtronic_proxy">No</div>
+                                            <span class="droplist-arrow caret" ng-if="readOnlyFlag"></span>
+                                        </span>
+                                        <ul ng-show="readOnlyFlag && visibility[key + 'non_medtronic_proxy']" class="dropOptions">
+                                            <li ng-click="approvingProxy[0].non_medtronic_proxy = false; approvingProxy[1].non_medtronic_proxy = false; proxyData.non_medtronic_proxy = true; showList('hide')">Yes</li>
+                                            <li ng-click="approvingProxy[0].non_medtronic_proxy = true; approvingProxy[1].non_medtronic_proxy = true; proxyData.non_medtronic_proxy = false; showList('hide')">No</li>
+                                        </ul>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="input-select" ng-mouseleave="showList('hide')">
+                                        <span type="text" class="form-control" ng-readonly="!readOnlyFlag" ng-model="proxyData.medtronic_proxy" ng-click="showList(key + 'medtronic_proxy')" yes-no-attr>
+                                            <div ng-if="proxyData.medtronic_proxy">Yes</div>
+                                            <div ng-if="!proxyData.medtronic_proxy">No</div>
+                                            <span class="droplist-arrow caret" ng-if="readOnlyFlag"></span>
+                                        </span>
+                                        <ul ng-show="readOnlyFlag && visibility[key + 'medtronic_proxy']" class="dropOptions">
+                                            <li ng-click="approvingProxy[0].medtronic_proxy = false; approvingProxy[1].medtronic_proxy = false; proxyData.medtronic_proxy = true; showList('hide')">Yes</li>
+                                            <li ng-click="approvingProxy[0].medtronic_proxy = true; approvingProxy[1].medtronic_proxy = true; proxyData.medtronic_proxy = false; showList('hide')">No</li>
+                                        </ul>
+                                    </span>
+                                </td>
+                                <!-- <td>
+                                    <button class="btn btn-default" type="button" ng-show="readOnlyFlag" ng-click="readOnly(false)" ng-click="">EDIT</button>
+                                    <button class="btn btn-default" type="button" ng-hide="readOnlyFlag" ng-click="saveApprovingProxy(deviceType, proxyData.proxy)">SAVE</button>
+                                    <button class="btn btn-default" type="button" ng-hide="readOnlyFlag" ng-click="cancel(deviceType)">CANCEL</button>
+                                </td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="nav-tabs-area" ng-class="{'open': tab === 'approvingManager'}">
+    <div class="filter-area">
+        <form class="form-vacent" name="sForm" ng-submit="search.name && searchRoles()">
+            <div class="form-cant clearfix">
+                <span class="vacant-cant">Search</span>
+                <span class="col-md-4 col-sm-4 col-search">
+                    <input type="text" ng-model="search.name" ng-change="!search.name && searchApprovingManagerRoles()" class="form-control pl-grey" placeholder="Enter Approving Manager Name" required/>
+                    <span ng-click="searchApprovingManagerRoles()"><i class="fa fa-search"></i></span>
+                </span>
+                <span class="pull-right">
+                    <button id="create_new_{{role}}_btn" class="btn btn-primary" type="button" ng-click="openApprovingManager('NEW')">CREATE NEW APPROVING MANAGER</button>
+                </span>
+            </div>
+        </form>
+    </div>
+    <div class="table-box scroll">
+        <div ng-show="showLoader" class="loader-box">
+            <i ng-show="!dataError && showLoader" class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        </div>
+        <div ng-show="dataError">
+            <div class="alert alert-danger error-box fa fa-exclamation-triangle">
+                {{dataError}}
+            </div>
+        </div>
+        <table ng-hide="dataError" class="table table-condensed table-hover table-modal table-sorting role-table">
+            <thead>
+                <tr>
+                    <th ng-repeat="(colKey,col) in approvingManagerDetails.columns" ng-class="approvingManagerSortCol[col.name.column].cssClass" ng-click="getApprovingManagerSorted(col.name.column)">{{col.name.display_name}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr dir-paginate="(rowKey, role) in approvingManagerDetails.data|itemsPerPage:approvingManagerTableParams.itemsPerPage" pagination-id="approvingManager" total-items="approvingManagerTableParams.total_count" current-page="approvingManagerTableParams.pageNo" ng-click="openApprovingManager(rowKey)" >
+                    <td ng-repeat ="(columnKey, col) in approvingManagerDetails.columns">
+                        <div ng-if='col.name.display_name=="Upload Date"'>{{role.detail[col.name.column]|date : 'MM/dd/yyyy'}}</div>
+                        <div ng-if='col.name.display_name!="Upload Date"'>{{role.detail[col.name.column]|limitTo : 25}}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div ng-hide="dataError" class="role-pagination">
+        <dir-pagination-controls pagination-id="approvingManager" on-page-change="getApprovingManagerData(newPageNumber)" boundary-links="true"></dir-pagination-controls>
+    </div>
+</div>
+
+<div class="nav-tabs-area" ng-class="{'open': tab === 'pendingRegistration'}">
+    <div class="filter-area">
+        <form class="form-vacent" name="pendingRegistrationForm" ng-submit="searchPendingRegName && searchPendingRegRoles()" ng-keyup="$event.keyCode == 13 && searchPendingRegRoles()" novalidate>
+            <div class="form-cant clearfix">
+                <span class="vacant-cant">Search</span>
+                <span class="col-md-4 col-sm-4 col-search">
+                    <input type="text" ng-model="searchPendingRegName" ng-change="!searchPendingRegName && searchPendingRegRoles()" class="form-control pl-grey" placeholder="Enter User Name" />
+                    <span ng-click="searchPendingRegRoles()"><i class="fa fa-search"></i></span>
+                </span>
+                <span class="col-md-3 col-sm-3 form-gcant text-center">
+                    <a id="show_more_filters_btn" ng-click="mPendingRegFilters = !mPendingRegFilters" class="more-filters-btn filters pull-left"><i class="fa fa-bars"></i><span ng-hide="mPendingRegFilters"> Show More Filters</span> <span ng-show="mPendingRegFilters">Hide Filters</span></a>
+                </span>
+            </div>
+            <div class="clearfix cant-line-down">
+                <div class="col-xs-4 form-cant">
+                    <span class="vacant-cant">From Register Date</span>
+                    <p class="input-group col-md-12">
+                        <input type="text" id="report_from_input" data-readonly="true" class="form-control well-li pl-grey" uib-datepicker-popup="{{format}}" ng-model="searchPendingRegFromDate" ng-change="searchPendingRegRoles()" is-open="popup1.opened" datepicker-options="dateOptions"/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="col-xs-4 col-xs-offset-1 form-cant">
+                    <span class="vacant-cant">To Register Date</span>
+                    <p class="input-group col-md-12">
+                        <input type="text" id="report_to_input" data-readonly="true" class="form-control well-li pl-grey" uib-datepicker-popup="{{format}}" ng-model="searchPendingRegToDate" ng-change="searchPendingRegRoles()" is-open="popup2.opened" datepicker-options="dateOptions"/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <!-- Show More Filters Click Function -->
+            <div ng-show="mPendingRegFilters">
+                <div class="filter-area">
+                    <div class="form-cant clearfix" ng-repeat="filter in pendingRegRoleTableParams.filters">
+                        <span class="vacant-cant">{{filter.display_name}}</span>
+                        <ul class="nav nav-checkbox">
+                            <li ng-repeat="entry in filter.entries">
+                                <span class="check-box-filter">
+                                    <label class="label-filter">
+                                        <input type="checkbox" ng-click="searchPendingRegRoles(filter.name)" ng-model="pendingRegSearchFilters[filter.name][entry.value]"> <span></span>{{entry.name}}
+                                    </label>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="table-box">
+        <div ng-show="showLoader" class="loader-box">
+            <i ng-show="!dataError && showLoader" class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        </div>
+        <div ng-show="dataError">
+            <div class="alert alert-danger error-box fa fa-exclamation-triangle">
+                {{dataError}}
+            </div>
+        </div>
+
+        <table ng-hide="dataError" class="table table-condensed table-hover table-modal table-sorting role-table">
+            <thead>
+                <tr>
+                    <th ng-repeat="(colKey,col) in pendingRegRoleDetails.columns" ng-class="pendingRegRortCol[col.name.column].cssClass" ng-click="getPendingRegSorted(col.name.column)">{{col.name.display_name}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr dir-paginate="(rowKey, role) in pendingRegRoleDetails.data|itemsPerPage:pendingRegRoleTableParams.itemsPerPage" pagination-id="pendingReg" total-items="pendingRegRoleTableParams.total_count" current-page="pendingRegRoleTableParams.pageNo" ng-click="openPendingReg(rowKey)" >
+                    <td ng-repeat ="(columnKey, col) in pendingRegRoleDetails.columns">
+                        {{role.detail[col.name.column]|limitTo : 25}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div ng-hide="dataError" class="role-pagination">
+        <dir-pagination-controls pagination-id="pendingReg" on-page-change="getPendingRegData(newPageNumber)" boundary-links="true"></dir-pagination-controls>
+    </div>
+</div>

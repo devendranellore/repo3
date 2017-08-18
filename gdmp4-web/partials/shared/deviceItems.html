@@ -1,0 +1,37 @@
+<div ng-hide="isEmptyObj({obj:deviceData})">
+    <label class="modal-body-label modal-lab">{{roleType|titleCase}} Items</label>
+    <div class="modal-form clearfix no-padding">
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th ng-show="roleType === 'feature'">ID</th>
+                    <th>Name</th>
+                    <th ng-hide="roleType === 'feature'">Revision</th>
+                    <th ng-hide="roleType === 'feature'">Part#</th>
+                    <th ng-show="roleType === 'feature'">Term</th>
+                    <th ng-show="roleType === 'feature'">Start Date</th>
+                    <th ng-show="roleType === 'feature'">Duration</th>
+                    <th ng-show="roleType === 'feature'">End Date</th>
+                    <th ng-show="roleType === 'feature'">Limit</th>
+                    <th ng-show="roleType === 'feature'">Remaining</th>
+                    <th ng-show="displaySlNumber">Serial Number</th> 
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="confObj in deviceData">
+                    <td ng-show="roleType === 'feature'">{{confObj.identification}}</td>
+                    <td>{{confObj.name}}</td>
+                    <td ng-hide="roleType === 'feature'">{{confObj.revision}}</td>
+                    <td ng-hide="roleType === 'feature'">{{confObj.part}}</td>
+                    <td ng-show="roleType === 'feature'">{{confObj.term}}</td>
+                    <td ng-show="roleType === 'feature'">{{confObj.startDate|date:'MM/dd/yy'}}</td>
+                    <td ng-show="roleType === 'feature'">{{confObj.duration}}</td>
+                    <td ng-show="roleType === 'feature'">{{confObj.endDate|date:'MM/dd/yy'}}</td>
+                    <td ng-show="roleType === 'feature'">{{confObj.limit}}</td>
+                    <td ng-show="roleType === 'feature'">{{confObj.remaining}}</td>
+                    <td ng-show="displaySlNumber">{{confObj.serialNumber}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

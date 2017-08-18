@@ -1,0 +1,35 @@
+<div class="table-box scroll trade-embargo-error-frame">
+    <div ng-show="showLoader" class="loader-box">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+    </div>
+    <div ng-show="modalError" class="loader-box modal-error" >
+        <i class="fa-2x r-loader fa fa-exclamation-circle trade-embargo-error"> {{modalError}}</i>
+    </div>
+    <div class="filter-area">
+        <div class="clearfix cant-line-down">
+            <div class="pull-right">
+                <div class="form-cant-buttons clearfix">
+                    <span class="btn btn-primary btn-mw" id="edit_role_btn" ng-click="readOnly(false)" ng-show="readOnlyFlag">EDIT</span>
+                    <span class="btn btn-primary btn-mw" id="save_role_btn" ng-click="save()" ng-hide="readOnlyFlag">SAVE</span>
+                    <span class="btn btn-default" id="cancel_role_btn" ng-click="cancel()" ng-hide="readOnlyFlag">CANCEL</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="well-title">Set File Extension for PLUpload</div>
+    <div class="well">
+        <div class="col-sm-12">
+            <div class="form-line">
+                <div class="col-sm-12">
+                    <label>
+                        file extension
+                    </label>
+                    <textarea class="form-control form-control-lg" ng-model="formData.file_ext" ng-readonly="readOnlyFlag">
+                    </textarea>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

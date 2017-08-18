@@ -1,0 +1,63 @@
+<label class="modal-body-label modal-lab">{{roleConfig|titleCase}} Configurations</label>
+
+<div class="modal-form overflow-visible" id="{{roleConfig|titleCase}}Configurations">
+    <div class="modal-form clearfix">
+        <div class="tab-well associations">
+            <span ng-show="isEmptyObj({obj:roleData.clientAssociations[roleConfig + 'Configuration']})">This System Configuration has not yet been associated with any {{roleConfig|titleCase}} Configurations.</span>
+            <span ng-hide="isEmptyObj({obj:roleData.clientAssociations[roleConfig + 'Configuration']})">
+
+                <table class="table table-default">
+                    <thead>
+                        <tr>
+                            <th>Configuration Type</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Warning</th>
+                            <th>Created</th>
+                            <th>Updated</th>
+                            <th ng-hide="readOnlyFlag"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-id="$index" ng-repeat="(key, hwObj) in roleData.clientAssociations[roleConfig + 'Configuration']">
+                            <td>{{hwObj.configType}} Configuration</td>
+                            <td>{{hwObj.name}}</td>
+                            <td>{{hwObj.status}}</td>
+                            <td>{{hwObj.warning|yesNo}}</td>
+                            <td>{{hwObj.createDate|date:'MM/dd/yy'}}</td>
+                            <td>{{hwObj.updateDate|date:'MM/dd/yy'}}</td>
+                            <td ng-hide="readOnlyFlag"><span class="td-remove"><i ng-click="removeAssociation({index: key, ObjKey: roleConfig + 'Configuration'})" class="fa fa-trash-o"></i></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </span>
+        </div>
+        <div class="form-line col-sm-6">
+            <input id="search{{roleConfig|titleCase}}Config" class="form-control search-input" ng-trim="false" ng-show="!readOnlyFlag" type="text"  placeholder="Enter {{roleConfig|titleCase}} Configuration Name" ng-model="searchConfig[roleConfig]" ng-change="searchConfig[roleConfig] && searchType({role:roleConfig + 'Configuration', config:searchConfig[roleConfig]})"/>
+        </div>
+        <div ng-show="searchResult[roleConfig + 'Configuration']" class="form-line col-sm-12 table-search">
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th>Configuration Type</th>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Warning</th>
+                        <th>Created</th>
+                        <th>Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-id="{{$index}}"  ng-repeat="searchObj in searchResult[roleConfig + 'Configuration']" ng-click="addAssociation({index: $index, associationKey: roleConfig + 'Configuration', searchObj: searchObj})">
+                        <td>{{searchObj.detail.configType}} Configuration</td>
+                        <td>{{searchObj.detail.name}}</td>
+                        <td>{{searchObj.detail.status}}</td>
+                        <td>{{searchObj.detail.warning|yesNo}}</td>
+                        <td>{{searchObj.detail.createDate|date:'MM/dd/yy'}}</td>
+                        <td>{{searchObj.detail.updateDate|date:'MM/dd/yy'}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

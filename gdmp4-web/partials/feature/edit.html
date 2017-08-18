@@ -1,0 +1,179 @@
+<div ng-show="showLoader" class="loader-box">
+    <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+    <div ng-if="alertType.archiveConfirmation">
+        <div  ng-include="'partials/shared/alertWithArchive.html'"></div>
+    </div>
+    <div ng-if="alertType.confirmation">
+        <div ng-if="alertType.show" ng-include="'partials/shared/alertWithConfirmation.html'"></div>
+    </div>
+    <div ng-if="!alertType.confirmation">
+        <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+    </div>
+</div>
+<div ng-show="modalError" class="loader-box modal-error">
+    <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+</div>
+<div class="modal-header clearfix">
+    <span ng-if="createRecord" class="modal-title" id="updateModalLabel">Create Feature</span>
+    <span ng-if="!createRecord && readOnlyFlag" class="modal-title" id="updateModalLabel">View Existing Feature</span>
+    <span ng-if="!createRecord && !readOnlyFlag" class="modal-title" id="updateModalLabel">Edit Existing Feature</span>
+    <div class="pull-right">
+        <a uib-popover-html="help" popover-is-open="popoverIsOpen" ng-click="popoverIsOpen = !popoverIsOpen" popover-placement="left-top">Help</a>
+        <button class="btn btn-primary btn-mw" id="edit_role_btn" ng-show="readOnlyFlag" ng-if="roleData.featureStatus !== 'Archived'" ng-click="clone(true)">ARCHIVE AND CLONE</button>
+        <button class="btn btn-primary btn-mw" id="edit_role_btn" ng-show="readOnlyFlag" ng-click="clone()">CLONE</button>
+        <button class="btn btn-primary btn-mw" id="edit_role_btn" ng-show="readOnlyFlag" ng-click="readOnly(false)">EDIT</button>
+        <button class="btn btn-primary btn-mw" id="save_role_btn" ng-hide="readOnlyFlag" ng-disabled="featureForm.$invalid || (!roleData.skuCodes.length || roleData.skuCodes.length === 0)" ng-click="save(null)">SAVE</button>
+        <button data-dismiss="modal" aria-label="Close" class="btn btn-primary btn-mw" ng-click="cancel()">CANCEL</button>
+    </div>
+</div>
+
+<div class="modal-body edits edit-role">
+    <label>Basic Information</label>
+    <form name="featureForm" autocomplete="off" novalidate>
+        <div class="modal-form overflow-visible">
+            <div class="form-line">
+                <div class="col-sm-4" ng-class="{ 'has-error': featureForm.fName.$invalid }">
+                    <label>
+                        Name*
+                        <span ng-show="roleData.tooltip.name">
+                            {{roleData.tooltip.name}}
+                        </span>
+                    </label>
+                    <input id="feature_edit_name_input" type="text" name="fName" class="form-control" pattern="^[ A-Za-z0-9_&.-]*$" uib-popover="Please fill with alphanumeric and _&-" popover-is-open="fNamePopover && featureForm.fName.$invalid" popover-trigger="featureForm.fName.$invalid" ng-click="fNamePopover = !fNamePopover" popover-placement="top-right" required ng-readonly="!createRecord && (readOnlyFlag || (status!=='Limited Release'))" ng-model="roleData.name" />
+                </div>
+                <div class="col-sm-4" ng-mouseleave="showList('hide')" ng-class="{ 'has-error': featureForm.dType.$invalid }">
+                    <label>
+                        Device Type*
+                        <span ng-show="roleData.tooltip.deviceType">
+                            {{roleData.tooltip.deviceType}}
+                        </span>
+                    </label>
+                    <span class="input-select">
+                        <span id="feature_edit_device_type_input" name="dType" required class="form-control" ng-model="roleData.deviceType" ng-readonly="!createRecord && (readOnlyFlag || (status!=='Limited Release'))" ng-click="showList('deviceType')">{{roleData.deviceType}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag && !(!createRecord && (readOnlyFlag || (status!=='Limited Release')))"></span></span>
+                        <ul ng-show="!readOnlyFlag && visibility.deviceType && ((status==='Limited Release') || createRecord)" class="dropOptions deviceType">
+                            <li ng-click="updateType('deviceType', deviceTypeObj)" ng-repeat="deviceTypeObj in metaData.device_types">{{deviceTypeObj.displayName}}</li>
+                        </ul>
+                    </span>
+                </div>
+                <div class="col-sm-4" ng-class="{ 'has-error': featureForm.fID.$invalid }">
+                    <label>
+                        Feature ID*
+                        <span ng-show="roleData.tooltip.ID">
+                            {{roleData.tooltip.ID}}
+                        </span>
+                    </label>
+                    <input id="feature_edit_id_input" type="text" name="fID" class="form-control" pattern="^[ 0-9]*$" uib-popover="Please fill with a number" popover-is-open="fIDPopover && featureForm.fID.$invalid" popover-trigger="featureForm.fID.$invalid" ng-click="fIDPopover = !fIDPopover" popover-placement="top-right" required ng-readonly="!createRecord && (readOnlyFlag || (status!=='Limited Release'))" ng-model="roleData.identification" />
+                </div>
+            </div>
+            <div class="form-line">
+                <div class="col-sm-4" ng-class="{ 'has-error': (!roleData.skuCodes.length || roleData.skuCodes.length === 0) }">
+                    <label>
+                        SKU*
+                        <span ng-show="roleData.tooltip.skuCodes">
+                            {{roleData.tooltip.skuCodes}}
+                        </span>
+                    </label>
+                    <div ng-show="roleData.skuCodes.length" class="colps-body full-border clearfix">
+                        <span class="col-sm-12" ng-repeat="sku in roleData.skuCodes">
+                            <div class="colps-child wrap-text">
+                                {{sku}}
+                                <span ng-click="deleteSku(sku)" ng-hide="!createRecord && (readOnlyFlag || (status==='In Production') || (status==='Archived'))"><i class="fa fa-trash"></i></span>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="input-group">
+                        <input ng-hide="!createRecord && (readOnlyFlag || (status==='In Production') || (status==='Archived'))" name="sku" ng-model="inputedSku" id="feature_edit_sku_input" type="text" class="form-control" data-readonly="true" data-requried="true"/>
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" id="feature_edit_add_sku_btn" ng-hide="!createRecord && (readOnlyFlag || (status==='In Production') || (status==='Archived'))" ng-click="addSku(inputedSku)">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4" ng-mouseleave="showList('hide')">
+                    <label>
+                        Status*
+                        <span ng-show="roleData.tooltip.featureStatus">
+                            {{roleData.tooltip.featureStatus}}
+                        </span>
+                    </label>
+                    <span class="input-select">
+                        <span id="feature_edit_status_input" class="form-control" ng-readonly="!createRecord && readOnlyFlag" ng-model="roleData.featureStatus" ng-click="showList('featureStatus')">{{roleData.featureStatus}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                        <ul id="edit_feature_status_input_ul" ng-show="!readOnlyFlag && visibility.featureStatus" class="dropOptions featureStatus">
+                            <li id="edit_feature_status_input_select_li" ng-click="updateType('featureStatus', currentStatus)">{{currentStatus.displayName}}</li>
+                            <li id="edit_feature_status_input_select_li{{$index}}" ng-click="updateType('featureStatus', featureStatusObj)" ng-repeat="featureStatusObj in metaData.feature_status">{{featureStatusObj.displayName}}</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+            <div class="form-line">
+                <div class="col-sm-12">
+                    <label>
+                        Description
+                        <span ng-show="roleData.tooltip.description">
+                            {{roleData.tooltip.description}}
+                        </span>
+                    </label>
+                    <textarea id="feature_edit_description_input" class="form-control" ng-readonly="!createRecord && readOnlyFlag" ng-model="roleData.description"></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+    <label class="modal-lab">Country Exclusion</label>
+    <div class="modal-form clearfix colp">
+        <div class="col-sm-12 form-line no-padding">
+            <div class="col-sm-6">
+                <input ng-model="searchText" class="form-control search-input" placeholder="Search" ng-readonly="!createRecord && (readOnlyFlag || (status==='Archived'))">
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="colp-content" ng-repeat="(region, countries) in metaData.country">
+                <div class="colp-title region-title check-box" data-id="1">
+                    <label class="colp-child wrap-text" title="{{country.displayName}}">
+                        <input type="checkbox" ng-disabled="!createRecord && (readOnlyFlag || (status==='Archived'))" ng-click="selectAll(region, regionExcluded[region], false)"  ng-model="regionExcluded[region]"> <span></span>{{region}}
+                    </label>  
+                </div>
+                <div class="colp-body clearfix country-list scroll-box check-box">
+                    <span class="col-sm-4" ng-repeat="country in countries| filter:searchText">
+                        <label class="colp-child wrap-text" title="{{country.displayName}}">
+                            <input type="checkbox" ng-disabled="!createRecord && (readOnlyFlag || (status==='Archived'))" ng-click="excludeCountry(region, country)"  ng-model="countryExcluded[region][country.value]"> <span></span>{{country.displayName}}
+                        </label>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="colp-selected check-box">
+                <div class="colps-content" ng-repeat="(region, countries) in metaData.country" ng-show="selectedCountries[region]">
+                    <div class="colps-title" data-id="1">{{region}}<a ng-click="selectAll(region, false, true)" ng-if="!readOnlyFlag && (createRecord || (status!=='Archived'))"><i class="fa fa-trash"></i></a></div>
+                    <div class="colps-body clearfix scroll-box country-list">
+                        <span class="col-sm-4" ng-repeat="(id, country) in selectedCountries[region] | toArray | filter:{selected:true}">
+                            <div class="colps-child wrap-text" data-id="{{id}}" title="{{country.displayName}}">
+                                {{country.displayName}}
+                                <span ng-if="!readOnlyFlag && (createRecord || (status!=='Archived'))" ng-click="deleteCountry(region, country.$key)"><i class="fa fa-trash"></i></span>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <compatible-items
+        role-config="document"
+        doc-type="true"
+        role-data="roleData"
+        search-type="searchType(role,config)"
+        read-only-flag="!createRecord && (readOnlyFlag || (status==='Archived'))"
+        search-result="searchResult"
+        add-association="addAssociation(index, associationKey, searchObj, type, root)"
+        remove-association="removeAssociation(index, ObjKey)"
+        is-empty-obj="isEmptyObj(obj)">
+    </compatible-items>
+
+    <div ng-if="readOnlyFlag && roleData.associatedConfigurations.length" ng-include="'partials/shared/associatedConf.html'"></div>
+    <div ng-if="readOnlyFlag && roleData.cloneMap" ng-include="'partials/shared/cloneMap.html'"></div>
+</div>

@@ -1,0 +1,26 @@
+<tbody>
+    <tr>
+        <th>Name</th>
+        <td>{{item.name}}</td>
+    </tr>
+    <tr ng-if="item.sku">
+        <th>SKU</th>
+        <td>{{item.sku}}</td>
+    </tr>
+    <tr ng-if="item.revision">
+        <th>Revision</th>
+        <td>{{item.revision}}</td>
+    </tr>
+    <tr ng-if="item.partNumber">
+        <th>Part Number</th>
+        <td>{{item.partNumber}}</td>
+    </tr>
+    <tr ng-if="item.configType">
+        <th>Type</th>
+        <td>{{item.configType}}</td>
+    </tr>
+    <tr>
+        <th>Created</th>
+        <td>{{item.createTime| date:'MM/dd/yy'}}</td>
+    </tr>
+</tbody>

@@ -1,0 +1,111 @@
+<div class="table-box scroll" ng-if="reportName!=='Named Configuration'">
+    <div ng-include="'partials/reports/header.html'"></div>
+    <table ng-hide="dataRepError" class="table-condensed table-hover table-modal table-sorting role-table header-line-top">
+        <thead>
+            <tr>
+                <th ng-repeat="(colKey,col) in reportDetails.columns">{{col.display_name}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="(rowKey, role) in reportDetails.printPageData track by $index">
+                <td ng-repeat="(columnKey, col) in reportDetails.columns">
+                    <div ng-if="isObject(role.detail[col.column])" ng-repeat="item in role.detail[col.column] track by $index">
+                        <p class="report-content">{{item}}</p>
+                    </div>
+                    <div ng-if="isDecimal(col.display_name)">
+                        <p class="report-content">{{role.detail[col.column]|number:2}}%</p>
+                    </div>
+                    <div ng-if="!isDecimal(col.display_name) && !isObject(role.detail[col.column])">
+                        <p class="report-content">{{role.detail[col.column]}}</p>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div class="table-box scroll" ng-if="reportName==='Named Configuration'">
+    <div ng-include="'partials/reports/header.html'"></div>
+    <label>{{partName[0].name}}</label>
+    <table ng-hide="dataRepError" class="table-condensed table-hover table-modal table-sorting role-table header-line-top">
+        <thead>
+            <tr>
+                <th ng-repeat="col in reportDetails.columns[0]">{{col.display_name}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="role in reportDetails.printPageData[0] track by $index">
+                <td ng-repeat ="col in reportDetails.columns[0]">
+                    <div ng-if="!isObject(role.detail[col.column])">
+                        <p class="report-content">{{role.detail[col.column]}}</p>
+                    </div>
+                    <div ng-if="isObject(role.detail[col.column])" ng-repeat="item in role.detail[col.column] track by $index">
+                        <p class="report-content">{{item[0].name}}</p>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <label>{{partName[1].name}}</label>
+    <table ng-hide="dataRepError" class="table-condensed table-hover table-modal table-sorting role-table header-line-top">
+        <thead>
+            <tr>
+                <th ng-repeat="col in reportDetails.columns[1]">{{col.display_name}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="role in reportDetails.printPageData[1] track by $index">
+                <td ng-repeat ="col in reportDetails.columns[1]">
+                    <div ng-if="!isObject(role.detail[col.column])">
+                        <p class="report-content">{{role.detail[col.column]}}</p>
+                    </div>
+                    <div ng-if="isObject(role.detail[col.column])" ng-repeat="item in role.detail[col.column] track by $index">
+                        <p class="report-content">{{item[0].name}}</p>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <label>{{partName[2].name}}</label>
+    <table ng-hide="dataRepError" class="table-condensed table-hover table-modal table-sorting role-table header-line-top">
+        <thead>
+            <tr>
+                <th ng-repeat="col in reportDetails.columns[2]">{{col.display_name}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="role in reportDetails.printPageData[2] track by $index">
+                <td ng-repeat ="col in reportDetails.columns[2]">
+                    <div ng-if="!isObject(role.detail[col.column])">
+                        <p class="report-content">{{role.detail[col.column]}}</p>
+                    </div>
+                    <div ng-if="isObject(role.detail[col.column])" ng-repeat="item in role.detail[col.column] track by $index">
+                        <p class="report-content">{{item[0].name}}</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <label>{{partName[3].name}}</label>
+    <table ng-hide="dataRepError" class="table-condensed table-hover table-modal table-sorting role-table header-line-top">
+        <thead>
+            <tr>
+                <th ng-repeat="col in reportDetails.columns[3]">{{col.display_name}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="role in reportDetails.printPageData[3] track by $index">
+                <td ng-repeat ="col in reportDetails.columns[3]">
+                    <div ng-if="!isObject(role.detail[col.column])">
+                        <p class="report-content">{{role.detail[col.column]}}</p>
+                    </div>
+                    <div ng-if="isObject(role.detail[col.column])" ng-repeat="item in role.detail[col.column] track by $index">
+                        <p class="report-content">{{item[0].name}}</p>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

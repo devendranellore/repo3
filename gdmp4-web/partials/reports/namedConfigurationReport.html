@@ -1,0 +1,137 @@
+<div id="named-configuration-report" class="reports" ng-if="!showPrint">
+    <div ng-include="'partials/reports/modalError.html'"></div>
+    <div class="report-params">
+        <div class="edits">
+            <label>Named Configurations Report</label>
+            <form name="reportForm" autocomplete="off">
+                <div class="overflow-visible">
+                    <div class="form-line">
+                        <div class="col-sm-3" ng-mouseleave="showList('hide')" ng-class="{'has-error': report.deviceType.$invalid}">
+                            <label>
+                                Device Type*
+                            </label>
+                            <span class="input-select">
+                                <span id="report_device_type_input" class="form-control well-li" name="deviceType" ng-required="true" ng-model="repData.deviceType" ng-click="showList('deviceType')">{{repData.deviceType}}<span class="droplist-arrow caret" ng-if="metaRepData.deviceType.length"></span></span>
+                                <ul ng-show="visibility.deviceType" class="dropOptions deviceType">
+                                    <li ng-click="clear('deviceType')" ng-if="metaRepData.deviceType.length"><span>&nbsp;</span></li>
+                                    <li class="well-li" ng-click="updateType('deviceType', repMetaObj)" ng-repeat="repMetaObj in metaRepData.deviceType">{{repMetaObj.displayName}}</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div ng-include="'partials/reports/viewReport.html'"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div ng-show="showReportData">
+        <div class="table-box scroll" ng-if="false">
+            <div ng-include="'partials/reports/header.html'"></div>
+            <div ng-if="reportDetails.data[0].length">
+                <label>{{partName[0].name}}</label>
+                <table ng-hide="dataRepError" class="table table-condensed table-hover table-modal table-sorting role-table header-line-top">
+                    <thead>
+                        <tr>
+                            <th ng-repeat="col in reportDetails.columns[0]" ng-class="sortCol[0][col.column].cssClass" ng-click="namedConfigGetSorted(col.column, 0)">{{col.display_name}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr dir-paginate="role in reportDetails.currentPageData[0] | itemsPerPage:reportParams.itemsPerPage" pagination-id="systemConfiguration" total-items="reportParams.total_count[0]" current-page="reportParams.pageNo[0]" >
+                            <td ng-repeat ="col in reportDetails.columns[0]">
+                                <div ng-if="!isObject(role.detail[col.column])">
+                                    <p class="report-content">{{role.detail[col.column]}}</p>
+                                </div>
+                                <div ng-if="isObject(role.detail[col.column])" ng-repeat="item in role.detail[col.column] track by $index">
+                                    <p class="report-content">{{item[0].name}}</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="role-pagination no-print" ng-show="viewFlag">
+                    <dir-pagination-controls on-page-change="namedConfigTurnPage(newPageNumber, 0)" pagination-id="systemConfiguration" boundary-links="true"></dir-pagination-controls>
+                </div>
+            </div>
+            <div ng-if="reportDetails.data[1].length">
+                <label>{{partName[1].name}}</label>
+                <table ng-hide="dataRepError" class="table table-condensed table-hover table-modal table-sorting role-table header-line-top">
+                    <thead>
+                        <tr>
+                            <th ng-repeat="col in reportDetails.columns[1]" ng-class="sortCol[1][col.column].cssClass" ng-click="namedConfigGetSorted(col.column, 1)">{{col.display_name}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr dir-paginate="role in reportDetails.currentPageData[1] | itemsPerPage:reportParams.itemsPerPage" pagination-id="hardwareConfiguration" total-items="reportParams.total_count[1]" current-page="reportParams.pageNo[1]" >
+                            <td ng-repeat ="col in reportDetails.columns[1]">
+                                <div ng-if="!isObject(role.detail[col.column])">
+                                    <p class="report-content">{{role.detail[col.column]}}</p>
+                                </div>
+                                <div ng-if="isObject(role.detail[col.column])" ng-repeat="item in role.detail[col.column] track by $index">
+                                    <p class="report-content">{{item[0].name}}</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="role-pagination no-print" ng-show="viewFlag">
+                    <dir-pagination-controls on-page-change="namedConfigTurnPage(newPageNumber, 1)" pagination-id="hardwareConfiguration" boundary-links="true"></dir-pagination-controls>
+                </div>
+            </div>
+            <div ng-if="reportDetails.data[2].length">
+                <label>{{partName[2].name}}</label>
+                <table ng-hide="dataRepError" class="table table-condensed table-hover table-modal table-sorting role-table header-line-top">
+                    <thead>
+                        <tr>
+                            <th ng-repeat="col in reportDetails.columns[2]" ng-class="sortCol[2][col.column].cssClass" ng-click="namedConfigGetSorted(col.column, 2)">{{col.display_name}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr dir-paginate="role in reportDetails.currentPageData[2] | itemsPerPage:reportParams.itemsPerPage" pagination-id="softwareConfiguration" total-items="reportParams.total_count[2]" current-page="reportParams.pageNo[2]" >
+                            <td ng-repeat ="col in reportDetails.columns[2]">
+                                <div ng-if="!isObject(role.detail[col.column])">
+                                    <p class="report-content">{{role.detail[col.column]}}</p>
+                                </div>
+                                <div ng-if="isObject(role.detail[col.column])" ng-repeat="item in role.detail[col.column] track by $index">
+                                    <p class="report-content">{{item[0].name}}</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="role-pagination no-print" ng-show="viewFlag">
+                    <dir-pagination-controls on-page-change="namedConfigTurnPage(newPageNumber, 2)" pagination-id="softwareConfiguration" boundary-links="true"></dir-pagination-controls>
+                </div> 
+            </div>
+            <div ng-if="reportDetails.data[3].length">
+                <label>{{partName[3].name}}</label>
+                <table ng-hide="dataRepError" class="table table-condensed table-hover table-modal table-sorting role-table header-line-top">
+                    <thead>
+                        <tr>
+                            <th ng-repeat="col in reportDetails.columns[3]" ng-class="sortCol[3][col.column].cssClass" ng-click="namedConfigGetSorted(col.column, 3)">{{col.display_name}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr dir-paginate="role in reportDetails.currentPageData[3] | itemsPerPage:reportParams.itemsPerPage" pagination-id="featureConfiguration" total-items="reportParams.total_count[3]" current-page="reportParams.pageNo[3]" >
+                            <td ng-repeat ="col in reportDetails.columns[3]">
+                                <div ng-if="!isObject(role.detail[col.column])">
+                                    <p class="report-content">{{role.detail[col.column]}}</p>
+                                </div>
+                                <div ng-if="isObject(role.detail[col.column])" ng-repeat="item in role.detail[col.column] track by $index">
+                                    <p class="report-content">{{item[0].name}}</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="role-pagination no-print" ng-show="viewFlag">
+                    <dir-pagination-controls on-page-change="namedConfigTurnPage(newPageNumber, 3)" pagination-id="featureConfiguration" boundary-links="true"></dir-pagination-controls>
+                </div>
+            </div>
+        </div>
+        <div class="pull-right" ng-include="'partials/reports/footer.html'"></div>
+    </div>
+</div>
+
+<div ng-if="showPrint" ng-include="'partials/reports/printReport.html'"></div>

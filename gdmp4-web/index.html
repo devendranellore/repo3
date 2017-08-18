@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html ng-app="MedApp">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <meta name="author" content="" />
+
+        <title>Device Management Portal - Medtronic</title>
+
+        <link href="assets/bootstrap/css/bootstrap.css" rel="stylesheet" />
+        <link href="assets/awesome/css/font-awesome.min.css" rel="stylesheet" />
+        <link href="assets/css/datetimepicker.css" rel="stylesheet" />
+        <link href="assets/css/common.css" rel="stylesheet" />
+        <link href="assets/css/style.css" rel="stylesheet" />
+    </head>
+
+    <body class="login-grey med-app" ng-cloak>
+        <div ui-view></div>
+        <script>
+            if(self == top){
+                document.documentElement.style.display = 'block';
+            }else{
+                top.location = self.location;
+            }
+        </script>
+        <script src="assets/js/jquery.min.js"></script>
+        <script src="assets/bootstrap/js/bootstrap.js"></script>
+        <script src="assets/libs/moment.min.js"></script>
+        <script src="assets/libs/angular.js"></script>
+        <script src="assets/libs/angular-sanitize.js"></script>
+        <script src="assets/libs/dateTimeInput.js"></script>
+        <script src="assets/libs/datetimepicker.js"></script>
+        <script src="assets/libs/datetimepicker.templates.js"></script>
+        <script src="assets/libs/angular-cookies.js"></script>
+        <script src="assets/libs/angular-route.js"></script>
+        <script src="assets/libs/angular-ui-router.js"></script>
+        <script src="assets/libs/angular-resource.js"></script>
+        <script src="assets/libs/dirPagination.js"></script>
+        <script src="assets/libs/ui-bootstrap-tpls-1.3.2.js"></script>
+        <script src="assets/libs/toArrayFilter.js"></script>
+        <script src="assets/libs/ng-file-upload-shim.min.js"></script>
+        <script src="assets/libs/ng-file-upload.min.js"></script>
+
+        <script>document.write("<script src='assets/scripts/app.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='configs/config.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='services/authServices.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='services/apiServices.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='services/otherServices.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/loginController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/homeController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/roleController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/swController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/featureController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/editController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/userController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/selfRegController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/typeController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/deviceController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/featureListController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/featureEntitlementController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/userListController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/alertRoleController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/pendingRegController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/passwordController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/adminTabController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/adminSubTabController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/fileExtensionController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/adminRoleController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/rolePermissionsController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/defaultTrainerController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/softwarePackagesController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/facilityController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/tradeEmbargoController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/configurationController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/generalEditController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/templatesEditController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/reportController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/pendingController.js?v=" + Date.now() + "'><\/script>");</script>
+        <script>document.write("<script src='controllers/agentDownloadController.js?v=" + Date.now() + "'><\/script>");</script>
+    </body>
+</html>

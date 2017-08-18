@@ -1,0 +1,20 @@
+<div class="content manage_alerts" id="manage-alerts">
+    <ul class="nav nav-tabs nav-headers">
+        <li ng-class="{'active': activeSubTabs.general}" ><a ng-click="activateTab('general', true)">General Notification</a></li>
+        <li ng-class="{'active': activeSubTabs.templates}" ><a ng-click="activateTab('templates', true)">Templates</a></li>
+        <li ng-class="{'active': activeSubTabs.manageSubscription}" ><a ng-click="activateTab('manageSubscription', true)">Manage Subscriptions</a></li>
+    </ul>
+
+    <!-- General -->
+    <div class="nav-tabs-area open" ng-class="{'open': activeSubTabs.general}">
+        <ng-include src="'partials/alerts/general.html'"></ng-include>
+    </div>
+    <!-- Templates -->
+    <div class="nav-tabs-area" ng-class="{'open': activeSubTabs.templates}">
+        <ng-include src="'partials/alerts/template.html'"></ng-include>
+    </div>
+    <!-- Subscriptions -->
+    <div class="nav-tabs-area" ng-class="{'open': activeSubTabs.manageSubscription}">
+        <ng-include src="'partials/alerts/manageSub.html'"></ng-include>
+    </div>
+</div>

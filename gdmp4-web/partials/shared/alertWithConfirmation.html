@@ -1,0 +1,12 @@
+<div class="alert alert-{{alertType.class}} confirm fade in col-xs-offset-3 col-xs-6 alert-type">
+    <div class="col-xs-12">
+        <span ng-click="closeUpdateLoader()" class="close">×</span>
+        <span class="error-msg multiple-line" ng-class="{'alert-confirmation-content': alertType.msg.length>50}"><p class="error-content">{{alertType.msg}}</p></span>
+    </div>
+    <div class="col-xs-12 confirm-buttons">
+        <div class="col-xs-6 col-xs-offset-3">
+            <button class="btn btn-primary btn-mw" id="edit_config_submit_btn_alias"  ng-click="save(true)">OK</button>
+            <button class="btn btn-primary btn-mw" id="edit_config_submit_btn_alias"  ng-click="save(false)">CANCEL</button>
+        </div>
+    </div>
+</div>

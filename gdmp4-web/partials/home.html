@@ -1,0 +1,44 @@
+<div class="row">
+    <div class="col-sm-9 notifications"><div  ng-show="notification.display === true">
+            <div ng-repeat="message in notification.messages">
+                {{message}}
+            </div>
+        </div></div>
+    <div class="col-sm-3">
+        <a href="" ng-click="showDownload()">
+            <span  class="well-title-text ng-binding" style="color: #5b7f95;float:right ">
+                Download Agent and Client Applications
+            </span>
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div ng-repeat="(role,roleDetails) in userRoles track by $index">
+        <div class="role-cards col-sm-4 col-sm-4">
+            <div class="well-area">
+                <div class="well-title">
+                    <a ng-click="showDetails(role)">
+                        <span class="well-title-icon"><i class="fa fa-bars"></i></span>
+                        <span class="well-title-text">{{menuUserRoles[$index]|titleCase}}</span>
+                    </a>
+                </div>
+                <div class="well-content">
+                    <div ng-show="roleDetails.error" class="alert alert-danger v-align fa fa-exclamation-triangle"> {{roleDetails.error}}</div>
+                    <i ng-show="roleDetails.showLoader" class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+
+                    <ul ng-hide="roleDetails.error || roleDetails.showLoader" class="well-ul">
+
+                        <li ng-repeat="data in roleDetails.rData.data">
+                            <a>
+                                <span>{{data.basic.name}}</span>
+                                <span class="pos-abs-right">{{data.basic.createTime| date:'MM/dd/yy'}}</span>
+                            </a>
+                            <span>{{data.basic.description}}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

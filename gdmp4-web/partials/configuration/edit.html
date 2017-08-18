@@ -1,0 +1,276 @@
+<div>
+    <div ng-show="showLoader || LoadError" class="loader-box">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        <div ng-if="alertType.archiveConfirmation">
+            <div  ng-include="'partials/shared/alertWithArchive.html'"></div>
+        </div>
+        <div ng-if="alertType.confirmation">
+            <div ng-if="alertType.show" ng-include="'partials/shared/alertWithConfirmation.html'"></div>
+        </div>
+        <div ng-if="!alertType.confirmation">
+            <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+        </div>
+    </div>
+    <div ng-show="modalError" class="loader-box modal-error" >
+        <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+    </div>
+    <div class="modal-dialog modal-lg" id="updModal" tabindex="-1" role="dialog" data-target=".bs-example-modal-lg">
+        <div class="modal-dialog modal-lg" role="document">
+            <form name="configForm" autocomplete="off" novalidate>
+                <div class="modal-content">
+                    <div class="modal-header clearfix">
+                        <span class="modal-title" id="updModalLabel" ng-hide="createRecord">View {{role|titleCase}} Item</span>
+                        <span class="modal-title" id="updModalCreateLabel" ng-show="createRecord">Create {{role|titleCase}} Item</span>
+                        <div class="pull-right">
+                            <a uib-popover-html="help" popover-is-open="popoverIsOpen" ng-click="popoverIsOpen = !popoverIsOpen" popover-placement="left-top">Help</a>
+                            <button class="btn btn-primary btn-mw" id="edit_hardware_edit_btn" ng-show="readOnlyFlag" ng-if="roleData.status !== 'Archived' && acctAccess.configuration === 'W'" ng-click="clone(true)">ARCHIVE AND CLONE</button>
+                            <button class="btn btn-primary btn-mw" id="edit_config_clone_btn" ng-show="readOnlyFlag" ng-if="acctAccess.configuration === 'W'" ng-click="clone()">CLONE</button>
+                            <button class="btn btn-primary btn-mw" id="edit_config_edit_btn" ng-show="readOnlyFlag" ng-if="acctAccess.configuration === 'W'" ng-click="readOnly(false)">EDIT</button>
+                            <button class="btn btn-primary btn-mw" id="edit_config_save_btn" ng-hide="readOnlyFlag" ng-disabled="configForm.$invalid || !validated" ng-click="save(null)">SAVE</button>
+                            <button class="btn btn-primary btn-mw" data-dismiss="modal" aria-label="Close" ng-if="acctAccess.configuration === 'W'" ng-click="cancel()">CANCEL</button>
+                            <button class="btn btn-primary btn-mw" data-dismiss="modal" aria-label="Close" ng-if="acctAccess.configuration === 'R'" ng-click="cancel()">CLOSE</button>
+                        </div>
+                    </div>
+                    <div ng-show="roleData.warningMessage" class="alert alert-warning alert-modal-fixed">
+                        <span class="alert-warning-flag">
+                            <span class="alert-warning-flbg"></span>
+                            <span class="alert-warning-fltx">!</span>
+                        </span>
+                        <p>
+                            {{roleData.warningMessage}}
+                        </p>
+                    </div>
+                    <div class="modal-body">
+                        <label>Basic Information</label>
+                            <div class="modal-form overflow-visible">
+                                <div class="form-line">
+                                    <div class="col-sm-4" ng-class="{ 'has-error': configForm.cName.$invalid }">
+                                        <label>
+                                            Name*
+                                            <span ng-show="roleData.tooltip.configName">
+                                                {{roleData.tooltip.configName}}
+                                            </span>
+                                        </label>
+                                        <input id="config_edit_name_input" type="text" name="cName" class="form-control" pattern="^[ A-Za-z0-9_&.-]*$" uib-popover="Please fill with alphanumeric and _&-." popover-is-open="cNamePopover && configForm.cName.$invalid" popover-trigger="configForm.cName.$invalid" ng-click="cNamePopover = !cNamePopover" popover-placement="top-right" ng-readonly="!createRecord && (readOnlyFlag || (status!=='Limited Release'))" ng-model="roleData.configName" required oninvalid="this.setCustomValidity('please fill out this field(letter, number and _ & - .)')" oninput="setCustomValidity('')"/>
+                                    </div>
+                                </div>
+                                <div class="form-line">
+                                    <div class="col-sm-12">
+                                        <label>
+                                            Description
+                                            <span ng-show="roleData.tooltip.description">
+                                                {{roleData.tooltip.description}}
+                                            </span>
+                                        </label>
+                                        <textarea id="config_edit_desc_input" class="form-control" ng-readonly="!createRecord && readOnlyFlag" ng-model="roleData.description"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-line">
+                                    <div class="col-sm-4" ng-mouseleave="showList('hide')" ng-class="{ 'has-error': configForm.deviceType.$invalid }">
+                                        <label>
+                                            Device Type*
+                                            <span ng-show="roleData.tooltip.deviceType">
+                                                {{roleData.tooltip.deviceType}}
+                                            </span>
+                                        </label>
+                                        <span class="input-select">
+                                            <span id="config_device_type_input" name="deviceType" class="form-control" ng-model="roleData.deviceType" ng-readonly="!createRecord && (readOnlyFlag || (status!=='Limited Release'))" required ng-click="showList('deviceType')">{{roleData.deviceType}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag && !(!createRecord && (readOnlyFlag || (status!=='Limited Release')))"></span></span>
+                                            <ul id="edit_config_device_type_input_select_ul" ng-show="!readOnlyFlag && visibility.deviceType && ((status==='Limited Release') || createRecord)" class="dropOptions deviceType">
+                                                <li ng-click="updateConfig('deviceType', deviceTypeObj)" ng-repeat="deviceTypeObj in metaData.device_types">{{deviceTypeObj.displayName}}</li>
+                                            </ul>
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-4" ng-mouseleave="showList('hide')">
+                                        <label>
+                                            Status*
+                                            <span ng-show="roleData.tooltip.status">
+                                                {{roleData.tooltip.status}}
+                                            </span>
+                                        </label>
+                                        <span class="input-select">
+                                            <span id="config_status_input" data-value="2" class="form-control" ng-readonly="!createRecord && readOnlyFlag" ng-model="roleData.status" ng-click="showList('status')">{{roleData.status}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                                            <ul id="edit_config_status_input_select_ul" ng-show="!readOnlyFlag && visibility.status" class="dropOptions">
+                                                <li id="edit_config_status_input_select_li" ng-click="updateConfig('status', currentStatus)">{{currentStatus.displayName}}</li>
+                                                <li id="edit_config_status_input_select_li{{$index}}" ng-click="updateConfig('status', listObj)" ng-repeat="listObj in metaData.status">
+                                                    {{listObj.displayName}}
+                                                </li>
+                                            </ul>
+                                        </span>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label>
+                                            Is Warning Config?
+                                            <span ng-show="roleData.tooltip.warning">
+                                                {{roleData.tooltip.warning}}
+                                            </span>
+                                        </label>
+                                        <span class="col-sm-12">
+                                            <ul id="warningConfigCreateCheck" class="nav nav-radio nav-transparent" data-disabled="disabled">
+                                                <li class="col-sm-6 col-xs-12">
+                                                    <label class="check-box-filter colp-child wrap-text ng-binding">
+                                                        <input type="checkbox" ng-disabled="!createRecord && (readOnlyFlag || (status!=='Limited Release'))"  ng-model="roleData.warning"  ng-click="changeConfigType()" class="ng-pristine ng-untouched ng-valid ng-empty" disabled="disabled"> <span></span>YES
+                                                    </label>
+                                                </li>
+                                                <li class="col-sm-6 col-xs-12">
+                                                    <label class="check-box-filter colp-child wrap-text ng-binding" title="">
+                                                        <input type="checkbox" ng-disabled="!createRecord && (readOnlyFlag || (status!=='Limited Release'))" ng-true-value="false"  ng-click="changeConfigType()" ng-false-value="true" ng-model="roleData.warning" class="ng-pristine ng-untouched ng-valid ng-empty" disabled="disabled"> <span></span>NO
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-line">
+                                    <div class="col-sm-4" ng-mouseleave="showList('hide')" ng-hide="createRecord">
+                                        <label>
+                                            Configuration Type
+                                            <span ng-show="roleData.tooltip.configType">
+                                                {{roleData.tooltip.configType}}
+                                            </span>
+                                        </label>
+                                        <span>
+                                            <input id="config_type_input" type="text" data-value="2" class="form-control" ng-readonly="!createRecord" ng-model="roleData.configType" />
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-4 pull-right" id="editWarningTypeAlias" ng-show="(displayWarningList && checkMakeWarning()) || (!createRecord && roleData.warning)" ng-mouseleave="showList('hide')" ng-class="{ 'has-error': !roleData.warningType }">
+                                        <label>
+                                            Warning Type*
+                                        </label>
+                                        <span class="input-select">
+                                            <span id="config_warning_type" class="form-control" ng-readonly="!createRecord && (readOnlyFlag || (status!=='Limited Release'))" ng-model="roleData.warningType" ng-click="showList('warningType')">{{roleData.warningType}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                                            <ul id="edit_config_warning_type_select_ul" ng-show="!readOnlyFlag && visibility.warningType && (createRecord || (status==='Limited Release'))" class="dropOptions">
+                                                <li id="edit_config_warning_type_li{{$index}}" ng-click="updateConfig('warningType', listObj)" ng-repeat="listObj in metaData.warning_type.configs">
+                                                    {{listObj.displayName}}
+                                                </li>
+                                            </ul>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-show="roleData.feature_items.length && !createRecord">
+                                <label class="modal-body-label modal-lab">Associate with Feature Items</label>
+                                <div class="modal-form overflow-visible clearfix">
+                                    <div class="col-sm-12">
+                                        <table class="table table-default">
+                                            <thead>
+                                                <tr>
+                                                    <th>Type</th>
+                                                    <th>Name</th>
+                                                    <th>Revision</th>
+                                                    <th>Part</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr data-id="{{$index}}" ng-repeat="featureObj in roleData.feature_items">
+                                                    <td>{{featureObj.type}}</td>
+                                                    <td>{{featureObj.name}}</td>
+                                                    <td>{{featureObj.revision}}</td>
+                                                    <td>{{featureObj.part}}</td>
+                                                    <td>{{featureObj.status}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-line-config" data-warning="1" ng-if="acctAccess.configuration === 'W'">
+                                <div ng-show="createRecord && !cloneRecord">
+                                    <div id="create_warning_make_btns" class="col-sm-12 text-right" ng-hide="checkMakeWarning()">
+                                        <span id="make_warning_feature_config_btn" class="btn btn-primary" data-element="feature_warning_config_lab" ng-click="makeWarning.FEConfig = !makeWarning.FEConfig">MAKE FEATURE CONFIG</span>
+                                        <span id="make_warning_hardware_config_btn" class="btn btn-primary" data-element="hardware_warning_config_lab" ng-click="makeWarning.HWConfig = !makeWarning.HWConfig">MAKE HARDWARE CONFIG</span>
+                                        <span id="make_warning_software_config_btn" class="btn btn-primary" data-element="software_warning_config_lab" ng-click="makeWarning.SWConfig = !makeWarning.SWConfig">MAKE SOFTWARE CONFIG</span>
+                                        <span id="make_warning_system_config_btn" class="btn btn-primary" data-element="system_warning_config_lab" ng-click="makeWarning.SYSConfig = !makeWarning.SYSConfig">MAKE SYSTEM CONFIG</span>
+                                    </div>
+                                    <div id="remove_warning_make_btns" class="col-sm-12 text-right" ng-show="checkMakeWarning()">
+                                        <span id="remove_warning_associations_and_change_config_type_btn" class="btn btn-primary" ng-click="remAssocNChgConfig()">REMOVE ASSOCIATIONS AND CHANGE CONFIG TYPE</span>
+                                    </div>
+                                </div>
+                                <div id="make-sys-config" class="config-area create-config-area" data-element="system_config_lab" ng-show="makeWarning.SYSConfig">
+                                    <associations role="hardware"
+                                                  ng-class="{'has-error': !roleData.clientAssociations.hardwareConfiguration}"
+                                                  ng-if="hasHWConfig"
+                                                  role-data="roleData"
+                                                  search-type="searchType(role,config)"
+                                                  read-only-flag="!createRecord && (readOnlyFlag || (status!=='Limited Release'))"
+                                                  search-result="searchResult"
+                                                  add-association="addAssociation(index, associationKey, searchObj, type)"
+                                                  remove-association="removeAssociation(index, ObjKey)"
+                                                  is-empty-obj="isEmptyObj(obj)">
+                                    </associations>
+                                    <associations role="software"
+                                                  ng-class="{'has-error': !roleData.clientAssociations.softwareConfiguration}"
+                                                  ng-if="hasSWConfig"
+                                                  role-data="roleData"
+                                                  search-type="searchType(role,config)"
+                                                  read-only-flag="!createRecord && (readOnlyFlag || (status!=='Limited Release'))"
+                                                  search-result="searchResult"
+                                                  add-association="addAssociation(index, associationKey, searchObj, type)"
+                                                  remove-association="removeAssociation(index, ObjKey)"
+                                                  is-empty-obj="isEmptyObj(obj)">
+                                    </associations>
+                                    <associations role="feature"
+                                                  ng-if="hasFeatureConfig"
+                                                  role-data="roleData"
+                                                  search-type="searchType(role,config)"
+                                                  read-only-flag="!createRecord && (readOnlyFlag || (status!=='Limited Release'))"
+                                                  search-result="searchResult"
+                                                  add-association="addAssociation(index, associationKey, searchObj, type)"
+                                                  remove-association="removeAssociation(index, ObjKey)"
+                                                  is-empty-obj="isEmptyObj(obj)">
+                                    </associations>
+                                </div>
+                                <div id="make-sw-config" class="config-area create-config-area" data-element="system_config_lab" ng-if="makeWarning.SWConfig">
+                                    <item-associations
+                                        role-config="software"
+                                        ng-class="{'has-error': !roleData.clientAssociations.softwares}"
+                                        warningType="makeWarning"
+                                        role-data="roleData"
+                                        search-type="searchType(role,config)"
+                                        read-only-flag="!createRecord && (readOnlyFlag || (status!=='Limited Release'))"
+                                        search-result="searchResult"
+                                        add-association="addAssociation(index, associationKey, searchObj, type, root)"
+                                        remove-association="removeAssociation(index, ObjKey)"
+                                        is-empty-obj="isEmptyObj(obj)">
+                                    </item-associations>
+                                </div>
+                                <div id="make-hw-config" class="config-area create-config-area" data-element="system_config_lab" ng-if="makeWarning.HWConfig">
+                                    <item-associations
+                                        role-config="hardware"
+                                        ng-class="{'has-error': !roleData.clientAssociations.hardwares}"
+                                        warningType="makeWarning"
+                                        role-data="roleData"
+                                        search-type="searchType(role,config)"
+                                        read-only-flag="!createRecord && (readOnlyFlag || (status!=='Limited Release'))"
+                                        search-result="searchResult"
+                                        add-association="addAssociation(index, associationKey, searchObj, type, root)"
+                                        remove-association="removeAssociation(index, ObjKey)"
+                                        is-empty-obj="isEmptyObj(obj)">
+                                    </item-associations>
+                                </div>
+                                <div id="make-fe-config" class="config-area create-config-area" data-element="system_config_lab" ng-if="makeWarning.FEConfig">
+                                    <item-associations
+                                        role-config="feature"
+                                        ng-class="{'has-error': !roleData.clientAssociations.features}"
+                                        warning-type="makeWarning"
+                                        role-data="roleData"
+                                        search-type="searchType(role,config)"
+                                        read-only-flag="!createRecord && (readOnlyFlag || (status!=='Limited Release'))"
+                                        search-result="searchResult"
+                                        add-association="addAssociation(index, associationKey, searchObj, type, root)"
+                                        remove-association="removeAssociation(index, ObjKey)"
+                                        is-empty-obj="isEmptyObj(obj)">
+                                    </item-associations>
+                                </div>
+                            </div>
+                            <div ng-if="roleData.associatedConfigurations.length && !createRecord" ng-include="'partials/shared/associatedConf.html'"></div>
+                            <div ng-if="(roleData.softwares || roleData.features || !(roleData.softwareConfiguration | isEmpty) || !(roleData.featureConfiguration | isEmpty)) && !createRecord" ng-include="'partials/shared/countryExclusion.html'"></div>
+                            <div ng-if="roleData.cloneMap && !createRecord" ng-include="'partials/shared/cloneMap.html'"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,76 @@
+<div>
+    <div ng-show="showLoader || LoadError" class="loader-box">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+    </div>
+    <div ng-show="modalError" class="loader-box modal-error">
+        <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+    </div>
+    <div class="modal-dialog modal-lg" id="updModal" tabindex="-1" role="dialog" data-target=".bs-example-modal-lg">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <form name="managerForm" autocomplete="off" novalidate>
+                    <div class="modal-header clearfix">
+                        <span class="modal-title" id="updModalLabel" ng-hide="createRecord">View Approver Item</span>
+                        <span class="modal-title" id="updModalCreateLabel" ng-show="createRecord">Create Approver Item</span>
+                        <div class="pull-right">
+                            <a uib-popover-html="help" popover-is-open="popoverIsOpen" ng-click="popoverIsOpen = !popoverIsOpen" popover-placement="left-top">Help</a>
+                            <span id="edit_config_btn_alias" type="button" class="btn btn-primary btn-mw" ng-show="readOnlyFlag" ng-click="readOnly(false)">EDIT</span>
+                            <button id="save_config_s_btn_alias" class="btn btn-primary btn-mw" ng-hide="readOnlyFlag" ng-click="save()" ng-disabled="managerForm.$invalid">SAVE</button>
+                            <span class="btn btn-primary btn-mw" data-dismiss="modal" aria-label="Close" ng-click="cancel()">CANCEL</span>
+                        </div>
+                    </div>
+                    <div ng-show="roleData.warningMessage" class="alert alert-warning alert-modal-fixed">
+                        <span class="alert-warning-flag">
+                            <span class="alert-warning-flbg"></span>
+                            <span class="alert-warning-fltx">!</span>
+                        </span>
+                        <p>
+                            {{roleData.warningMessage}}
+                        </p>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-line pull-right">
+                            <button id="edit_role_delete_btn" class="btn btn-primary" type="button" ng-if="!createRecord" ng-click="customAction('delete')">Delete Approver</button>
+                        </div>
+                            <div class="modal-form overflow-visible">
+                                <div class="form-line">
+                                <div class="col-sm-4" ng-class="{ 'has-error': managerForm.name.$invalid }">
+                                        <label>
+                                            Name*
+                                            <span ng-show="roleData.tooltip.name">
+                                                {{roleData.tooltip.name}}
+                                            </span>
+                                        </label>
+                                        <input id="config_edit_name_input" type="text" class="form-control" name="name" ng-readonly="!createRecord && !editable" ng-model="roleData.name" ng-required="true" required/>
+                                    </div>
+                                </div>
+                                <div class="form-line">
+                                    <div class="col-sm-4" ng-class="{ 'has-error': managerForm.email.$invalid }">
+                                        <label>
+                                            Email*
+                                            <span ng-show="roleData.tooltip.name">
+                                                {{roleData.tooltip.email}}
+                                            </span>
+                                        </label>
+                                        <input id="config_edit_email_input" type="email" name="email" class="form-control" ng-readonly="!createRecord && !editable" ng-model="roleData.email" required="true" required/>
+                                    </div>
+                                </div>
+                                <div class="form-line">
+                                    <div class="col-sm-12">
+                                        <label>
+                                            Comment
+                                            <span ng-show="roleData.tooltip.description">
+                                                {{roleData.tooltip.comment}}
+                                            </span>
+                                        </label>
+                                        <textarea id="software_edit_comment_input" class="form-control" ng-readonly="!createRecord && !editable" ng-model="roleData.comment"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,65 @@
+<div class="table-box scroll trade-embargo-error-frame">
+    <div ng-show="showLoader" class="loader-box">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+    </div>
+    <div ng-show="modalError" class="loader-box modal-error" >
+        <i class="fa-2x r-loader fa fa-exclamation-circle trade-embargo-error"> {{modalError}}</i>
+    </div>
+<div class="filter-area">
+    <div class="clearfix cant-line-down">
+        <div class="pull-right">
+            <div class="form-cant-buttons clearfix">
+                <span class="btn btn-primary btn-mw" id="edit_role_btn" ng-click="readOnly(false)" ng-show="readOnlyFlag">EDIT</span>
+                <span class="btn btn-primary btn-mw" id="save_role_btn" ng-click="save()" ng-hide="readOnlyFlag">SAVE</span>
+                <span class="btn btn-default" id="cancel_role_btn" ng-click="cancel()" ng-hide="readOnlyFlag">CANCEL</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="well-title">Set Trade Embargo Country List</div>
+<div class="well">
+    <div class="col-sm-12 col-md-6">
+        <div class="table-addon">
+            <div class="table-addon-inputs">
+                <table class="table table-bordered table-nopadding">
+                    <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th ng-if="!readOnlyFlag"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-addon-inptr" ng-repeat="country in roleData">
+                            <td>&nbsp;&nbsp;{{ country.name }}</td>
+
+                            <td ng-if="!readOnlyFlag" class="table-addon-btns table-edit-btn">
+                                <button class="btn btn-primary" ng-click="!readOnlyFlag && deleteCountry(country)">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="table-addon-inptr" ng-show="!readOnlyFlag">
+                            <td>
+                                <span class="input-select" ng-mouseleave="showList('hide')">
+                                    <input id="trade_embargo_country_input" type="text" class="form-control" ng-model="selectedCountry.displayName" ng-click="showList('country')"/><span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span>
+                                    <ul ng-show="visibility.country" class="dropOptions">
+                                        <li ng-click="updateCountry(countryObj)" ng-repeat="countryObj in metaData.countryList">{{countryObj.displayName}}</li>
+                                    </ul>
+                                </span>
+                            </td>
+
+                            <td class="table-addon-btns table-edit-btn">
+                                <button class="btn btn-primary" ng-click="addCountry(selectedCountry)">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+</div>

@@ -1,0 +1,200 @@
+<div class="hardware role-edit" ng-class="{'create':createRecord}">
+    <div ng-show="showLoader" class="loader-box">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        <div ng-if="alertType.archiveConfirmation">
+            <div ng-include="'partials/shared/alertWithArchive.html'"></div>
+        </div>
+        <div ng-if="alertType.confirmation">
+            <div ng-if="alertType.show" ng-include="'partials/shared/alertWithConfirmation.html'"></div>
+        </div>
+        <div ng-if="!alertType.confirmation">
+            <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+        </div>
+    </div>
+    <div ng-show="modalError" class="loader-box modal-error" >
+        <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+    </div>
+    <div class="modal-dialog modal-lg" id="updateModel" tabindex="-1" role="dialog" data-target=".bs-example-modal-lg">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header clearfix">
+                    <span class="modal-title" id="updModalLabel" ng-hide="createRecord">View {{role|titleCase}} Item</span>
+                    <span class="modal-title" id="updModalCreateLabel" ng-show="createRecord">Create  {{role|titleCase}} Item</span>
+                    <div class="pull-right">
+                        <a uib-popover-html="help" popover-is-open="popoverIsOpen" ng-click="popoverIsOpen = !popoverIsOpen" popover-placement="left-top">Help</a>
+                        <button class="btn btn-primary btn-mw" id="edit_hardware_edit_btn" ng-show="readOnlyFlag" ng-if="roleData.hardwareStatus !== 'Archived' && acctAccess.hardware === 'W'" ng-click="clone(true)">ARCHIVE AND CLONE</button>
+                        <button class="btn btn-primary btn-mw" id="edit_hardware_edit_btn" ng-if="acctAccess.hardware === 'W'" ng-show="readOnlyFlag" ng-click="clone()">CLONE</button>
+                        <button class="btn btn-primary btn-mw" id="edit_hardware_edit_btn" ng-if="acctAccess.hardware === 'W'" ng-show="readOnlyFlag" ng-click="readOnly(false)">EDIT</button>
+                        <button class="btn btn-primary btn-mw" id="edit_hardware_save_btn" ng-hide="readOnlyFlag" ng-disabled="hwForm.$invalid" ng-click="save()">SAVE</button>
+                        <button class="btn btn-primary btn-mw" data-dismiss="modal" ng-if="acctAccess.hardware === 'W'" aria-label="Close" ng-click="cancel()">CANCEL</button>
+                        <button class="btn btn-primary btn-mw" data-dismiss="modal" aria-label="Close" ng-if="acctAccess.hardware === 'R'" ng-click="cancel()">CLOSE</button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <label>Basic Information</label>{{roleData.authority}}
+                    <form name="hwForm" autocomplete="off" novalidate>
+                        <div class="modal-form overflow-visible">
+                            <div class="form-line">
+                                <div class="col-sm-4" ng-class="{ 'has-error': hwForm.hName.$invalid }">
+                                    <label>
+                                        Name*
+                                        <span ng-show="roleData.tooltip.hardwareName">
+                                            {{roleData.tooltip.hardwareName}}
+                                        </span>
+                                    </label>
+                                    <input id="edit_hardware_name_input" ng-required="true" class="form-control" name="hName" pattern="^[ A-Za-z0-9.&_-]*$" uib-popover="Please fill with alphanumeric and .&_-" popover-is-open="hNamePopover && hwForm.hName.$invalid" popover-trigger="hwForm.hName.$invalid" ng-click="hNamePopover = !hNamePopover" popover-placement="top-right" type="text" data-requried="true" ng-readonly="!createRecord && (readOnlyFlag || (status!=='Limited Release'))" ng-model="roleData.hardwareName"/>
+                                </div>
+                                <div class="col-sm-4" ng-class="{ 'has-error': hwForm.pNumber.$invalid }">
+                                    <label>
+                                        Part Number*
+                                        <span ng-show="roleData.tooltip.part">
+                                            {{roleData.tooltip.part}}
+                                        </span>
+                                    </label>
+                                    <input id="edit_hardware_part_number_input" ng-required="true" name="pNumber" class="form-control" pattern="^[ A-Za-z0-9._-]*$" uib-popover="Please fill with alphanumeric and ._-" popover-is-open="pNumberPopover && hwForm.pNumber.$invalid" popover-trigger="hwForm.pNumber.$invalid" ng-click="pNumberPopover = !pNumberPopover" popover-placement="top-right" type="text" ng-readonly="!createRecord && (readOnlyFlag || (status!=='Limited Release'))"  ng-model="roleData.part"/>
+                                </div>
+                                <div class="col-sm-4" ng-class="{ 'has-error': hwForm.rev.$invalid }">
+                                    <label>
+                                        Revision*
+                                        <span ng-show="roleData.tooltip.revision">
+                                            {{roleData.tooltip.revision}}
+                                        </span>
+                                    </label>
+                                    <input id="edit_hardware_revision_input" ng-required="true" name="rev" class="form-control" pattern="^[ A-Za-z0-9._-]*$" uib-popover="Please fill with alphanumeric and ._-" popover-is-open="revPopover && hwForm.rev.$invalid" popover-trigger="hwForm.rev.$invalid" ng-click="revPopover = !revPopover" popover-placement="top-right" type="text" ng-readonly="!createRecord && (readOnlyFlag || (status==='Unknown') || (status==='Archived'))"  ng-model="roleData.revision"/>
+                                </div>
+                            </div>
+                            <div class="form-line">
+                                <div class="col-sm-12">
+                                    <label>
+                                        Description
+                                        <span ng-show="roleData.tooltip.description">
+                                            {{roleData.tooltip.description}}
+                                        </span>
+                                    </label>
+                                    <textarea id="edit_hardware_description_input" class="form-control" ng-readonly="!createRecord && readOnlyFlag" ng-model="roleData.description"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-line">
+                                <div class="col-sm-4" ng-mouseleave="showList('hide')" ng-class="{ 'has-error': hwForm.dType.$invalid }">
+                                    <label>
+                                        Device Type*
+                                        <span ng-show="roleData.tooltip.deviceType">
+                                            {{roleData.tooltip.deviceType}}
+                                        </span>
+                                    </label>
+                                    <span class="input-select">
+                                        <span id="edit_hardware_device_type_input_select" class="form-control" name="dType" ng-readonly="!createRecord && (readOnlyFlag || (status!=='Limited Release'))" ng-model="roleData.deviceType" ng-click="showList('deviceType')" required>{{roleData.deviceType}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag && !(!createRecord && (readOnlyFlag || (status!=='Limited Release')))"></span></span>
+                                        <ul id="edit_hardware_device_type_input_select_ul" ng-show="!readOnlyFlag && visibility.deviceType && ((status==='Limited Release') || createRecord)" class="dropOptions deviceType">
+                                            <li id="edit_hardware_device_type_input_select_li_{{$index}}" ng-click="updateType('deviceType', deviceTypeObj)" ng-repeat="deviceTypeObj in metaData.device_types">{{deviceTypeObj.displayName}}</li>
+                                        </ul>
+                                    </span>
+                                </div>
+                                <div class="col-sm-4" ng-mouseleave="showList('hide')" ng-class="{ 'has-error': hwForm.hType.$invalid }">
+                                    <label>
+                                        Hardware Type*
+                                        <span ng-show="roleData.tooltip.hardwareType">
+                                            {{roleData.tooltip.hardwareType}}
+                                        </span>
+                                    </label>
+                                    <span class="input-select">
+                                        <span id="edit_hardware_hardware_type_input_select" class="form-control" name="hType" ng-readonly="!createRecord && (readOnlyFlag || (status==='Archived'))" ng-model="roleData.hardwareType" ng-click="showList('hardwareType')" required>{{roleData.hardwareType}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag && !(!createRecord && (readOnlyFlag || (status==='Archived')))"></span></span>
+                                        <ul id="edit_hardware_hardware_type_input_select_ul" ng-show="!readOnlyFlag && visibility.hardwareType && (status!=='Archived')" class="dropOptions">
+                                            <li id="edit_hardware_hardware_type_input_select_li{{$index}}" ng-click="updateType('hardwareType', listObj)" ng-repeat="listObj in metaData.hardware_type">
+                                                {{listObj.displayName}}
+                                            </li>
+                                        </ul>
+                                    </span>
+                                </div>
+                                <div class="col-sm-4" ng-mouseleave="showList('hide')">
+                                    <label>
+                                        Status*
+                                        <span ng-show="roleData.tooltip.hardwareStatus">
+                                            {{roleData.tooltip.hardwareStatus}}
+                                        </span>
+                                    </label>
+                                    <span class="input-select">
+                                        <span id="edit_hardware_status_input" class="form-control" ng-readonly="!createRecord && readOnlyFlag" ng-model="roleData.hardwareStatus" ng-click="showList('hardwareStatus')">{{roleData.hardwareStatus}}<span class="droplist-arrow caret" ng-if="!readOnlyFlag"></span></span>
+                                        <ul id="edit_hardware_status_input_ul" ng-show="!readOnlyFlag && visibility.hardwareStatus" class="dropOptions">
+                                            <li id="edit_hardware_status_input_select_li" ng-click="updateType('hardwareStatus', currentStatus)" ng-if="!createRecord">{{currentStatus.displayName}}</li>
+                                            <li id="edit_hardware_status_input_select_li{{$index}}" ng-click="updateType('hardwareStatus', listObj)" ng-repeat="listObj in metaData.status">
+                                                {{listObj.displayName}}
+                                            </li>
+                                        </ul>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="hw-documents">
+                        <label class="modal-body-label modal-lab">Associate with Document Items</label>
+                        <div class="modal-form clearfix">
+                            <div class="tab-well associations">
+                                <span ng-show="isEmptyObj(roleData.documents)">This associated document has been defined.</span>
+                                <span ng-hide="isEmptyObj(roleData.documents)">
+                                    <table class="table table-default">
+                                        <thead>
+                                            <tr>
+                                                <th>Type</th>
+                                                <th>Name</th>
+                                                <th>Revision</th>
+                                                <th>Part</th>
+                                                <th>Status</th>
+                                                <th>Language</th> 
+                                                <th>Date</th>
+                                                <th ng-hide="!createRecord && !docControl"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr data-id="1" ng-repeat="(key, hwObj) in roleData.documents">
+                                                <td>{{hwObj.type}}</td>
+                                                <td>{{hwObj.name}}</td>
+                                                <td>{{hwObj.revision}}</td>
+                                                <td>{{hwObj.part}}</td>
+                                                <td>{{hwObj.status}}</td>
+                                                <td>{{hwObj.language}}</td>
+                                                <td>{{hwObj.createTime|date:'MM/dd/yy'}}</td>
+                                                <td ng-hide="!createRecord && !docControl"><span class="td-remove"><i ng-click="removeAssociation(key, 'documents')" class="fa fa-trash-o"></i></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </span>
+                            </div>
+                            <div class="form-line col-sm-6">
+                                <input id="searchHWDoc" class="form-control search-input" ng-hide="!createRecord && (readOnlyFlag || (status==='Archived'))" ng-trim="false" type="text" placeholder="Search for associated Document Items by name" ng-model="searchHWDocName" ng-change="searchType('document', searchHWDocName)"/>
+                                <i class="fa fa-spinner search-spinner fa-spin" ng-show="loadingSearch.document"></i>
+                            </div>
+                            <div ng-show="searchResult.document" id="hardwareEditDocTable" class="form-line col-sm-12 table-search">
+                                <table class="table table-condensed table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Type</th>
+                                            <th>Name</th>
+                                            <th>Revision</th>
+                                            <th>Part</th>
+                                            <th>Status</th>
+                                            <th>Language</th> 
+                                            <th>Date</th>   
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-id="{{$index}}" ng-repeat="searchObj in searchResult.document" ng-click="addAssociation($index, 'documents', searchObj, 'document')">
+                                            <td>{{searchObj.detail.type}}</td>
+                                            <td>{{searchObj.detail.name}}</td>
+                                            <td>{{searchObj.detail.revision}}</td>
+                                            <td>{{searchObj.detail.part}}</td>
+                                            <td>{{searchObj.detail.status}}</td>
+                                            <td>{{searchObj.detail.language}}</td>
+                                            <td>{{searchObj.detail.createTime|date:'MM/dd/yy'}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>    
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-if="roleData.associatedConfigurations.length" ng-include="'partials/shared/associatedConf.html'"></div>
+                    <div ng-if="roleData.cloneMap" ng-include="'partials/shared/cloneMap.html'"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

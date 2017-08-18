@@ -1,0 +1,119 @@
+<div>
+    <div ng-show="showLoader || LoadError" class="loader-box">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw r-loader"></i>
+        <div ng-if="alertType.show" ng-include="'partials/shared/alert.html'"></div>
+    </div>
+    <div ng-show="modalError" class="loader-box modal-error">
+        <i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+    </div>
+    <div class="modal-dialog modal-lg" id="updModal" tabindex="-1" role="dialog" data-target=".bs-example-modal-lg">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <form name="clientSWForm" autocomplete="off" novalidate>
+                    <div class="modal-header clearfix">
+                        <span class="modal-title" id="updModalLabel" ng-hide="createRecord">View Client Software</span>
+                        <span class="modal-title" id="updModalCreateLabel" ng-show="createRecord">Create Client Software</span>
+                        <div class="pull-right">
+                            <a uib-popover-html="help" popover-is-open="popoverIsOpen" ng-click="popoverIsOpen = !popoverIsOpen" popover-placement="left-top">Help</a>
+                            <button id="edit_config_btn_alias" type="button" class="btn btn-primary btn-mw" ng-show="readOnlyFlag" ng-click="readOnly(false)">EDIT</button>
+                            <button id="save_config_s_btn_alias" class="btn btn-primary btn-mw" ng-hide="readOnlyFlag" ng-click="save()" ng-disabled="clientSWForm.$invalid">SAVE</button>
+                            <button class="btn btn-primary btn-mw" data-dismiss="modal" aria-label="Delete" ng-hide="createRecord" ng-click="customAction('delete')">DELETE</button>
+                            <button class="btn btn-primary btn-mw" data-dismiss="modal" aria-label="Close" ng-click="cancel()">CANCEL</button>
+                        </div>
+                    </div>
+                    <div ng-show="roleData.warningMessage" class="alert alert-warning alert-modal-fixed">
+                        <span class="alert-warning-flag">
+                            <span class="alert-warning-flbg"></span>
+                            <span class="alert-warning-fltx">!</span>
+                        </span>
+                        <p>
+                            {{roleData.warningMessage}}
+                        </p>
+                    </div>
+                    <div class="modal-body">
+                            <div class="modal-form overflow-visible">
+                                <div class="form-line">
+                                    <div class="col-sm-4" ng-class="{ 'has-error': clientSWForm.name.$invalid }">
+                                        <label>
+                                            Name*
+                                            <span ng-show="roleData.tooltip.name">
+                                                {{roleData.tooltip.name}}
+                                            </span>
+                                        </label>
+                                        <input id="client_software_name_input" type="text" class="form-control" name="name" ng-readonly="readOnlyFlag" ng-model="roleData.name" ng-required="true" required/>
+                                    </div>
+                                    <div class="col-sm-4" ng-class="{ 'has-error': clientSWForm.version.$invalid }">
+                                        <label>
+                                            Version*
+                                            <span ng-show="roleData.tooltip.name">
+                                                {{roleData.tooltip.version}}
+                                            </span>
+                                        </label>
+                                        <input id="client_software_version_input" type="text" name="version" pattern="^[ a-zA-Z0-9._-]*$" uib-popover="Please fill with digit and ." popover-is-open="versionPopover && clientSWForm.version.$invalid" popover-trigger="clientSWForm.version.$invalid" ng-click="versionPopover = !versionPopover" popover-placement="top-right" class="form-control" ng-readonly="readOnlyFlag" ng-model="roleData.version" required="true" required/>
+                                    </div>
+                                </div>
+                                <div class="form-line">
+                                    
+                                    <div class="col-sm-8">
+                                        <label>
+                                            Status
+                                        </label>
+                                        <ul class="nav nav-radio nav-transparent">
+                                            <li class="col-sm-3 col-xs-6" ng-class="{'active' : !roleData.statusId, 'disabled': readOnlyFlag}">
+                                                <a ng-click="!readOnlyFlag && (roleData.statusId = 0)"><span>&nbsp;</span>Show</a>
+                                            </li>
+                                            <li class="col-sm-3 col-xs-6" ng-class="{'active' : roleData.statusId, 'disabled': readOnlyFlag}">
+                                                <a ng-click="!readOnlyFlag && (roleData.statusId = 1)"><span>&nbsp;</span>Hide</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="form-line">
+                                    <div class="col-sm-12">
+                                        <label>Add File</label>
+                                        <div class="upload-area">
+                                            <div ng-class="{'read-only': readOnlyFlag}"></div>
+                                            <div class="upload-group" ng-hide="roleData.file">
+                                                <div class="upload-doc">
+                                                    <div ng-hide="uploadingDoc" class="upload-click doc-box" ngf-select="uploadDoc(file)" ng-model="file" ngf-drop="uploadDoc(file)" ngf-drag-over-class="'dragover'">
+                                                        <div ng-show="uploadError" class="med-error med-error-msg">
+                                                            <i class="fa fa-exclamation-triangle">
+                                                                {{uploadError}}
+                                                                <div ng-show="uploadError.indexOf('extension')>-1">Only accept for <span ng-repeat="ext in metaData.upload_ext_white_list">.{{ext}} </span></div>
+                                                            </i>
+                                                        </div>
+                                                        <div class="file-upload" ng-class="{'med-error' : uploadError}">
+                                                            <span ng-if="hasSpecialChar">No special character allowed in file name.</span> Click to upload, or drag and drop your file here.
+                                                        </div>
+                                                    </div>
+                                                    <div class="doc-loader" ng-show="uploadingDoc">
+                                                        <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="upload-files" ng-show="roleData.file">
+                                                <table class="table table-noline">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="col-sm-6">{{roleData.file.filename}}</td>
+                                                            <td>{{roleData.file.size}}</td>
+                                                            <td>{{roleData.file.createTime|date:'MM/dd/yy'}}</td>
+                                                            <td><a class="file-remove-b" ng-hide="!createRecord && readOnlyFlag" ng-class="{'med-error': deleteError}" class="file-remove-b" ng-click="deleteDoc(roleData.file)">
+                                                                    <i ng-hide="deletingDoc" class="fa fa-remove"></i>
+                                                                    <i ng-show="deletingDoc" class="fa fa-spinner fa-spin"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>

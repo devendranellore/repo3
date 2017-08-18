@@ -1,0 +1,67 @@
+<div class="modal alert-edit generalEdit" id="viewAlertDetails" tabindex="-1" role="dialog" data-target=".bs-example-modal-md">
+
+	<div ng-show="modalError" class="loader-box modal-error" >
+		<i class="fa-2x r-loader fa fa-exclamation-circle"> {{modalError}}</i>
+	</div>
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header clearfix">
+				<span class="modal-title" id="myModalLabel"></span>
+				<span class="modal-title" id="updModalAlert"><span>Select Date and Time</span></span>
+				<div class="pull-right">
+					<span ng-if="!readOnlyPermission">
+						<button id="update_alert_save_btn" type="button" class="btn btn-primary btn-mw" ng-click="newDateTime()">OK</button>
+					</span>
+					<button class="btn btn-primary btn-mw" data-dismiss="modal" aria-label="Close" ng-click="cancelDateTimeChange()">CANCEL</button>
+				</div>
+			</div>
+			<div class="modal-body">
+				<div class="modal-form overflow-visible">
+					<div class="form-line">
+					</span>
+				</hr>
+				<br>
+				<div class="col-sm-12" ng-mouseleave="showList('hide')">
+					<div class="col-xs-6">
+						<label class="col-xs-6">
+							Date
+						</label>
+						<div class="form-line" >
+							<div class="col-sm-12 no-padding">
+								<div class="col-md-6">
+									<p class="input-group">
+										<input type="text" class="form-control" uib-datepicker-popup ng-model="dt" is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+										</span>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+					<div class="form-line">
+						<div class="col-sm-4">
+							<label class="col-xs-1">
+								Time
+							</label>
+							<div class="form-line" >
+								<div class="col-sm-6 no-padding">
+									<div class="col-md-6">
+										<p class="input-group">
+											<div uib-timepicker ng-model="mytime" ng-change="changed()" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian" show-seconds="false"></div>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	&nbsp;
+</div>
+</div>
+</div>
+</div>
